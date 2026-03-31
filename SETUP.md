@@ -354,6 +354,115 @@ After setting up login/registration, you can:
 7. **Add Ratings/Reviews** - User ratings and reviews
 8. **Add Payment Processing** - Integrate payment gateway
 
+---
+
+## Project Status (Current)
+
+This repo has moved beyond “auth only” and now includes a basic marketplace and seller listing flow.
+
+### Implemented
+
+- **Authentication**
+  - `POST /api/auth/register`
+  - `POST /api/auth/login`
+  - `POST /api/auth/verify`
+- **Role-based dashboards**
+  - `GET /dashboard` redirects by role
+  - Buyer: `/dashboard/buyer`
+  - Seller: `/dashboard/seller`
+- **Marketplace (materials)**
+  - `GET /api/materials` (public list)
+  - `GET /api/materials/:id` (public detail)
+  - Frontend: `/marketplace`, `/materials/:id`
+- **Seller listings**
+  - `GET /api/materials/me/listings` (seller-only; JWT required)
+  - `POST /api/materials` (seller-only; JWT required)
+  - Frontend: `/seller/listings` (create + list)
+- **Stats**
+  - `GET /api/stats`
+  - `GET /api/stats/categories`
+  - `GET /api/stats/testimonials`
+  - `GET /api/stats/user-stats/:userId`
+- **Testimonials (submission + approval)**
+  - `POST /api/testimonials` (public; saved pending approval)
+  - `GET /api/admin/testimonials/pending` (admin)
+  - `PATCH /api/admin/testimonials/:id/approve` (admin)
+  - `PATCH /api/admin/testimonials/:id/reject` (admin)
+- **Database alignment**
+  - `materials` matches the provided schema: `title`, `image`, required `category_id`, required `status_id`
+  - Creating a material sets `status_id` to `material_status = 'available'`
+- **DB connection documentation**
+  - See `DB_Connection.md` for SQL Server connection setup and troubleshooting
+
+### Known UX limitation
+
+- Seller listing creation currently requires entering a **Category ID** manually (needs a dropdown).
+
+---
+
+## Roadmap (Recommended Next Work)
+
+### 1) Improve seller listing creation UX (short)
+
+- Replace manual `category_id` input with a **category dropdown**
+  - Load categories from `GET /api/stats/categories`
+  - Submit the selected `category_id` when creating materials
+
+### 2) Buyer “request to buy” flow (core marketplace feature)
+
+Use existing DB tables: `requests`, `request_status`, `messages`.
+
+- Backend (suggested)
+  - `POST /api/requests` (buyer creates a request for a material)
+  - `GET /api/requests/me` (buyer list)
+  - `GET /api/requests/incoming` (seller list requests for their materials)
+  - `PATCH /api/requests/:id/status` (seller accepts/rejects)
+- Frontend (suggested)
+  - Buyer: “My Requests”
+  - Seller: “Incoming Requests”
+
+### 3) Orders and payments (after requests are accepted)
+
+Use existing DB tables: `orders`, `order_items`, `payments`.
+
+- Create order on acceptance
+- Track order status via `order_status`
+- Add payment flow (start with mock, then integrate gateway)
+
+### 4) Image uploads (admin/seller) (future)
+
+Current DB column `materials.image` stores a **string** (URL/path). Today we use direct URLs or manual paths.
+
+Planned upload approach:
+
+- Store uploaded files on the backend under `api/uploads/materials/`
+- Serve uploads publicly via Express as `/uploads/materials/<filename>`
+- Save only the relative path in SQL: `materials.image = '/uploads/materials/<filename>'`
+- Frontend should always show a fallback placeholder when missing/broken (`/no-image.svg`)
+
+### 5) Listing approval (required)
+
+New listings should **NOT** appear in the marketplace immediately.
+
+- On create, listings are stored with `material_status = 'pending'`
+- Marketplace endpoints only return `material_status = 'available'`
+- Admin approves/rejects via:
+  - `GET /api/admin/materials/pending`
+  - `PATCH /api/admin/materials/:id/approve`
+  - `PATCH /api/admin/materials/:id/reject`
+
+**DB requirement:** add `'pending'` to `material_status`:
+
+```sql
+INSERT INTO material_status (status) VALUES ('pending');
+```
+
+### 6) Testimonials moderation (quick win)
+
+- Public users can submit a testimonial from the Home page.
+- Testimonials are stored as **inactive** until an admin approves them.
+- Only approved testimonials appear in `GET /api/stats/testimonials`.
+
 ## Support & Documentation
 
 - React Router: https://reactrouter.com/

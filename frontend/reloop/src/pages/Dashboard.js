@@ -6,8 +6,8 @@ import './Dashboard.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-export function Dashboard() {
-  const { user, logout } = useAuth();
+export function Dashboard({ variant }) {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,11 +40,6 @@ export function Dashboard() {
     fetchUserStats();
   }, [user?.id]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   if (loading) {
     return (
       <div className="dashboard-container">
@@ -60,18 +55,15 @@ export function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <nav className="dashboard-nav">
-        <div className="nav-brand">Reloop</div>
-        <button className="logout-button" onClick={handleLogout}>
-          Logout
-        </button>
-      </nav>
-
       {/* Hero Banner */}
       <section className="dashboard-hero">
         <div className="container">
           <h2>Welcome Back, {user?.name}! 👋</h2>
-          <p>Explore the future of circular economy with Reloop</p>
+          <p>
+            {variant === 'seller'
+              ? 'Manage your leftover stock and connect with buyers'
+              : 'Discover leftover stock deals from factories and brands'}
+          </p>
         </div>
       </section>
 
@@ -80,11 +72,11 @@ export function Dashboard() {
         <div className="quick-stats">
           <div className="quick-stat">
             <p className="quick-stat-number">{stats?.active_listings}</p>
-            <p className="quick-stat-label">Active Listings</p>
+            <p className="quick-stat-label">{variant === 'seller' ? 'Approved Listings' : 'Active Listings'}</p>
           </div>
           <div className="quick-stat">
             <p className="quick-stat-number">{stats?.pending_requests}</p>
-            <p className="quick-stat-label">Pending Requests</p>
+            <p className="quick-stat-label">{variant === 'seller' ? 'Incoming Requests' : 'Pending Requests'}</p>
           </div>
           <div className="quick-stat">
             <p className="quick-stat-number">{stats?.active_orders}</p>
@@ -96,29 +88,25 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* User Info */}
-        <div className="welcome-card">
-          <h1>Your Profile</h1>
-          <p><strong>Email:</strong> {user?.email}</p>
-          <p><strong>Role:</strong> <span className="badge">{user?.role}</span></p>
-          <p className="profile-subtitle">Account Status: Active ✓</p>
-        </div>
-
         {/* Main Dashboard Grid */}
         <div className="dashboard-grid">
-          <div className="dashboard-card">
-            <h3>📦 My Listings</h3>
-            <p>Manage and track your material listings</p>
-            <p className="card-stat">{stats?.active_listings} Active</p>
-            <button>Go to Listings</button>
-          </div>
+          {variant === 'seller' && (
+            <div className="dashboard-card">
+              <h3>📦 My Listings</h3>
+              <p>Manage and track your leftover stock listings</p>
+              <p className="card-stat">{stats?.active_listings} Active</p>
+              <button onClick={() => navigate('/seller/listings')}>Go to Listings</button>
+            </div>
+          )}
 
-          <div className="dashboard-card">
-            <h3>🛒 Shopping Cart</h3>
-            <p>View and manage cart items</p>
-            <p className="card-stat">{stats?.cart_items} Items</p>
-            <button>Go to Cart</button>
-          </div>
+          {variant === 'buyer' && (
+            <div className="dashboard-card">
+              <h3>🛒 Shopping Cart</h3>
+              <p>View and manage items you plan to buy</p>
+              <p className="card-stat">{stats?.cart_items} Items</p>
+              <button>Go to Cart</button>
+            </div>
+          )}
 
           <div className="dashboard-card">
             <h3>💬 Messages</h3>

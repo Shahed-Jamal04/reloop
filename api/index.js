@@ -1,14 +1,24 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import authRoutes from './routes/auth.js';
 import statsRoutes from './routes/stats.js';
+import materialsRoutes from './routes/materials.js';
+import adminRoutes from './routes/admin.js';
+import requestsRoutes from './routes/requests.js';
+import uploadsRoutes from './routes/uploads.js';
+import testimonialsRoutes from './routes/testimonials.js';
 import { getConnection, closeConnection } from './db.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(express.json());
@@ -17,9 +27,17 @@ app.use(cors({
   credentials: true
 }));
 
+// Static uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/materials', materialsRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/requests', requestsRoutes);
+app.use('/api/uploads', uploadsRoutes);
+app.use('/api/testimonials', testimonialsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
