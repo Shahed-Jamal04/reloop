@@ -1,0 +1,453 @@
+.app-shell {
+  --sidebar-width: 280px;
+  min-height: 100vh;
+  display: flex;
+  background: #f5f7fa;
+}
+
+.app-shell.collapsed {
+  --sidebar-width: 88px;
+}
+
+.app-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  width: var(--sidebar-width);
+  flex: 0 0 var(--sidebar-width);
+  z-index: 50;
+  overflow-x: hidden;
+  background: linear-gradient(180deg, #1a2332 0%, #111824 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 18px 14px;
+}
+
+.app-sidebar * {
+  box-sizing: border-box;
+}
+
+.sidebar-brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+}
+
+.brand-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(39, 174, 96, 0.16);
+  border: 1px solid rgba(39, 174, 96, 0.28);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 1000;
+  flex: 0 0 auto;
+}
+
+.brand-mark i {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-title {
+  font-weight: 900;
+  color: white;
+  letter-spacing: -0.4px;
+  font-size: 18px;
+}
+
+.collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.collapse-btn i {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.brand-subtitle {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.sidebar-user {
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 12px 10px 14px;
+}
+
+.sidebar-user strong {
+  display: block;
+  color: white;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.sidebar-user span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.nav-section-title {
+  margin: 14px 10px 8px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px;
+  width: 100%;
+}
+
+/* Bootstrap nav-link defaults can cause overflow; normalize width */
+.nav-item.nav-link {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Base nav link styling (Bootstrap-compatible) */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+
+.nav-link:hover {
+  color: rgba(255, 255, 255, 0.96) !important;
+}
+
+.nav-link.active {
+  background: rgba(39, 174, 96, 0.16) !important;
+  border: 1px solid rgba(39, 174, 96, 0.28) !important;
+}
+
+.nav-icon {
+  width: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex: 0 0 auto;
+}
+
+.nav-icon i {
+  line-height: 1;
+}
+
+.app-shell.collapsed .brand-subtitle,
+.app-shell.collapsed .sidebar-user,
+.app-shell.collapsed .nav-section-title,
+.app-shell.collapsed .nav-label,
+.app-shell.collapsed .brand-text,
+.app-shell.collapsed .topbar-hint {
+  display: none;
+}
+
+.app-shell.collapsed .sidebar-brand {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.app-shell.collapsed .brand-left {
+  justify-content: center;
+  flex: 1;
+}
+
+.app-shell.collapsed .collapse-btn {
+  position: static;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.app-shell.collapsed .sidebar-brand {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.app-shell.collapsed .brand-left {
+  width: 100%;
+  justify-content: center;
+}
+
+.app-shell.collapsed .brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+}
+
+.app-shell.collapsed .sidebar-user {
+  margin-left: 6px;
+  margin-right: 6px;
+  padding: 10px 8px;
+}
+
+.app-shell.collapsed .nav-item {
+  justify-content: center;
+}
+
+.app-shell.collapsed .nav-list {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.app-shell.collapsed .nav-item {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.app-shell.collapsed .nav-item {
+  justify-content: center;
+  padding: 12px 10px;
+}
+
+.app-shell.collapsed .nav-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: transparent;
+  border: none;
+}
+
+.app-shell.collapsed .nav-icon i {
+  font-size: 18px;
+}
+
+.app-shell.collapsed .logout-btn {
+  padding: 10px;
+  border: none;
+  background: transparent;
+  justify-content: center;
+}
+
+.logout-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-right: 10px;
+}
+
+.app-shell.collapsed .logout-icon {
+  margin-right: 0;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.nav-item.active {
+  background: rgba(39, 174, 96, 0.16);
+  border-color: rgba(39, 174, 96, 0.28);
+}
+
+.nav-spacer {
+  flex: 1;
+}
+
+.sidebar-footer {
+  margin-top: 14px;
+  padding: 0 8px 10px;
+}
+
+.topbar-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(44, 62, 80, 0.14);
+  background: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #1a2332;
+}
+
+.avatar-menu {
+  position: absolute;
+  right: 0;
+  top: 46px;
+  min-width: 200px;
+  background: white;
+  border: 1px solid rgba(44, 62, 80, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  z-index: 100;
+}
+
+.avatar-menu a,
+.avatar-menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: #1a2332;
+  font-weight: 800;
+}
+
+.avatar-menu a:hover,
+.avatar-menu button:hover {
+  background: rgba(44, 62, 80, 0.06);
+}
+
+.avatar-menu .divider {
+  height: 1px;
+  background: rgba(44, 62, 80, 0.08);
+}
+
+.logout-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.app-main {
+  min-width: 0;
+  flex: 1 1 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 18px;
+  background: rgba(245, 247, 250, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(44, 62, 80, 0.08);
+}
+
+.topbar-title {
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  color: #1a2332;
+}
+
+.topbar-hint {
+  color: #6b7788;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.app-content {
+  padding: 18px;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .app-shell.collapsed {
+    flex-direction: column;
+  }
+
+  .app-sidebar {
+    position: relative;
+    height: auto;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+}
+

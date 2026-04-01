@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="100%" stop-color="#e9eef5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect x="140" y="140" width="920" height="520" rx="28" fill="#ffffff" stroke="rgba(44,62,80,0.18)" stroke-width="6"/>
+  <g transform="translate(0,10)">
+    <circle cx="430" cy="380" r="56" fill="rgba(39,174,96,0.18)"/>
+    <path d="M330 520 L455 395 L540 480 L610 410 L770 570 L330 570 Z" fill="rgba(44,62,80,0.10)"/>
+    <path d="M415 440 L455 400 L500 445 L540 485 L590 435 L740 585 L330 585 Z" fill="rgba(39,174,96,0.16)"/>
+    <rect x="640" y="300" width="260" height="24" rx="12" fill="rgba(44,62,80,0.10)"/>
+    <rect x="640" y="342" width="330" height="18" rx="9" fill="rgba(44,62,80,0.08)"/>
+    <rect x="640" y="376" width="300" height="18" rx="9" fill="rgba(44,62,80,0.08)"/>
+    <rect x="640" y="410" width="220" height="18" rx="9" fill="rgba(44,62,80,0.08)"/>
+    <text x="600" y="640" text-anchor="middle" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="28" font-weight="700" fill="#5f6b7a">
+      No image available
+    </text>
+  </g>
+</svg>
+

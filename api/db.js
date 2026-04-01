@@ -1,17 +1,16 @@
-import sql from 'mssql/msnodesqlv8.js';
+import sql from 'mssql';
+import dotenv from 'dotenv';
 
-const config = {
-  connectionString: "Driver={ODBC Driver 17 for SQL Server};Server=localhost\\SQLEXPRESS;Database=Reloop;Trusted_Connection=yes;TrustServerCertificate=yes;",
-  connectionTimeout: 30000,
-  requestTimeout: 30000,
-};
+dotenv.config();
+
+const connectionString = process.env.DB_CONNECTION_STRING;
 
 let pool;
 
 export async function getConnection() {
   try {
     if (!pool) {
-      pool = await sql.connect(config);
+      pool = await sql.connect(connectionString);
       console.log('✓ Database connected');
     }
     return pool;

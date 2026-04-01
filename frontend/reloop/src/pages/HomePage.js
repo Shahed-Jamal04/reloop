@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export function HomePage() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [categories, setCategories] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [tForm, setTForm] = useState({
+    author_name: '',
+    author_role: '',
+    quote: '',
+    rating: '',
+  });
+  const [tSubmitting, setTSubmitting] = useState(false);
+  const [tSuccess, setTSuccess] = useState('');
+  const [tError, setTError] = useState('');
+  const [ratingHover, setRatingHover] = useState(null);
+  const [ratingPopAt, setRatingPopAt] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,8 +94,18 @@ export function HomePage() {
             Reloop the Future • Circular Economy Made Simple
           </p>
           <div className="hero-buttons">
-            <button className="btn btn-primary">Browse Materials</button>
-            <button className="btn btn-secondary">Sell Your Waste</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate('/marketplace')}
+            >
+              Browse Materials
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => navigate('/register?role=seller')}
+            >
+              Sell Your Waste
+            </button>
           </div>
         </div>
       </section>
@@ -166,6 +189,28 @@ export function HomePage() {
             {testimonials.length > 0 ? (
               testimonials.map((testimonial) => (
                 <div key={testimonial.id} className="testimonial-card">
+                  {testimonial.rating != null && (
+                    <div className="mb-2">
+                      <div className="stars readonly" aria-label={`Rating ${testimonial.rating} out of 5`}>
+                        {Array.from({ length: 5 }).map((_, idx) => {
+                          const v = idx + 1;
+                          const filled = Number(testimonial.rating) >= v;
+                          return (
+                            <button
+                              key={v}
+                              type="button"
+                              className={`star-btn${filled ? ' filled' : ''}`}
+                              disabled
+                              aria-hidden="true"
+                              tabIndex={-1}
+                            >
+                              <i className={`bi ${filled ? 'bi-star-fill' : 'bi-star'}`} />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                   <p className="testimonial-text">"{testimonial.quote}"</p>
                   <p className="testimonial-author">
                     - {testimonial.author_name}, {testimonial.author_role}
@@ -181,6 +226,145 @@ export function HomePage() {
                 <p className="testimonial-author">- No testimonials yet</p>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Submit Testimonial */}
+      <section className="how-it-works" style={{ paddingTop: 40 }}>
+        <div className="container">
+          <h2 style={{ marginBottom: 20 }}>Share your experience</h2>
+          <p style={{ textAlign: 'center', color: '#7f8c8d', marginTop: 0, marginBottom: 30 }}>
+            Your testimonial will be reviewed by an admin before it appears publicly.
+          </p>
+
+          <div className="row justify-content-center">
+            <div className="col-12 col-lg-8">
+              <div className="card border-0 shadow-sm">
+                <div className="card-body">
+                  {tError && (
+                    <div className="alert alert-danger" role="alert">
+                      {tError}
+                    </div>
+                  )}
+                  {tSuccess && (
+                    <div className="alert alert-success" role="alert">
+                      {tSuccess}
+                    </div>
+                  )}
+
+                  <form
+                    className="vstack gap-3"
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setTSubmitting(true);
+                      setTError('');
+                      setTSuccess('');
+                      try {
+                        await axios.post(`${API_BASE_URL}/testimonials`, {
+                          author_name: tForm.author_name,
+                          author_role: tForm.author_role,
+                          quote: tForm.quote,
+                          rating: tForm.rating === '' ? null : Number(tForm.rating),
+                        });
+                        setTForm({ author_name: '', author_role: '', quote: '', rating: '' });
+                        setTSuccess('Thanks! Your testimonial was submitted and is pending approval.');
+                      } catch (err) {
+                        const msg = err.response?.data?.error || 'Failed to submit testimonial.';
+                        setTError(msg);
+                      } finally {
+                        setTSubmitting(false);
+                      }
+                    }}
+                  >
+                    <div className="row g-2">
+                      <div className="col-12 col-md-6">
+                        <label className="form-label fw-semibold">Name</label>
+                        <input
+                          className="form-control"
+                          value={tForm.author_name}
+                          onChange={(e) => setTForm((p) => ({ ...p, author_name: e.target.value }))}
+                          required
+                        />
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <label className="form-label fw-semibold">Role (optional)</label>
+                        <input
+                          className="form-control"
+                          value={tForm.author_role}
+                          onChange={(e) => setTForm((p) => ({ ...p, author_role: e.target.value }))}
+                          placeholder="Buyer / Factory Owner / Manager..."
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="form-label fw-semibold">Testimonial</label>
+                      <textarea
+                        className="form-control"
+                        rows={4}
+                        value={tForm.quote}
+                        onChange={(e) => setTForm((p) => ({ ...p, quote: e.target.value }))}
+                        required
+                      />
+                    </div>
+
+                    <div className="row g-2 align-items-end">
+                      <div className="col-12 col-md-4">
+                        <label className="form-label fw-semibold">Rating (optional)</label>
+                        <div
+                          className="stars"
+                          onMouseLeave={() => setRatingHover(null)}
+                          aria-label="Star rating"
+                        >
+                          {Array.from({ length: 5 }).map((_, idx) => {
+                            const v = idx + 1;
+                            const current = tForm.rating === '' ? null : Number(tForm.rating);
+                            const display = ratingHover != null ? ratingHover : current;
+                            const filled = display != null && display >= v;
+                            return (
+                              <button
+                                key={v}
+                                type="button"
+                                className={`star-btn${filled ? ' filled' : ''}${ratingPopAt === v ? ' pop' : ''}`}
+                                onMouseEnter={() => setRatingHover(v)}
+                                onClick={() => {
+                                  setTForm((p) => ({ ...p, rating: String(v) }));
+                                  setRatingPopAt(v);
+                                  window.setTimeout(() => setRatingPopAt(null), 240);
+                                }}
+                                aria-label={`${v} star`}
+                                disabled={tSubmitting}
+                              >
+                                <i className={`bi ${filled ? 'bi-star-fill' : 'bi-star'}`} />
+                              </button>
+                            );
+                          })}
+                          <span className="rating-hint">
+                            {tForm.rating === '' ? 'No rating' : `${tForm.rating}/5`}
+                          </span>
+                          {tForm.rating !== '' && (
+                            <button
+                              type="button"
+                              className="btn btn-link p-0 ms-2 small"
+                              onClick={() => setTForm((p) => ({ ...p, rating: '' }))}
+                              disabled={tSubmitting}
+                            >
+                              Clear
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-8">
+                        <button type="submit" className="btn btn-success fw-bold w-100" disabled={tSubmitting}>
+                          {tSubmitting ? 'Submitting...' : 'Submit testimonial'}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

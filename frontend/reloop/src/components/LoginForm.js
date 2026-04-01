@@ -20,8 +20,14 @@ export function LoginForm() {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const data = await login(email, password);
+      const role = data?.user?.role;
+
+      if (role === 'seller') {
+        navigate('/dashboard/seller');
+      } else {
+        navigate('/dashboard/buyer');
+      }
     } catch (err) {
       setError(err.message);
     } finally {

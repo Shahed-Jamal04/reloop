@@ -80,27 +80,61 @@ router.get('/user-stats/:userId', async (req, res) => {
     const { userId } = req.params;
     const pool = await getConnection();
 
-    // Active listings
-    const listings = await pool
+    // Determine user role (buyer/seller/admin)
+    const roleResult = await pool
       .request()
       .input('user_id', userId)
       .query(`
-        SELECT COUNT(*) as count 
-        FROM materials 
-        WHERE user_id = @user_id AND is_deleted = 0
+        SELECT r.name AS role
+        FROM users u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.id = @user_id AND u.is_deleted = 0
       `);
 
-    // Pending requests
-    const pendingRequests = await pool
-      .request()
-      .input('user_id', userId)
-      .query(`
-        SELECT COUNT(*) as count 
-        FROM requests 
-        WHERE buyer_id = @user_id 
-        AND status_id = (SELECT id FROM request_status WHERE status = 'pending')
-        AND is_deleted = 0
-      `);
+    const role = roleResult.recordset?.[0]?.role || 'buyer';
+
+    // Active listings:
+    // - seller: count only available listings (approved)
+    // - buyer/admin: 0
+    const listings = role === 'seller'
+      ? await pool
+          .request()
+          .input('user_id', userId)
+          .query(`
+            SELECT COUNT(*) as count
+            FROM materials m
+            JOIN material_status ms ON m.status_id = ms.id
+            WHERE m.user_id = @user_id AND m.is_deleted = 0 AND ms.status = 'available'
+          `)
+      : { recordset: [{ count: 0 }] };
+
+    // Pending requests:
+    // - buyer: my pending requests (sent)
+    // - seller: incoming pending requests on my materials
+    // - admin: 0
+    const pendingRequests = role === 'seller'
+      ? await pool
+          .request()
+          .input('user_id', userId)
+          .query(`
+            SELECT COUNT(*) as count
+            FROM requests r
+            JOIN materials m ON r.material_id = m.id
+            JOIN request_status rs ON r.status_id = rs.id
+            WHERE m.user_id = @user_id AND r.is_deleted = 0 AND rs.status = 'pending'
+          `)
+      : role === 'buyer'
+        ? await pool
+            .request()
+            .input('user_id', userId)
+            .query(`
+              SELECT COUNT(*) as count 
+              FROM requests 
+              WHERE buyer_id = @user_id 
+              AND status_id = (SELECT id FROM request_status WHERE status = 'pending')
+              AND is_deleted = 0
+            `)
+        : { recordset: [{ count: 0 }] };
 
     // Active orders
     const activeOrders = await pool
