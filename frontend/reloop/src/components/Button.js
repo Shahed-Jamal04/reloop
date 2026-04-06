@@ -5,7 +5,7 @@ export function Button({
   children, 
   disabled = false, 
   onClick,
-  className = 'auth-button'
+  className = 'btn btn-primary fw-bold w-100'
 }) {
   return (
     <button 

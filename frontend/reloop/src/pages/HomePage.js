@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
+import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export function HomePage() {
   const navigate = useNavigate();
-  const [stats, setStats] = useState(null);
   const [categories, setCategories] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [featured, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tForm, setTForm] = useState({
     author_name: '',
@@ -22,14 +23,11 @@ export function HomePage() {
   const [tError, setTError] = useState('');
   const [ratingHover, setRatingHover] = useState(null);
   const [ratingPopAt, setRatingPopAt] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch stats
-        const statsRes = await axios.get(`${API_BASE_URL}/stats`);
-        setStats(statsRes.data);
-
         // Fetch categories
         const categoriesRes = await axios.get(`${API_BASE_URL}/stats/categories`);
         setCategories(categoriesRes.data);
@@ -37,17 +35,15 @@ export function HomePage() {
         // Fetch testimonials
         const testimonialsRes = await axios.get(`${API_BASE_URL}/stats/testimonials`);
         setTestimonials(testimonialsRes.data);
+
+        // Featured materials (use marketplace list, show first 6)
+        const materialsRes = await axios.get(`${API_BASE_URL}/materials`);
+        setFeatured((materialsRes.data || []).slice(0, 6));
       } catch (err) {
         console.error('Failed to fetch data:', err);
-        // Set default values if API fails
-        setStats({
-          materials_available: 0,
-          active_sellers: 0,
-          tons_saved: 0,
-          categories: 0,
-        });
         setCategories([]);
         setTestimonials([]);
+        setFeatured([]);
       } finally {
         setLoading(false);
       }
@@ -67,180 +63,261 @@ export function HomePage() {
   }
 
   return (
-    <div className="home-container">
-      {/* Hero Banner with Video */}
-      <section className="hero-banner">
-        <div className="hero-video-wrapper">
+    <div className="home">
+      {/* HERO (green) */}
+      <section className="hero">
+        <div className="hero-video-wrap" aria-hidden="true">
           <video
+            className="hero-video"
             autoPlay
             muted
             loop
-            className="hero-video"
-            poster="https://via.placeholder.com/1920x1080?text=Reloop+Materials"
+            playsInline
+            preload="metadata"
+            poster="https://via.placeholder.com/1920x900?text=Reloop"
           >
-            <source
-              src="https://www.31-agency.com/31New/Requirements/Videos/Banner.mp4"
-              type="video/mp4"
-            />
-            Your browser does not support the video tag.
+            <source src="https://www.31-agency.com/31New/Requirements/Videos/Banner.mp4" type="video/mp4" />
           </video>
-          <div className="hero-overlay"></div>
+          <div className="hero-video-dim" />
         </div>
-
-        <div className="hero-content">
-          <h1 className="hero-title">Transform Factory Waste</h1>
-          <p className="hero-subtitle">Into Valuable Resources</p>
-          <p className="hero-description">
-            Reloop the Future • Circular Economy Made Simple
-          </p>
-          <div className="hero-buttons">
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate('/marketplace')}
-            >
-              Browse Materials
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => navigate('/register?role=seller')}
-            >
-              Sell Your Waste
-            </button>
+        <div className="container py-5">
+          <div className="hero-inner">
+            <div className="hero-copy">
+              <h1 className="hero-title">Turn Surplus into Success</h1>
+              <p className="hero-desc">
+                Join the circular economy revolution. Exchange surplus materials, reduce waste, and create value from
+                what others no longer need.
+              </p>
+              <div className="d-flex gap-2 flex-wrap mt-3">
+                <button className="btn btn-light text-success fw-bold px-4" onClick={() => navigate('/register')}>
+                  Get Started
+                </button>
+                <button className="btn btn-outline-light fw-bold px-4" onClick={() => navigate('/marketplace')}>
+                  Browse Materials
+                </button>
+              </div>
+            </div>
+            <div className="hero-art" aria-hidden="true" />
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="stats-section">
-        <div className="stats-container">
-          <div className="stat-card">
-            <h3 className="stat-number">{stats?.materials_available.toLocaleString()}+</h3>
-            <p className="stat-label">Materials Available</p>
-          </div>
-          <div className="stat-card">
-            <h3 className="stat-number">{stats?.active_sellers.toLocaleString()}+</h3>
-            <p className="stat-label">Active Sellers</p>
-          </div>
-          <div className="stat-card">
-            <h3 className="stat-number">{stats?.tons_saved.toLocaleString()}+</h3>
-            <p className="stat-label">Tons Saved</p>
-          </div>
-          <div className="stat-card">
-            <h3 className="stat-number">{stats?.categories}+</h3>
-            <p className="stat-label">Categories</p>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="how-it-works">
+      {/* GET STARTED */}
+      <section className="section py-5">
         <div className="container">
-          <h2>How Reloop Works</h2>
-          <div className="steps-grid">
-            <div className="step-card">
-              <div className="step-number">1</div>
-              <h3>List Your Materials</h3>
-              <p>Sellers list factory waste materials with photos and details</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">2</div>
-              <h3>Browse & Request</h3>
-              <p>Buyers search and request materials that interest them</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">3</div>
-              <h3>Complete Transaction</h3>
-              <p>Negotiate and complete the sale with secure payment</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">4</div>
-              <h3>Track Impact</h3>
-              <p>See your environmental impact and reduce landfill waste</p>
-            </div>
+          <div className="text-center mb-4">
+            <h2 className="section-title">Get Started Today</h2>
+            <p className="section-subtitle">
+              Whether you're looking to buy sustainable materials or sell your surplus, we've got you covered.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* Featured Categories */}
-      <section className="featured-categories">
-        <div className="container">
-          <h2>Shop by Category</h2>
-          <div className="categories-grid">
-            {categories.length > 0 ? (
-              categories.map((cat) => (
-                <div key={cat.id} className="category-card">
-                  <div className="category-icon">📦</div>
-                  <h3>{cat.name}</h3>
-                  <p>{cat.item_count}+ items</p>
+          <div className="row g-3 justify-content-center">
+            <div className="col-12 col-lg-5">
+              <div className="start-card">
+                <div className="start-icon">
+                  <i className="bi bi-bag-check" />
                 </div>
-              ))
-            ) : (
-              <p>No categories available</p>
-            )}
+                <div className="start-body">
+                  <div className="start-title">I'm a Buyer</div>
+                  <div className="start-text">
+                    Find high-quality surplus materials at competitive prices. Save money while supporting sustainability.
+                  </div>
+                  <button className="btn btn-dark fw-bold w-100 mt-3" onClick={() => navigate('/marketplace')}>
+                    Browse Materials
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-12 col-lg-5">
+              <div className="start-card">
+                <div className="start-icon soft">
+                  <i className="bi bi-plus-square" />
+                </div>
+                <div className="start-body">
+                  <div className="start-title">I'm a Seller</div>
+                  <div className="start-text">
+                    Turn your surplus materials into revenue. Reduce waste and connect with buyers who need what you have.
+                  </div>
+                  <button className="btn btn-dark fw-bold w-100 mt-3" onClick={() => navigate('/seller/listings')}>
+                    List Materials
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="testimonials-section">
+      {/* FIND WHAT YOU NEED */}
+      <section className="section section-muted py-5">
         <div className="container">
-          <h2>What Our Users Say</h2>
-          <div className="testimonials-grid">
-            {testimonials.length > 0 ? (
-              testimonials.map((testimonial) => (
-                <div key={testimonial.id} className="testimonial-card">
-                  {testimonial.rating != null && (
-                    <div className="mb-2">
-                      <div className="stars readonly" aria-label={`Rating ${testimonial.rating} out of 5`}>
-                        {Array.from({ length: 5 }).map((_, idx) => {
-                          const v = idx + 1;
-                          const filled = Number(testimonial.rating) >= v;
-                          return (
-                            <button
-                              key={v}
-                              type="button"
-                              className={`star-btn${filled ? ' filled' : ''}`}
-                              disabled
-                              aria-hidden="true"
-                              tabIndex={-1}
-                            >
-                              <i className={`bi ${filled ? 'bi-star-fill' : 'bi-star'}`} />
-                            </button>
-                          );
-                        })}
+          <div className="text-center mb-3">
+            <h2 className="section-title">Find What You Need</h2>
+            <p className="section-subtitle">Search materials and filter by category.</p>
+          </div>
+
+          <div className="find-bar mx-auto">
+            <i className="bi bi-search" aria-hidden="true" />
+            <input
+              className="find-input"
+              placeholder="Search materials..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button
+              className="btn btn-dark fw-bold px-4"
+              onClick={() =>
+                navigate(search.trim() ? `/marketplace?search=${encodeURIComponent(search.trim())}` : '/marketplace')
+              }
+            >
+              Search Materials
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* BROWSE BY CATEGORY */}
+      <section className="section py-5">
+        <div className="container">
+          <div className="text-center mb-4">
+            <h2 className="section-title">Browse by Category</h2>
+          </div>
+
+          <div className="cat-row">
+            {(categories || []).slice(0, 8).map((c) => (
+              <button key={c.id} type="button" className="cat-pill" onClick={() => navigate('/marketplace')}>
+                <span className="cat-ico" aria-hidden="true">
+                  <i className="bi bi-grid-3x3-gap" />
+                </span>
+                <span className="cat-name">{c.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURED MATERIALS */}
+      <section className="section py-5">
+        <div className="container">
+          <div className="d-flex align-items-end justify-content-between gap-3 flex-wrap mb-3">
+            <div>
+              <h2 className="section-title mb-1">Featured Materials</h2>
+              <p className="section-subtitle mb-0">Latest additions to our marketplace</p>
+            </div>
+            <button className="btn btn-outline-secondary fw-bold" onClick={() => navigate('/marketplace')}>
+              View all
+            </button>
+          </div>
+
+          <div className="row g-3">
+            {featured.length === 0 ? (
+              <div className="col-12">
+                <div className="surface p-4 text-center text-secondary">No featured materials yet.</div>
+              </div>
+            ) : (
+              featured.map((m) => (
+                <div key={m.id} className="col-12 col-md-6 col-lg-4">
+                  <button type="button" className="feat-card" onClick={() => navigate(`/materials/${m.id}`)}>
+                    <div className="feat-img">
+                      <img
+                        src={resolveAssetUrl(m.image)}
+                        alt={m.title}
+                        onError={(e) => {
+                          if (e.currentTarget.src.includes(FALLBACK_IMAGE)) return;
+                          e.currentTarget.src = FALLBACK_IMAGE;
+                        }}
+                      />
+                    </div>
+                    <div className="feat-body">
+                      <div className="d-flex align-items-start justify-content-between gap-2">
+                        <div className="feat-title">{m.title}</div>
+                        {m.category && <span className="pill-badge">{m.category}</span>}
+                      </div>
+                      <div className="feat-meta">
+                        <span className="feat-price">
+                          {m.price != null ? `$${Number(m.price).toLocaleString()}` : '—'}
+                        </span>
+                        <span className="text-secondary small">Qty {m.quantity ?? '—'}</span>
+                      </div>
+                      <div className="feat-actions">
+                        <span className="btn btn-dark btn-sm fw-bold">View Details</span>
                       </div>
                     </div>
-                  )}
-                  <p className="testimonial-text">"{testimonial.quote}"</p>
-                  <p className="testimonial-author">
-                    - {testimonial.author_name}, {testimonial.author_role}
-                  </p>
+                  </button>
                 </div>
               ))
-            ) : (
-              <div className="testimonial-card">
-                <p className="testimonial-text">
-                  "Reloop made it easy to find quality waste materials for our production. 
-                  The process is transparent and reliable."
-                </p>
-                <p className="testimonial-author">- No testimonials yet</p>
-              </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* Submit Testimonial */}
-      <section className="how-it-works" style={{ paddingTop: 40 }}>
+      {/* HOW IT WORKS */}
+      <section className="section section-muted py-5">
         <div className="container">
-          <h2 style={{ marginBottom: 20 }}>Share your experience</h2>
-          <p style={{ textAlign: 'center', color: '#7f8c8d', marginTop: 0, marginBottom: 30 }}>
-            Your testimonial will be reviewed by an admin before it appears publicly.
-          </p>
+          <div className="text-center mb-4">
+            <h2 className="section-title">How It Works</h2>
+            <p className="section-subtitle">
+              Getting started with Reloop is simple. Follow these three easy steps to start exchanging materials.
+            </p>
+          </div>
+
+          <div className="row g-3">
+            <div className="col-12 col-md-4">
+              <div className="how-card">
+                <div className="how-ico">
+                  <i className="bi bi-box-seam" />
+                </div>
+                <div className="how-title">Add Materials</div>
+                <div className="how-text">
+                  List your surplus materials with photos, descriptions, and pricing. It's quick and easy!
+                </div>
+              </div>
+            </div>
+            <div className="col-12 col-md-4">
+              <div className="how-card">
+                <div className="how-ico">
+                  <i className="bi bi-search" />
+                </div>
+                <div className="how-title">Send Requests</div>
+                <div className="how-text">
+                  Browse materials and send requests to sellers. Communicate directly to discuss details.
+                </div>
+              </div>
+            </div>
+            <div className="col-12 col-md-4">
+              <div className="how-card">
+                <div className="how-ico">
+                  <i className="bi bi-check2-circle" />
+                </div>
+                <div className="how-title">Complete Orders</div>
+                <div className="how-text">
+                  Finalize the transaction and arrange delivery. Build sustainable business relationships!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-4">
+            <button className="btn btn-primary fw-bold px-4" onClick={() => navigate('/register')}>
+              Start Your Journey
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* SUBMIT TESTIMONIAL */}
+      <section className="section section-muted py-5">
+        <div className="container">
+          <div className="text-center mb-4">
+            <h2 className="section-title">Share your experience</h2>
+            <p className="section-subtitle">Your testimonial will be reviewed by an admin before it appears publicly.</p>
+          </div>
 
           <div className="row justify-content-center">
             <div className="col-12 col-lg-8">
-              <div className="card border-0 shadow-sm">
+              <div className="surface p-0 shadow-soft">
                 <div className="card-body">
                   {tError && (
                     <div className="alert alert-danger" role="alert">
@@ -370,13 +447,23 @@ export function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-green">
         <div className="container">
-          <h2>Ready to Join the Circular Economy?</h2>
-          <p>Start transforming factory waste into valuable resources today</p>
-          <div className="cta-buttons">
-            <button className="btn btn-primary btn-lg">Get Started</button>
-            <button className="btn btn-secondary btn-lg">Learn More</button>
+          <div className="cta-inner">
+            <div>
+              <div className="cta-title">Ready to Make a Difference?</div>
+              <div className="cta-text">
+                Join thousands of businesses and individuals reducing waste and creating value through the circular economy.
+              </div>
+            </div>
+            <div className="d-flex gap-2 flex-wrap">
+              <button className="btn btn-light text-success fw-bold px-4" onClick={() => navigate('/register')}>
+                Create Free Account
+              </button>
+              <button className="btn btn-outline-light fw-bold px-4" onClick={() => navigate('/marketplace')}>
+                Explore Platform
+              </button>
+            </div>
           </div>
         </div>
       </section>
