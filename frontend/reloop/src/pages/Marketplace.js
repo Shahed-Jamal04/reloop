@@ -89,7 +89,7 @@ export function Marketplace() {
               <Link
                 key={item.id}
                 to={`/materials/${item.id}`}
-                className="card"
+                className="market-card"
               >
                 <div className="card-media">
                   <img

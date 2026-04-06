@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import AppShell from './AppShell';
+import PublicShell from './PublicShell';
 import { useAuth } from '../context/AuthContext';
 
 export function RootLayout() {
@@ -12,14 +13,19 @@ export function RootLayout() {
     return <Outlet />;
   }
 
-  const publicPaths = ['/', '/login', '/register'];
+  const publicPaths = ['/', '/login', '/register', '/marketplace'];
+  const isMaterialDetail = location.pathname.startsWith('/materials/');
 
   // Guests can only access public pages, and they should be clean (no sidebar/topbar)
   if (!isAuthenticated) {
-    if (!publicPaths.includes(location.pathname)) {
+    if (!publicPaths.includes(location.pathname) && !isMaterialDetail) {
       return <Navigate to="/login" replace />;
     }
-    return <Outlet />;
+    return (
+      <PublicShell>
+        <Outlet />
+      </PublicShell>
+    );
   }
 
   return (

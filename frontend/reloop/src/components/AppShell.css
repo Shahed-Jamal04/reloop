@@ -2,7 +2,7 @@
   --sidebar-width: 280px;
   min-height: 100vh;
   display: flex;
-  background: #f5f7fa;
+  background: var(--reloop-bg);
 }
 
 .app-shell.collapsed {
@@ -49,8 +49,8 @@
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: rgba(39, 174, 96, 0.16);
-  border: 1px solid rgba(39, 174, 96, 0.28);
+  background: var(--reloop-green-600);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -179,8 +179,8 @@
 }
 
 .nav-link.active {
-  background: rgba(39, 174, 96, 0.16) !important;
-  border: 1px solid rgba(39, 174, 96, 0.28) !important;
+  background: rgba(22, 163, 74, 0.18) !important;
+  border: 1px solid rgba(22, 163, 74, 0.30) !important;
 }
 
 .nav-icon {
@@ -305,8 +305,8 @@
 }
 
 .nav-item.active {
-  background: rgba(39, 174, 96, 0.16);
-  border-color: rgba(39, 174, 96, 0.28);
+  background: rgba(22, 163, 74, 0.18);
+  border-color: rgba(22, 163, 74, 0.30);
 }
 
 .nav-spacer {
@@ -413,9 +413,9 @@
   justify-content: space-between;
   gap: 10px;
   padding: 0 18px;
-  background: rgba(245, 247, 250, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(44, 62, 80, 0.08);
+  border-bottom: 1px solid var(--reloop-border);
 }
 
 .topbar-title {

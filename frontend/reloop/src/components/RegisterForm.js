@@ -73,7 +73,13 @@ export function RegisterForm() {
 
   return (
     <div className="auth-card">
-      <h1>Create Reloop Account</h1>
+      <div className="auth-brand">
+        <span className="brand-pill" aria-hidden="true">
+          <i className="bi bi-recycle" />
+        </span>
+      </div>
+      <h1>Create Your Account</h1>
+      <p className="auth-subtitle">Join the circular economy revolution today</p>
       
       <ErrorMessage message={error} />
       

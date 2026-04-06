@@ -1,0 +1,48 @@
+.public-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--reloop-bg);
+}
+
+.public-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.public-main {
+  flex: 1 1 auto;
+}
+
+.brand-pill {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--reloop-green-600);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.brand-pill i {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.public-mobile-link {
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--reloop-text);
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.public-mobile-link.active {
+  background: rgba(22, 163, 74, 0.10);
+  border-color: rgba(22, 163, 74, 0.25);
+}
+

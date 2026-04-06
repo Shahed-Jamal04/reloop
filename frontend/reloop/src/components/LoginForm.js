@@ -37,7 +37,13 @@ export function LoginForm() {
 
   return (
     <div className="auth-card">
-      <h1>Login to Reloop</h1>
+      <div className="auth-brand">
+        <span className="brand-pill" aria-hidden="true">
+          <i className="bi bi-recycle" />
+        </span>
+      </div>
+      <h1>Welcome Back</h1>
+      <p className="auth-subtitle">Sign in to your account to continue</p>
       
       <ErrorMessage message={error} />
       

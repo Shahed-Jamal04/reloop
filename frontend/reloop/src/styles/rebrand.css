@@ -1,0 +1,56 @@
+/* Reloop rebrand tokens (inspired by provided Figma screenshots) */
+:root {
+  --reloop-green: #16a34a;
+  --reloop-green-600: #16a34a;
+  --reloop-green-700: #15803d;
+  --reloop-bg: #f6f8fb;
+  --reloop-surface: #ffffff;
+  --reloop-text: #0f172a;
+  --reloop-muted: #64748b;
+  --reloop-border: rgba(15, 23, 42, 0.10);
+  --reloop-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --reloop-radius: 16px;
+  --reloop-footer: #0b1220;
+}
+
+body {
+  background: var(--reloop-bg);
+  color: var(--reloop-text);
+}
+
+/* Bootstrap theme-ish overrides (CSS-only) */
+.btn-primary {
+  --bs-btn-bg: var(--reloop-green-600);
+  --bs-btn-border-color: var(--reloop-green-600);
+  --bs-btn-hover-bg: var(--reloop-green-700);
+  --bs-btn-hover-border-color: var(--reloop-green-700);
+  --bs-btn-active-bg: var(--reloop-green-700);
+  --bs-btn-active-border-color: var(--reloop-green-700);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--reloop-green-600);
+  --bs-btn-border-color: var(--reloop-green-600);
+  --bs-btn-hover-bg: var(--reloop-green-600);
+  --bs-btn-hover-border-color: var(--reloop-green-600);
+}
+
+.badge.bg-success,
+.bg-success {
+  background-color: var(--reloop-green-600) !important;
+}
+
+.card {
+  border-radius: var(--reloop-radius);
+}
+
+.shadow-soft {
+  box-shadow: var(--reloop-shadow);
+}
+
+.surface {
+  background: var(--reloop-surface);
+  border: 1px solid var(--reloop-border);
+  border-radius: var(--reloop-radius);
+}
+
