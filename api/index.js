@@ -8,6 +8,7 @@ import statsRoutes from './routes/stats.js';
 import materialsRoutes from './routes/materials.js';
 import adminRoutes from './routes/admin.js';
 import requestsRoutes from './routes/requests.js';
+import ordersRoutes from './routes/orders.js';
 import uploadsRoutes from './routes/uploads.js';
 import testimonialsRoutes from './routes/testimonials.js';
 import { getConnection, closeConnection } from './db.js';
@@ -36,6 +37,7 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/materials', materialsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/requests', requestsRoutes);
+app.use('/api/orders', ordersRoutes);
 app.use('/api/uploads', uploadsRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 

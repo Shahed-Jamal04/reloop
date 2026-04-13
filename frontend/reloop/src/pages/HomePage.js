@@ -1,13 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'motion/react';
 import './HomePage.css';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import { categoryIconClass } from '../utils/categoryIcon';
+import { useAuth } from '../context/AuthContext';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+/** Shown when no approved testimonials exist yet (same layout as real cards). */
+const PLACEHOLDER_TESTIMONIALS = [
+  {
+    id: 'ph-1',
+    _placeholder: true,
+    quote:
+      'Reloop made it easy to find quality surplus materials for our production. The process is transparent and reliable.',
+    author_name: 'Sarah Chen',
+    author_role: 'Operations Manager',
+    rating: 5,
+  },
+  {
+    id: 'ph-2',
+    _placeholder: true,
+    quote:
+      'We cleared warehouse space and recovered value on materials we could not use anymore. Highly recommended for factories.',
+    author_name: 'Marcus Webb',
+    author_role: 'Plant Director',
+    rating: 5,
+  },
+  {
+    id: 'ph-3',
+    _placeholder: true,
+    quote:
+      'Great way to connect with buyers who actually need what we list. Support for requests keeps everything organized.',
+    author_name: 'Elena Ruiz',
+    author_role: 'Sustainability Lead',
+    rating: 4,
+  },
+];
+
 export function HomePage() {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  const role = user?.role || 'buyer';
   const [categories, setCategories] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [featured, setFeatured] = useState([]);
@@ -24,6 +60,62 @@ export function HomePage() {
   const [ratingHover, setRatingHover] = useState(null);
   const [ratingPopAt, setRatingPopAt] = useState(null);
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const reduceMotion = useReducedMotion();
+
+  const m = useMemo(() => {
+    const hero = reduceMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 20 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.6 },
+        };
+    const fadeUp = (delay = 0) =>
+      reduceMotion
+        ? {}
+        : {
+            initial: { opacity: 0, y: 20 },
+            whileInView: { opacity: 1, y: 0 },
+            viewport: { once: true, amount: 0.2 },
+            transition: { duration: 0.6, delay },
+          };
+    const slideX = (fromX, delay = 0) =>
+      reduceMotion
+        ? {}
+        : {
+            initial: { opacity: 0, x: fromX },
+            whileInView: { opacity: 1, x: 0 },
+            viewport: { once: true, amount: 0.2 },
+            transition: { duration: 0.6, delay },
+          };
+    const staggerY = (delay = 0) =>
+      reduceMotion
+        ? {}
+        : {
+            initial: { opacity: 0, y: 20 },
+            whileInView: { opacity: 1, y: 0 },
+            viewport: { once: true, amount: 0.15 },
+            transition: { duration: 0.4, delay },
+          };
+    const scaleIn = (delay = 0) =>
+      reduceMotion
+        ? {}
+        : {
+            initial: { opacity: 0, scale: 0.9 },
+            whileInView: { opacity: 1, scale: 1 },
+            viewport: { once: true, amount: 0.12 },
+            transition: { duration: 0.4, delay },
+          };
+    return { hero, fadeUp, slideX, staggerY, scaleIn };
+  }, [reduceMotion]);
+
+  const runSearch = () => {
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('search', search.trim());
+    if (selectedCategory) params.set('category', selectedCategory);
+    navigate(`/marketplace${params.toString() ? `?${params.toString()}` : ''}`);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +143,18 @@ export function HomePage() {
 
     fetchData();
   }, []);
+
+  const goListMaterials = () => {
+    if (!isAuthenticated) {
+      navigate('/register?role=seller');
+      return;
+    }
+    if (role === 'seller') {
+      navigate('/seller/listings');
+      return;
+    }
+    navigate('/register?role=seller');
+  };
 
   if (loading) {
     return (
@@ -82,148 +186,187 @@ export function HomePage() {
         </div>
         <div className="container py-5">
           <div className="hero-inner">
-            <div className="hero-copy">
+            <motion.div className="hero-copy" {...m.hero}>
               <h1 className="hero-title">Turn Surplus into Success</h1>
               <p className="hero-desc">
                 Join the circular economy revolution. Exchange surplus materials, reduce waste, and create value from
                 what others no longer need.
               </p>
-              <div className="d-flex gap-2 flex-wrap mt-3">
-                <button className="btn btn-light text-success fw-bold px-4" onClick={() => navigate('/register')}>
+              <div className="d-flex flex-column flex-sm-row gap-3 mt-3">
+                <button className="btn btn-light text-success fw-bold px-4 py-2" onClick={() => navigate('/register')}>
                   Get Started
+                  <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
                 </button>
-                <button className="btn btn-outline-light fw-bold px-4" onClick={() => navigate('/marketplace')}>
+                <button
+                  className="btn btn-outline-light fw-bold px-4 py-2"
+                  onClick={() => navigate('/marketplace')}
+                >
                   Browse Materials
                 </button>
               </div>
-            </div>
+            </motion.div>
             <div className="hero-art" aria-hidden="true" />
           </div>
         </div>
       </section>
 
-      {/* GET STARTED */}
-      <section className="section py-5">
+      {/* GET STARTED — matches design: pastel icon circles, slide-in, shadow hover */}
+      <section className="section section-gray py-5">
         <div className="container">
-          <div className="text-center mb-4">
+          <motion.div className="text-center mb-4 mb-md-5" {...m.fadeUp(0)}>
             <h2 className="section-title">Get Started Today</h2>
             <p className="section-subtitle">
               Whether you're looking to buy sustainable materials or sell your surplus, we've got you covered.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="row g-3 justify-content-center">
-            <div className="col-12 col-lg-5">
-              <div className="start-card">
-                <div className="start-icon">
-                  <i className="bi bi-bag-check" />
+          <div className="row g-4 justify-content-center align-items-stretch start-cards-row max-w-start mx-auto">
+            <div className="col-12 col-md-10 col-lg-6 d-flex">
+              <motion.div className="start-card start-card--buyer w-100" {...m.slideX(-20, 0.1)}>
+                <div className="start-icon-wrap start-icon-wrap--buyer" aria-hidden="true">
+                  <i className="bi bi-cart3" />
                 </div>
                 <div className="start-body">
-                  <div className="start-title">I'm a Buyer</div>
-                  <div className="start-text">
+                  <h3 className="start-title">I'm a Buyer</h3>
+                  <p className="start-text">
                     Find high-quality surplus materials at competitive prices. Save money while supporting sustainability.
+                  </p>
+                  <div className="start-actions">
+                    <button
+                      type="button"
+                      className="btn btn-success start-cta fw-bold w-100"
+                      onClick={() => navigate('/marketplace')}
+                    >
+                      Browse Materials
+                    </button>
                   </div>
-                  <button className="btn btn-dark fw-bold w-100 mt-3" onClick={() => navigate('/marketplace')}>
-                    Browse Materials
-                  </button>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
-            <div className="col-12 col-lg-5">
-              <div className="start-card">
-                <div className="start-icon soft">
-                  <i className="bi bi-plus-square" />
+            <div className="col-12 col-md-10 col-lg-6 d-flex">
+              <motion.div className="start-card start-card--seller w-100" {...m.slideX(20, 0.2)}>
+                <div className="start-icon-wrap start-icon-wrap--seller" aria-hidden="true">
+                  <i className="bi bi-shop" />
                 </div>
                 <div className="start-body">
-                  <div className="start-title">I'm a Seller</div>
-                  <div className="start-text">
+                  <h3 className="start-title">I'm a Seller</h3>
+                  <p className="start-text">
                     Turn your surplus materials into revenue. Reduce waste and connect with buyers who need what you have.
+                  </p>
+                  <div className="start-actions">
+                    <button type="button" className="btn btn-success start-cta fw-bold w-100" onClick={goListMaterials}>
+                      List Materials
+                    </button>
                   </div>
-                  <button className="btn btn-dark fw-bold w-100 mt-3" onClick={() => navigate('/seller/listings')}>
-                    List Materials
-                  </button>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
       {/* FIND WHAT YOU NEED */}
-      <section className="section section-muted py-5">
+      <section className="section section-white py-5">
         <div className="container">
-          <div className="text-center mb-3">
-            <h2 className="section-title">Find What You Need</h2>
-            <p className="section-subtitle">Search materials and filter by category.</p>
-          </div>
-
-          <div className="find-bar mx-auto">
-            <i className="bi bi-search" aria-hidden="true" />
-            <input
-              className="find-input"
-              placeholder="Search materials..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <button
-              className="btn btn-dark fw-bold px-4"
-              onClick={() =>
-                navigate(search.trim() ? `/marketplace?search=${encodeURIComponent(search.trim())}` : '/marketplace')
-              }
-            >
-              Search Materials
-            </button>
-          </div>
+          <motion.div className="find-panel mx-auto" {...m.fadeUp(0)}>
+            <h2 className="section-title text-center mb-4">Find What You Need</h2>
+            <div className="row g-3">
+              <div className="col-12 col-md-8">
+                <div className="find-input-wrap">
+                  <i className="bi bi-search find-input-icon" aria-hidden="true" />
+                  <input
+                    className="find-input-control"
+                    placeholder="Search materials..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-4">
+                <select
+                  className="form-select find-select"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  aria-label="Category filter"
+                >
+                  <option value="">All Categories</option>
+                  {(categories || []).map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-12">
+                <button type="button" className="btn btn-success btn-lg fw-bold w-100 find-search-btn" onClick={runSearch}>
+                  Search Materials
+                  <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* BROWSE BY CATEGORY */}
-      <section className="section py-5">
+      <section className="section section-gray py-5">
         <div className="container">
-          <div className="text-center mb-4">
+          <motion.div className="text-center mb-4 mb-md-5" {...m.fadeUp(0)}>
             <h2 className="section-title">Browse by Category</h2>
-          </div>
+          </motion.div>
 
-          <div className="cat-row">
-            {(categories || []).slice(0, 8).map((c) => (
-              <button key={c.id} type="button" className="cat-pill" onClick={() => navigate('/marketplace')}>
-                <span className="cat-ico" aria-hidden="true">
-                  <i className="bi bi-grid-3x3-gap" />
-                </span>
-                <span className="cat-name">{c.name}</span>
-              </button>
+          <div className="home-cat-grid">
+            {(categories || []).slice(0, 8).map((c, index) => (
+              <motion.div key={c.id} {...m.scaleIn(index * 0.05)}>
+                <button
+                  type="button"
+                  className="cat-tile"
+                  onClick={() => navigate(`/marketplace?category=${encodeURIComponent(c.name)}`)}
+                >
+                  <span className="cat-tile-ico" aria-hidden="true">
+                    <i className={categoryIconClass(c.icon)} />
+                  </span>
+                  <span className="cat-tile-name">{c.name}</span>
+                  <span className="cat-tile-count">{c.item_count != null ? `${c.item_count} items` : ''}</span>
+                </button>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* FEATURED MATERIALS */}
-      <section className="section py-5">
+      <section className="section section-white py-5">
         <div className="container">
-          <div className="d-flex align-items-end justify-content-between gap-3 flex-wrap mb-3">
+          <motion.div className="d-flex align-items-end justify-content-between gap-3 flex-wrap mb-4" {...m.fadeUp(0)}>
             <div>
               <h2 className="section-title mb-1">Featured Materials</h2>
-              <p className="section-subtitle mb-0">Latest additions to our marketplace</p>
+              <p className="section-subtitle section-subtitle--lead mb-0">Latest additions to our marketplace</p>
             </div>
-            <button className="btn btn-outline-secondary fw-bold" onClick={() => navigate('/marketplace')}>
-              View all
+            <button
+              type="button"
+              className="btn btn-outline-secondary fw-bold feat-view-all"
+              onClick={() => navigate('/marketplace')}
+            >
+              View All
+              <i className="bi bi-arrow-right ms-1" aria-hidden="true" />
             </button>
-          </div>
+          </motion.div>
 
-          <div className="row g-3">
+          <div className="row g-3 g-md-4">
             {featured.length === 0 ? (
               <div className="col-12">
                 <div className="surface p-4 text-center text-secondary">No featured materials yet.</div>
               </div>
             ) : (
-              featured.map((m) => (
-                <div key={m.id} className="col-12 col-md-6 col-lg-4">
-                  <button type="button" className="feat-card" onClick={() => navigate(`/materials/${m.id}`)}>
+              featured.map((material, index) => (
+                <motion.div key={material.id} className="col-12 col-md-6 col-lg-4" {...m.staggerY(index * 0.1)}>
+                  <button type="button" className="feat-card" onClick={() => navigate(`/materials/${material.id}`)}>
                     <div className="feat-img">
                       <img
-                        src={resolveAssetUrl(m.image)}
-                        alt={m.title}
+                        src={resolveAssetUrl(material.image)}
+                        alt={material.title}
                         onError={(e) => {
                           if (e.currentTarget.src.includes(FALLBACK_IMAGE)) return;
                           e.currentTarget.src = FALLBACK_IMAGE;
@@ -232,21 +375,21 @@ export function HomePage() {
                     </div>
                     <div className="feat-body">
                       <div className="d-flex align-items-start justify-content-between gap-2">
-                        <div className="feat-title">{m.title}</div>
-                        {m.category && <span className="pill-badge">{m.category}</span>}
+                        <div className="feat-title">{material.title}</div>
+                        {material.category && <span className="pill-badge">{material.category}</span>}
                       </div>
                       <div className="feat-meta">
                         <span className="feat-price">
-                          {m.price != null ? `$${Number(m.price).toLocaleString()}` : '—'}
+                          {material.price != null ? `$${Number(material.price).toLocaleString()}` : '—'}
                         </span>
-                        <span className="text-secondary small">Qty {m.quantity ?? '—'}</span>
+                        <span className="text-secondary small">Qty {material.quantity ?? '—'}</span>
                       </div>
                       <div className="feat-actions">
                         <span className="btn btn-dark btn-sm fw-bold">View Details</span>
                       </div>
                     </div>
                   </button>
-                </div>
+                </motion.div>
               ))
             )}
           </div>
@@ -254,68 +397,119 @@ export function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="section section-muted py-5">
+      <section className="section section-how py-5">
         <div className="container">
-          <div className="text-center mb-4">
+          <motion.div className="text-center mb-4 mb-md-5" {...m.fadeUp(0)}>
             <h2 className="section-title">How It Works</h2>
             <p className="section-subtitle">
               Getting started with Reloop is simple. Follow these three easy steps to start exchanging materials.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="row g-3">
+          <div className="row g-4 justify-content-center how-steps-row">
             <div className="col-12 col-md-4">
-              <div className="how-card">
-                <div className="how-ico">
-                  <i className="bi bi-box-seam" />
+              <motion.div className="how-step text-center" {...m.fadeUp(0.1)}>
+                <div className="how-step-ring">
+                  <i className="bi bi-cloud-upload how-step-icon how-step-icon--green" aria-hidden="true" />
                 </div>
+                <div className="how-step-badge how-step-badge--green">1</div>
                 <div className="how-title">Add Materials</div>
                 <div className="how-text">
                   List your surplus materials with photos, descriptions, and pricing. It's quick and easy!
                 </div>
-              </div>
+              </motion.div>
             </div>
             <div className="col-12 col-md-4">
-              <div className="how-card">
-                <div className="how-ico">
-                  <i className="bi bi-search" />
+              <motion.div className="how-step text-center" {...m.fadeUp(0.2)}>
+                <div className="how-step-ring">
+                  <i className="bi bi-chat-dots how-step-icon how-step-icon--blue" aria-hidden="true" />
                 </div>
+                <div className="how-step-badge how-step-badge--blue">2</div>
                 <div className="how-title">Send Requests</div>
                 <div className="how-text">
                   Browse materials and send requests to sellers. Communicate directly to discuss details.
                 </div>
-              </div>
+              </motion.div>
             </div>
             <div className="col-12 col-md-4">
-              <div className="how-card">
-                <div className="how-ico">
-                  <i className="bi bi-check2-circle" />
+              <motion.div className="how-step text-center" {...m.fadeUp(0.3)}>
+                <div className="how-step-ring">
+                  <i className="bi bi-check-circle how-step-icon how-step-icon--purple" aria-hidden="true" />
                 </div>
+                <div className="how-step-badge how-step-badge--purple">3</div>
                 <div className="how-title">Complete Orders</div>
                 <div className="how-text">
                   Finalize the transaction and arrange delivery. Build sustainable business relationships!
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
-          <div className="text-center mt-4">
-            <button className="btn btn-primary fw-bold px-4" onClick={() => navigate('/register')}>
+          <motion.div className="text-center mt-4 mt-md-5" {...m.fadeUp(0.15)}>
+            <button type="button" className="btn btn-success btn-lg fw-bold px-5" onClick={() => navigate('/register')}>
               Start Your Journey
+              <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
             </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS (approved only from API; placeholders when empty) */}
+      <section className="section section-white py-5">
+        <div className="container">
+          <motion.div className="text-center mb-4" {...m.fadeUp(0)}>
+            <h2 className="section-title">What Our Users Say</h2>
+            <p className="section-subtitle">
+              Hear from businesses and individuals making a difference in the circular economy.
+            </p>
+          </motion.div>
+
+          <div className="row g-3">
+            {(testimonials.length > 0 ? testimonials : PLACEHOLDER_TESTIMONIALS).map((t, idx) => (
+              <motion.div
+                key={t.id != null ? String(t.id) : `ph-${idx}`}
+                className="col-12 col-md-6 col-lg-4"
+                {...m.staggerY(idx * 0.08)}
+              >
+                <div className={`testimonial-card-home${t._placeholder ? ' testimonial-card-home--placeholder' : ''}`}>
+                  {t.rating != null && Number(t.rating) > 0 && (
+                    <div className="testimonial-stars mb-2" aria-label={`${t.rating} out of 5 stars`}>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <i
+                          key={i}
+                          className={`bi ${i < Math.round(Number(t.rating)) ? 'bi-star-fill' : 'bi-star'}`}
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <p className="testimonial-quote">“{t.quote}”</p>
+                  <div className="testimonial-author-line">
+                    <span className="testimonial-name">{t.author_name}</span>
+                    {t.author_role ? <span className="testimonial-role">, {t.author_role}</span> : null}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
+
+          {testimonials.length === 0 && (
+            <p className="text-center text-secondary small mt-3 mb-0">
+              Approved testimonials appear here after admin review. Submit yours below.
+            </p>
+          )}
         </div>
       </section>
 
       {/* SUBMIT TESTIMONIAL */}
-      <section className="section section-muted py-5">
+      <section className="section section-gray py-5">
         <div className="container">
-          <div className="text-center mb-4">
+          <motion.div className="text-center mb-4" {...m.fadeUp(0)}>
             <h2 className="section-title">Share your experience</h2>
             <p className="section-subtitle">Your testimonial will be reviewed by an admin before it appears publicly.</p>
-          </div>
+          </motion.div>
 
-          <div className="row justify-content-center">
+          <motion.div className="row justify-content-center" {...m.fadeUp(0.08)}>
             <div className="col-12 col-lg-8">
               <div className="surface p-0 shadow-soft">
                 <div className="card-body">
@@ -346,6 +540,12 @@ export function HomePage() {
                         });
                         setTForm({ author_name: '', author_role: '', quote: '', rating: '' });
                         setTSuccess('Thanks! Your testimonial was submitted and is pending approval.');
+                        try {
+                          const refreshed = await axios.get(`${API_BASE_URL}/stats/testimonials`);
+                          setTestimonials(refreshed.data || []);
+                        } catch {
+                          // ignore refresh errors
+                        }
                       } catch (err) {
                         const msg = err.response?.data?.error || 'Failed to submit testimonial.';
                         setTError(msg);
@@ -442,29 +642,35 @@ export function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="cta-green">
         <div className="container">
-          <div className="cta-inner">
-            <div>
-              <div className="cta-title">Ready to Make a Difference?</div>
-              <div className="cta-text">
-                Join thousands of businesses and individuals reducing waste and creating value through the circular economy.
-              </div>
-            </div>
-            <div className="d-flex gap-2 flex-wrap">
-              <button className="btn btn-light text-success fw-bold px-4" onClick={() => navigate('/register')}>
+          <motion.div className="cta-block text-center" {...m.fadeUp(0)}>
+            <h2 className="cta-title">Ready to Make a Difference?</h2>
+            <p className="cta-text mx-auto">
+              Join thousands of businesses and individuals reducing waste and creating value through the circular economy.
+            </p>
+            <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
+              <button
+                type="button"
+                className="btn btn-light text-success fw-bold px-4 py-2"
+                onClick={() => navigate('/register')}
+              >
                 Create Free Account
               </button>
-              <button className="btn btn-outline-light fw-bold px-4" onClick={() => navigate('/marketplace')}>
+              <button
+                type="button"
+                className="btn btn-outline-light fw-bold px-4 py-2"
+                onClick={() => navigate('/marketplace')}
+              >
                 Explore Platform
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

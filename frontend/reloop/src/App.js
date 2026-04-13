@@ -13,6 +13,7 @@ import SellerListings from './pages/SellerListings';
 import AdminDashboard from './pages/AdminDashboard';
 import ProfilePage from './pages/ProfilePage';
 import BuyerRequestsPage from './pages/BuyerRequestsPage';
+import OrdersPage from './pages/OrdersPage';
 import SellerIncomingRequestsPage from './pages/SellerIncomingRequestsPage';
 import AdminApprovalsPage from './pages/AdminApprovalsPage';
 import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
@@ -82,6 +83,16 @@ function App() {
                 <ProtectedRoute>
                   <RoleRoute allow={['buyer']}>
                     <BuyerRequestsPage />
+                  </RoleRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <RoleRoute allow={['buyer', 'seller']}>
+                    <OrdersPage />
                   </RoleRoute>
                 </ProtectedRoute>
               }

@@ -29,7 +29,7 @@
 }
 
 .public-brand span {
-  font-size: 12px;
+  font-size: clamp(0.6875rem, 1.9vw, 0.75rem);
   font-weight: 800;
   color: #27ae60;
   text-transform: uppercase;
@@ -48,7 +48,7 @@
   text-decoration: none;
   color: #2c3e50;
   font-weight: 800;
-  font-size: 14px;
+  font-size: clamp(0.8125rem, 2.2vw, 0.875rem);
   padding: 8px 10px;
   border-radius: 10px;
   border: 1px solid transparent;
@@ -71,7 +71,7 @@
   padding: 9px 12px;
   border-radius: 12px;
   font-weight: 900;
-  font-size: 14px;
+  font-size: clamp(0.8125rem, 2.2vw, 0.875rem);
   color: white;
   background: #27ae60;
   border: 1px solid rgba(39, 174, 96, 0.4);

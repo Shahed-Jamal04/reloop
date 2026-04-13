@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -49,55 +51,87 @@ export function AdminApprovalsPage() {
   };
 
   return (
-    <div>
-      <h1 style={{ marginTop: 0 }}>Approvals</h1>
-      <p style={{ color: '#5f6b7a' }}>Approve or reject new listings before they appear in the marketplace.</p>
+    <div className="role-page py-4 px-3">
+      <header className="role-page-hero role-page-hero--gradient mb-4">
+        <h1 className="role-page-title">Approvals</h1>
+        <p className="role-page-lead mb-0">Approve or reject new listings before they appear in the marketplace.</p>
+      </header>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {!loading && items.length === 0 && <p>No pending listings.</p>}
+      {loading && (
+        <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
+          <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
+          <span>Loading pending listings…</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+
+      {!loading && items.length === 0 && !error && (
+        <div className="empty-state">
+          <div className="empty-state-icon" aria-hidden="true">
+            <i className="bi bi-clipboard-check" />
+          </div>
+          <p className="fw-semibold text-secondary mb-1">No pending listings</p>
+          <p className="text-secondary small mb-0">When sellers create new listings, they will appear here for approval.</p>
+        </div>
+      )}
 
       {!loading && items.length > 0 && (
-        <div style={{ display: 'grid', gap: 12 }}>
+        <div className="d-grid gap-3">
           {items.map((m) => (
-            <div
-              key={m.id}
-              style={{
-                background: 'white',
-                border: '1px solid rgba(44,62,80,0.12)',
-                borderRadius: 14,
-                padding: 14,
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
-                <strong>{m.title}</strong>
-                <span style={{ fontWeight: 800, color: '#6b7788' }}>{m.status}</span>
+            <article key={m.id} className="ds-surface ds-surface--pad">
+              <div className="d-flex justify-content-between gap-2 flex-wrap align-items-start mb-2">
+                <strong className="fs-6">{m.title}</strong>
+                <span className="badge bg-warning text-dark">{m.status || 'pending'}</span>
               </div>
-              <div style={{ marginTop: 6, color: '#6b7788' }}>
+
+              <div className="request-card-img mb-2">
+                <img
+                  src={resolveAssetUrl(m.image)}
+                  alt=""
+                  onError={(e) => {
+                    if (e.currentTarget.src.includes(FALLBACK_IMAGE)) return;
+                    e.currentTarget.src = FALLBACK_IMAGE;
+                  }}
+                />
+              </div>
+
+              <div className="text-secondary small">
                 Seller: {m.seller_name} {m.seller_email ? `(${m.seller_email})` : ''}
               </div>
-              {m.category && <div style={{ marginTop: 6 }}>Category: <strong>{m.category}</strong></div>}
-              {m.description && <div style={{ marginTop: 8 }}>{m.description}</div>}
+              <div className="d-flex gap-2 flex-wrap mt-2">
+                {m.category && <span className="badge text-bg-light border">{m.category}</span>}
+                {m.price != null && (
+                  <span className="badge text-bg-light border">${Number(m.price).toLocaleString()}</span>
+                )}
+                {m.quantity != null && <span className="badge text-bg-light border">Qty: {m.quantity}</span>}
+              </div>
 
-              <div style={{ marginTop: 10, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {m.description && <p className="text-secondary small mt-2 mb-0 line-clamp-2">{m.description}</p>}
+
+              <div className="d-flex gap-2 flex-wrap mt-3">
                 <button
                   type="button"
+                  className="btn btn-success fw-bold"
                   disabled={savingId === m.id}
                   onClick={() => act(m.id, 'approve')}
-                  style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: '#27ae60', color: 'white', fontWeight: 800 }}
                 >
                   Approve
                 </button>
                 <button
                   type="button"
+                  className="btn btn-outline-danger fw-bold"
                   disabled={savingId === m.id}
                   onClick={() => act(m.id, 'reject')}
-                  style={{ padding: '10px 12px', borderRadius: 12, border: '1px solid rgba(44,62,80,0.18)', background: 'white', fontWeight: 800 }}
                 >
                   Reject
                 </button>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       )}

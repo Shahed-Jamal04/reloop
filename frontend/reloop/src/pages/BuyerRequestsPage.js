@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -31,48 +32,64 @@ export function BuyerRequestsPage() {
   }, [token]);
 
   return (
-    <div>
-      <h1 style={{ marginTop: 0 }}>My Requests</h1>
-      <p style={{ color: '#5f6b7a' }}>Requests you sent to sellers.</p>
+    <div className="role-page py-4 px-3">
+      <header className="role-page-hero role-page-hero--gradient mb-4">
+        <h1 className="role-page-title">My requests</h1>
+        <p className="role-page-lead">Track messages and status for materials you asked sellers about.</p>
+      </header>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {loading && (
+        <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
+          <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
+          <span>Loading requests…</span>
+        </div>
+      )}
 
-      {!loading && items.length === 0 && <p>No requests yet.</p>}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+
+      {!loading && items.length === 0 && !error && (
+        <div className="empty-state">
+          <div className="empty-state-icon" aria-hidden="true">
+            <i className="bi bi-chat-left-dots" />
+          </div>
+          <p className="fw-semibold text-secondary mb-1">No requests yet</p>
+          <p className="text-secondary small mb-3">Browse the marketplace and send a request on a listing you like.</p>
+          <Link to="/marketplace" className="btn btn-success fw-bold px-4">
+            Browse marketplace
+          </Link>
+        </div>
+      )}
 
       {!loading && items.length > 0 && (
-        <div style={{ display: 'grid', gap: 12, maxWidth: 900 }}>
+        <div className="d-grid gap-3">
           {items.map((r) => (
-            <div
-              key={r.id}
-              style={{
-                background: 'white',
-                border: '1px solid rgba(44,62,80,0.12)',
-                borderRadius: 14,
-                padding: 14,
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
-                <strong>{r.material_title}</strong>
-                <span style={{ fontWeight: 800, color: '#1f7f49' }}>{r.status}</span>
+            <article key={r.id} className="ds-surface ds-surface--pad">
+              <div className="d-flex justify-content-between gap-2 flex-wrap align-items-start mb-2">
+                <strong className="fs-6">{r.material_title}</strong>
+                <span className="badge bg-success-subtle text-success-emphasis border border-success-subtle px-2 py-1">
+                  {r.status}
+                </span>
               </div>
-              <div style={{ marginTop: 10, height: 140, overflow: 'hidden', borderRadius: 12 }}>
+              <div className="request-card-img mb-2">
                 <img
                   src={resolveAssetUrl(r.material_image)}
-                  alt={r.material_title}
+                  alt=""
                   onError={(e) => {
                     if (e.currentTarget.src.includes(FALLBACK_IMAGE)) return;
                     e.currentTarget.src = FALLBACK_IMAGE;
                   }}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />
               </div>
-              <div style={{ marginTop: 6, color: '#6b7788' }}>Seller: {r.seller_name}</div>
-              {r.message && <div style={{ marginTop: 8 }}>{r.message}</div>}
-              <div style={{ marginTop: 10 }}>
-                <Link to={`/materials/${r.material_id}`}>View material</Link>
-              </div>
-            </div>
+              <div className="text-secondary small">Seller: {r.seller_name}</div>
+              {r.message && <p className="mt-2 mb-0 small">{r.message}</p>}
+              <Link to={`/materials/${r.material_id}`} className="btn btn-outline-success btn-sm fw-semibold">
+                View material
+              </Link>
+            </article>
           ))}
         </div>
       )}
@@ -81,4 +98,3 @@ export function BuyerRequestsPage() {
 }
 
 export default BuyerRequestsPage;
-

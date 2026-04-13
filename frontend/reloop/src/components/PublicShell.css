@@ -8,7 +8,21 @@
 .public-header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1030;
+  border-color: #e5e7eb !important;
+}
+
+.public-header .container {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.public-shell .brand-pill {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.public-header a.text-decoration-none:hover .brand-pill {
+  background: var(--reloop-green-700) !important;
 }
 
 .public-main {
@@ -27,7 +41,7 @@
 }
 
 .brand-pill i {
-  font-size: 18px;
+  font-size: clamp(1rem, 2.6vw, 1.125rem);
   line-height: 1;
 }
 
@@ -44,5 +58,74 @@
 .public-mobile-link.active {
   background: rgba(22, 163, 74, 0.10);
   border-color: rgba(22, 163, 74, 0.25);
+}
+
+.public-brand-text {
+  font-size: clamp(1rem, 2.8vw, 1.25rem);
+  letter-spacing: -0.02em;
+}
+
+.public-nav-center {
+  gap: clamp(0.75rem, 2.5vw, 1.25rem) !important;
+}
+
+.public-nav-link {
+  font-weight: 700;
+  font-size: clamp(0.8125rem, 1.9vw, 0.9375rem);
+  color: var(--reloop-text);
+  padding: 0.35rem 0.15rem;
+  border-radius: 8px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.public-nav-link:hover {
+  color: var(--reloop-green-700);
+}
+
+.public-nav-link.active {
+  color: var(--reloop-green-600);
+}
+
+.public-nav-actions {
+  gap: clamp(0.15rem, 1vw, 0.35rem) !important;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.public-ghost-link {
+  font-weight: 700;
+  font-size: clamp(0.8125rem, 1.9vw, 0.9375rem);
+  color: var(--reloop-text) !important;
+  padding: 0.35rem 0.45rem !important;
+  white-space: nowrap;
+}
+
+.public-ghost-link:hover {
+  color: var(--reloop-green-700) !important;
+}
+
+.public-nav-login {
+  font-size: clamp(0.8125rem, 1.9vw, 0.9375rem);
+  padding: clamp(0.35rem, 1.2vw, 0.45rem) clamp(0.65rem, 1.8vw, 0.9rem);
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.public-nav-register {
+  font-size: clamp(0.8125rem, 1.9vw, 0.9375rem);
+  padding: clamp(0.35rem, 1.2vw, 0.45rem) clamp(0.75rem, 2vw, 1rem);
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.public-mobile-link {
+  font-size: clamp(0.875rem, 2.2vw, 0.9375rem);
+}
+
+@media (max-width: 991.98px) {
+  .public-header .container {
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+  }
 }
 
