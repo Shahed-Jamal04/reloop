@@ -35,6 +35,7 @@ function getMenuForRole(role) {
         { to: '/dashboard/seller', label: 'Dashboard', icon: 'bi-speedometer2' },
         { to: '/seller/listings', label: 'My Listings', icon: 'bi-card-list' },
         { to: '/seller/requests', label: 'Requests', icon: 'bi-inbox' },
+        { to: '/orders', label: 'Orders', icon: 'bi-receipt' },
         { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
       ],
     };
@@ -46,7 +47,7 @@ function getMenuForRole(role) {
       { to: '/dashboard/buyer', label: 'Dashboard', icon: 'bi-speedometer2' },
       { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
       { to: '/requests', label: 'My Requests', icon: 'bi-chat-left-text' },
-      { to: '/orders', label: 'Orders (soon)', icon: 'bi-receipt' },
+      { to: '/orders', label: 'Orders', icon: 'bi-receipt' },
     ],
   };
 }
@@ -103,6 +104,7 @@ export function AppShell({ children }) {
     if (location.pathname.startsWith('/seller/listings')) return 'My Listings';
     if (location.pathname.startsWith('/marketplace')) return 'Marketplace';
     if (location.pathname.startsWith('/materials/')) return 'Material';
+    if (location.pathname.startsWith('/orders')) return 'Orders';
     if (location.pathname.startsWith('/admin')) return 'Admin';
     return 'Reloop';
   })();

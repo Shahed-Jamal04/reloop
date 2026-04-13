@@ -1,7 +1,8 @@
 .site-footer {
   background: var(--reloop-footer);
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: 60px;
+  color: #d1d5db;
+  margin-top: auto;
+  font-size: 0.875rem;
 }
 
 .footer-brand-pill {
@@ -16,16 +17,58 @@
 }
 
 .footer-brand-pill i {
-  font-size: 16px;
+  font-size: clamp(0.875rem, 2.3vw, 1rem);
+}
+
+.footer-brand-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.footer-about {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.footer-col-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 1rem;
+}
+
+.footer-link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .footer-link {
-  color: rgba(255, 255, 255, 0.65);
+  color: #d1d5db;
   text-decoration: none;
+  transition: color 0.15s ease;
 }
 
 .footer-link:hover {
   color: var(--reloop-green-600);
+}
+
+.footer-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: #d1d5db;
+  font-size: 0.875rem;
+}
+
+.footer-contact-ico {
+  color: #9ca3af;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
 }
 
 .footer-icon-link {
@@ -54,7 +97,17 @@
 
 .footer-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.10);
-  margin: 28px 0 18px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 2rem 0 1.5rem;
+}
+
+.footer-copy {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.site-footer .container {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
 }
 

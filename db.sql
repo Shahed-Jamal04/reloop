@@ -51,6 +51,8 @@ CREATE TABLE profiles (
 CREATE TABLE categories (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(100) UNIQUE NOT NULL,
+    -- Bootstrap Icons glyph name without "bi-" prefix (e.g. tree, box-seam, egg-fried). Render as class "bi bi-{icon}".
+    icon NVARCHAR(64) NULL,
     is_deleted BIT DEFAULT 0,
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE()
@@ -63,7 +65,7 @@ CREATE TABLE material_status (
     id INT PRIMARY KEY IDENTITY(1,1),
     status NVARCHAR(20) UNIQUE NOT NULL
 );
-INSERT INTO material_status (status) VALUES ('available'), ('sold'), ('removed');
+INSERT INTO material_status (status) VALUES ('pending'), ('available'), ('sold'), ('removed');
 
 ------------------------------------------------------------
 -- MATERIALS
@@ -130,13 +132,16 @@ CREATE TABLE orders (
     id INT PRIMARY KEY IDENTITY(1,1),
     buyer_id INT NOT NULL,
     status_id INT NOT NULL,
+    -- When created from an accepted buyer request (one order per request)
+    request_id INT NULL,
     total_price DECIMAL(10,2),
     is_deleted BIT DEFAULT 0,
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE(),
 
     FOREIGN KEY (buyer_id) REFERENCES users(id),
-    FOREIGN KEY (status_id) REFERENCES order_status(id)
+    FOREIGN KEY (status_id) REFERENCES order_status(id),
+    FOREIGN KEY (request_id) REFERENCES requests(id)
 );
 
 ------------------------------------------------------------
@@ -331,15 +336,13 @@ CREATE INDEX IX_notifications_user_id_is_read ON notifications(user_id, is_read)
 GO
 
 
-INSERT INTO material_status (status) VALUES ('pending');
---
-INSERT INTO categories (name)
+INSERT INTO categories (name, icon)
 VALUES 
-  ('Food Overproduction'),
-  ('Clothing Overruns'),
-  ('Packaging Surplus'),
-  ('Household Goods'),
-  ('Industrial Materials');
+  (N'Food Overproduction', N'egg-fried'),
+  (N'Clothing Overruns', N'handbag'),
+  (N'Packaging Surplus', N'box-seam'),
+  (N'Household Goods', N'house'),
+  (N'Industrial Materials', N'tools');
 
 
   -- Assume roles: 1=buyer, 2=seller, 3=admin (from your roles insert order)

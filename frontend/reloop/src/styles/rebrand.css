@@ -1,21 +1,41 @@
 /* Reloop rebrand tokens (inspired by provided Figma screenshots) */
+/* Fluid type scale — use with clamp() in page CSS; base stays readable on small screens */
 :root {
+  --reloop-fs-xs: clamp(0.6875rem, 1.8vw, 0.75rem);
+  --reloop-fs-sm: clamp(0.8125rem, 2.1vw, 0.875rem);
+  --reloop-fs-body: clamp(0.875rem, 2.3vw, 1rem);
+  --reloop-fs-lg: clamp(1rem, 2.6vw, 1.125rem);
+  --reloop-fs-xl: clamp(1.25rem, 3.5vw, 1.625rem);
+  --reloop-fs-hero: clamp(1.75rem, 5.5vw, 3.25rem);
   --reloop-green: #16a34a;
   --reloop-green-600: #16a34a;
   --reloop-green-700: #15803d;
-  --reloop-bg: #f6f8fb;
+  /* Aligned with reference app (Tailwind gray / green scale) */
+  --reloop-bg: #f9fafb;
+  --reloop-gray-50: #f9fafb;
+  --reloop-gray-100: #f3f4f6;
+  --reloop-gray-200: #e5e7eb;
+  --reloop-gray-400: #9ca3af;
+  --reloop-gray-500: #6b7280;
+  --reloop-gray-600: #4b5563;
+  --reloop-gray-900: #111827;
   --reloop-surface: #ffffff;
-  --reloop-text: #0f172a;
-  --reloop-muted: #64748b;
+  --reloop-text: #111827;
+  --reloop-muted: #4b5563;
   --reloop-border: rgba(15, 23, 42, 0.10);
   --reloop-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
   --reloop-radius: 16px;
-  --reloop-footer: #0b1220;
+  --reloop-footer: #111827;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--reloop-bg);
   color: var(--reloop-text);
+  font-size: var(--reloop-fs-body);
 }
 
 /* Bootstrap theme-ish overrides (CSS-only) */

@@ -3,33 +3,132 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(180deg, rgba(22, 163, 74, 0.12) 0%, rgba(246, 248, 251, 1) 55%);
-  padding: 28px 14px;
+  background: linear-gradient(to bottom right, #f0fdf4, #eff6ff);
+  padding: clamp(1rem, 4vw, 1.75rem) clamp(0.75rem, 3vw, 0.875rem);
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
 }
 
 .auth-card {
   background: var(--reloop-surface);
-  padding: 26px;
-  border-radius: 18px;
-  box-shadow: var(--reloop-shadow);
+  padding: 0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
   width: 100%;
-  max-width: 450px;
-  border: 1px solid var(--reloop-border);
+  max-width: min(28rem, 100%);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
 }
 
-.auth-card h1 {
+.auth-card--wide {
+  max-width: min(42rem, 100%);
+}
+
+.auth-card-panel {
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+}
+
+.auth-card-panel-head {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.auth-card-panel-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--reloop-text);
+}
+
+.auth-card-panel-desc {
+  margin: 0.35rem 0 0;
+  font-size: 0.875rem;
+  color: var(--reloop-muted);
+}
+
+/* Role cards — reference Register.tsx radio cards */
+.role-picker {
+  margin-bottom: 0.25rem;
+}
+
+.role-picker-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.role-picker-card:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.role-picker-card.is-active {
+  border-color: var(--reloop-green-600);
+  background: #f0fdf4;
+}
+
+.role-picker-card:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.role-picker-ico {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.role-picker-ico--buyer {
+  color: #2563eb;
+}
+
+.role-picker-ico--seller {
+  color: var(--reloop-green-600);
+}
+
+.role-picker-title {
+  font-weight: 600;
+  color: var(--reloop-text);
+  font-size: 0.9375rem;
+}
+
+.role-picker-hint {
+  font-size: 0.75rem;
+  color: var(--reloop-muted);
+  margin-top: 0.25rem;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.auth-title {
   text-align: center;
   color: var(--reloop-text);
-  margin: 10px 0 6px;
-  font-size: 28px;
+  margin: 0.75rem 0 0.35rem;
+  font-size: clamp(1.375rem, 4vw, 1.75rem);
   font-weight: 900;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 1rem;
+}
+
+.auth-submit {
+  margin-top: 0.25rem;
 }
 
 .form-group {
@@ -41,6 +140,7 @@
   margin-bottom: 8px;
   color: var(--reloop-text);
   font-weight: 700;
+  font-size: clamp(0.8125rem, 2.2vw, 0.875rem);
 }
 
 .form-group input,
@@ -48,7 +148,8 @@
   padding: 12px 12px;
   border: 1px solid var(--reloop-border);
   border-radius: 12px;
-  font-size: 16px;
+  /* At least 1rem to avoid iOS focus zoom */
+  font-size: max(1rem, clamp(0.9375rem, 2.5vw, 1.0625rem));
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   background-color: #f3f5f8;
   color: var(--reloop-text);
@@ -75,51 +176,77 @@
   margin-bottom: 8px;
   border: 1px solid rgba(220, 38, 38, 0.18);
   font-weight: 700;
+  font-size: clamp(0.8125rem, 2.2vw, 0.875rem);
 }
 
 .auth-footer {
   text-align: center;
-  margin-top: 25px;
-  padding-top: 20px;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--reloop-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
 }
 
-.auth-footer p {
-  margin: 10px 0;
+.auth-card .auth-footer {
+  margin-top: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.auth-card .auth-footer.bg-light {
+  background: #f9fafb !important;
+}
+
+.auth-footer-line {
   color: var(--reloop-muted);
   font-weight: 600;
+  font-size: clamp(0.8125rem, 2.2vw, 0.875rem);
+  line-height: 1.45;
+  max-width: 22rem;
 }
 
-.auth-footer a {
+.auth-footer-line a:not(.auth-footer-link-secondary) {
   color: var(--reloop-green-600);
   text-decoration: none;
   font-weight: 800;
 }
 
-.auth-footer a:hover {
+.auth-footer-line a:not(.auth-footer-link-secondary):hover {
   color: var(--reloop-green-700);
 }
 
-.forgot-link {
-  display: block;
-  margin-top: 10px;
-  font-size: 14px;
+.auth-footer-link-secondary {
+  color: var(--reloop-muted);
+  font-weight: 700;
+  text-decoration: none;
+  font-size: inherit;
+}
+
+.auth-footer-link-secondary:hover {
+  color: var(--reloop-green-600);
+  text-decoration: underline;
+}
+
+.auth-footer-line--sub {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.auth-footer-sep {
+  color: rgba(100, 116, 139, 0.7);
+  user-select: none;
 }
 
 /* Responsive Design */
 @media (max-width: 600px) {
   .auth-card {
-    margin: 20px;
-    padding: 22px 16px;
-  }
-
-  .auth-card h1 {
-    font-size: 24px;
-  }
-
-  .form-group input,
-  .form-group select {
-    font-size: 16px; /* Prevents zoom on iOS */
+    margin: clamp(0.5rem, 3vw, 1.25rem);
+    padding: clamp(1rem, 4vw, 1.375rem) clamp(0.875rem, 3vw, 1rem);
   }
 }
 
@@ -127,7 +254,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
+}
+
+.auth-brand-name {
+  font-size: clamp(1.125rem, 3vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--reloop-text);
 }
 
 .auth-brand .brand-pill {
@@ -139,15 +273,21 @@
   align-items: center;
   justify-content: center;
   color: white;
+  flex-shrink: 0;
 }
 
 .auth-brand .brand-pill i {
-  font-size: 20px;
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
 }
 
 .auth-subtitle {
   text-align: center;
   color: var(--reloop-muted);
   font-weight: 600;
-  margin: 0 0 18px;
+  margin: 0;
+  font-size: clamp(0.875rem, 2.35vw, 0.9375rem);
+  line-height: 1.5;
+  max-width: 24rem;
+  margin-left: auto;
+  margin-right: auto;
 }

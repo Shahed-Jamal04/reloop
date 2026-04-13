@@ -59,11 +59,12 @@ router.get('/categories', async (req, res) => {
         SELECT 
           c.id,
           c.name,
-          COUNT(m.id) as item_count
+          c.icon,
+          COUNT(m.id) AS item_count
         FROM categories c
         LEFT JOIN materials m ON c.id = m.category_id AND m.is_deleted = 0
         WHERE c.is_deleted = 0
-        GROUP BY c.id, c.name
+        GROUP BY c.id, c.name, c.icon
         ORDER BY item_count DESC
       `);
 
@@ -136,20 +137,39 @@ router.get('/user-stats/:userId', async (req, res) => {
             `)
         : { recordset: [{ count: 0 }] };
 
-    // Active orders
-    const activeOrders = await pool
-      .request()
-      .input('user_id', userId)
-      .query(`
-        SELECT COUNT(*) as count 
-        FROM orders 
-        WHERE buyer_id = @user_id 
-        AND status_id IN (
-          SELECT id FROM order_status 
-          WHERE status IN ('pending', 'confirmed')
-        )
-        AND is_deleted = 0
-      `);
+    // Active orders (buyer: my purchases; seller: orders containing my materials)
+    const activeOrders =
+      role === 'seller'
+        ? await pool
+            .request()
+            .input('user_id', userId)
+            .query(`
+              SELECT COUNT(DISTINCT o.id) AS count
+              FROM orders o
+              JOIN order_items oi ON oi.order_id = o.id AND oi.is_deleted = 0
+              JOIN materials m ON m.id = oi.material_id AND m.is_deleted = 0
+              WHERE m.user_id = @user_id
+                AND o.is_deleted = 0
+                AND o.status_id IN (
+                  SELECT id FROM order_status
+                  WHERE status IN ('pending', 'confirmed')
+                )
+            `)
+        : role === 'buyer'
+          ? await pool
+              .request()
+              .input('user_id', userId)
+              .query(`
+                SELECT COUNT(*) as count
+                FROM orders
+                WHERE buyer_id = @user_id
+                AND status_id IN (
+                  SELECT id FROM order_status
+                  WHERE status IN ('pending', 'confirmed')
+                )
+                AND is_deleted = 0
+              `)
+          : { recordset: [{ count: 0 }] };
 
     // Total items traded
     const tradedItems = await pool
@@ -185,14 +205,28 @@ router.get('/user-stats/:userId', async (req, res) => {
       `);
 
     // Total orders
-    const totalOrders = await pool
-      .request()
-      .input('user_id', userId)
-      .query(`
-        SELECT COUNT(*) as count 
-        FROM orders 
-        WHERE buyer_id = @user_id AND is_deleted = 0
-      `);
+    const totalOrders =
+      role === 'seller'
+        ? await pool
+            .request()
+            .input('user_id', userId)
+            .query(`
+              SELECT COUNT(DISTINCT o.id) AS count
+              FROM orders o
+              JOIN order_items oi ON oi.order_id = o.id AND oi.is_deleted = 0
+              JOIN materials m ON m.id = oi.material_id AND m.is_deleted = 0
+              WHERE m.user_id = @user_id AND o.is_deleted = 0
+            `)
+        : role === 'buyer'
+          ? await pool
+              .request()
+              .input('user_id', userId)
+              .query(`
+                SELECT COUNT(*) as count
+                FROM orders
+                WHERE buyer_id = @user_id AND is_deleted = 0
+              `)
+          : { recordset: [{ count: 0 }] };
 
     // Total payments amount
     const totalPayments = await pool

@@ -23,7 +23,9 @@ export function LoginForm() {
       const data = await login(email, password);
       const role = data?.user?.role;
 
-      if (role === 'seller') {
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'seller') {
         navigate('/dashboard/seller');
       } else {
         navigate('/dashboard/buyer');
@@ -37,17 +39,26 @@ export function LoginForm() {
 
   return (
     <div className="auth-card">
-      <div className="auth-brand">
-        <span className="brand-pill" aria-hidden="true">
-          <i className="bi bi-recycle" />
-        </span>
-      </div>
-      <h1>Welcome Back</h1>
-      <p className="auth-subtitle">Sign in to your account to continue</p>
-      
-      <ErrorMessage message={error} />
-      
-      <form onSubmit={handleSubmit} className="auth-form">
+      <header className="auth-header auth-card-panel">
+        <div className="auth-brand">
+          <span className="brand-pill" aria-hidden="true">
+            <i className="bi bi-recycle" />
+          </span>
+          <span className="auth-brand-name">Reloop</span>
+        </div>
+        <h1 className="auth-title">Welcome back</h1>
+        <p className="auth-subtitle">Sign in to your account to continue.</p>
+      </header>
+
+      <div className="auth-card-panel pt-0">
+        <div className="auth-card-panel-head">
+          <h2 className="auth-card-panel-title">Login</h2>
+          <p className="auth-card-panel-desc">Enter your credentials to access your account.</p>
+        </div>
+
+        <ErrorMessage message={error} />
+
+        <form onSubmit={handleSubmit} className="auth-form">
         <FormInput
           label="Email Address"
           id="email"
@@ -72,15 +83,29 @@ export function LoginForm() {
           disabled={loading}
         />
 
-        <Button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </Button>
-      </form>
-
-      <div className="auth-footer">
-        <p>Don't have an account? <Link to="/register">Register here</Link></p>
-        <Link to="/forgot-password" className="forgot-link">Forgot password?</Link>
+          <Button type="submit" disabled={loading} className="btn btn-success w-100 py-2 fw-bold auth-submit">
+            {loading ? 'Signing in…' : 'Sign in'}
+          </Button>
+        </form>
       </div>
+
+      <footer className="auth-footer auth-card-panel border-top bg-light">
+        <p className="auth-footer-line mb-0">
+          Don&apos;t have an account? <Link to="/register">Create an account</Link>
+        </p>
+        <p className="auth-footer-line auth-footer-line--sub mb-0">
+          <Link to="/forgot-password" className="auth-footer-link-secondary">
+            Forgot password?
+          </Link>
+          <span className="auth-footer-sep" aria-hidden="true">
+            {' '}
+            ·{' '}
+          </span>
+          <Link to="/" className="auth-footer-link-secondary">
+            Back to home
+          </Link>
+        </p>
+      </footer>
     </div>
   );
 }
