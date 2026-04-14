@@ -152,10 +152,10 @@ export function Dashboard({ variant }) {
             <h3>
               <i className="bi bi-credit-card text-success" aria-hidden="true" /> Payments
             </h3>
-            <p>Transaction history and invoices.</p>
-            <p className="card-stat">${stats?.total_payments ?? 0} total</p>
-            <button type="button" className="btn btn-outline-secondary fw-bold px-4" disabled>
-              Coming soon
+            <p>Mock payments are recorded when you pay from the Orders page.</p>
+            <p className="card-stat">${Number(stats?.total_payments ?? 0).toLocaleString()} recorded</p>
+            <button type="button" className="btn btn-outline-secondary fw-bold px-4" onClick={() => navigate('/orders')}>
+              Orders &amp; pay
             </button>
           </div>
 
