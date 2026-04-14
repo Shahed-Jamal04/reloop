@@ -21,26 +21,65 @@ export function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [actionId, setActionId] = useState(null);
+
+  const load = async () => {
+    if (!token) return;
+    try {
+      setError('');
+      const res = await axios.get(`${API_BASE_URL}/orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrders(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error('Failed to load orders:', err);
+      setError(err.response?.data?.error || 'Failed to load orders.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        setError('');
-        const res = await axios.get(`${API_BASE_URL}/orders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setOrders(Array.isArray(res.data) ? res.data : []);
-      } catch (err) {
-        console.error('Failed to load orders:', err);
-        setError(err.response?.data?.error || 'Failed to load orders.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (token) load();
+    setLoading(true);
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const isSeller = user?.role === 'seller';
+
+  const payOrder = async (orderId) => {
+    try {
+      setActionId(orderId);
+      setError('');
+      await axios.post(
+        `${API_BASE_URL}/orders/${orderId}/pay`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      await load();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Payment failed.');
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  const patchStatus = async (orderId, status) => {
+    try {
+      setActionId(orderId);
+      setError('');
+      await axios.patch(
+        `${API_BASE_URL}/orders/${orderId}/status`,
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      await load();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Update failed.');
+    } finally {
+      setActionId(null);
+    }
+  };
 
   return (
     <div className="role-page py-4 px-3">
@@ -48,8 +87,8 @@ export function OrdersPage() {
         <h1 className="role-page-title">Orders</h1>
         <p className="role-page-lead mb-0">
           {isSeller
-            ? 'Orders that include your materials (created when you accept a buyer request).'
-            : 'Purchases tied to requests a seller has accepted.'}
+            ? 'Orders that include your materials. After the buyer pays (mock), you can mark the order complete when fulfilled.'
+            : 'Pay with the mock checkout to confirm an order, then you or the seller can mark it complete.'}
         </p>
       </header>
 
@@ -98,6 +137,11 @@ export function OrdersPage() {
                 </div>
                 <div className="d-flex flex-wrap gap-2 align-items-center">
                   <span className={`badge ${statusBadgeClass(o.status)}`}>{o.status}</span>
+                  {o.payment_status && (
+                    <span className="badge text-bg-light border text-secondary">
+                      Payment: {o.payment_status}
+                    </span>
+                  )}
                   <span className="fw-semibold">
                     {o.total_price != null ? `$${Number(o.total_price).toLocaleString()}` : '—'}
                   </span>
@@ -105,6 +149,48 @@ export function OrdersPage() {
               </div>
               <div className="text-secondary small mb-2">
                 {o.created_at ? new Date(o.created_at).toLocaleString() : ''}
+              </div>
+              <div className="d-flex flex-wrap gap-2 mb-2">
+                {!isSeller && (o.status || '').toLowerCase() === 'pending' && (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-success btn-sm fw-bold"
+                      disabled={actionId === o.id}
+                      onClick={() => payOrder(o.id)}
+                    >
+                      {actionId === o.id ? 'Working…' : 'Pay now (mock)'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm fw-semibold"
+                      disabled={actionId === o.id}
+                      onClick={() => patchStatus(o.id, 'cancelled')}
+                    >
+                      Cancel order
+                    </button>
+                  </>
+                )}
+                {isSeller && (o.status || '').toLowerCase() === 'pending' && (
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary btn-sm fw-semibold"
+                    disabled={actionId === o.id}
+                    onClick={() => patchStatus(o.id, 'cancelled')}
+                  >
+                    Cancel order
+                  </button>
+                )}
+                {(o.status || '').toLowerCase() === 'confirmed' && (
+                  <button
+                    type="button"
+                    className="btn btn-outline-success btn-sm fw-semibold"
+                    disabled={actionId === o.id}
+                    onClick={() => patchStatus(o.id, 'completed')}
+                  >
+                    Mark complete
+                  </button>
+                )}
               </div>
               <ul className="list-unstyled mb-0 small">
                 {(o.items || []).map((it) => (
