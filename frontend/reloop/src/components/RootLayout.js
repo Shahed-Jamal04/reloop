@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import AppShell from './AppShell';
 import PublicShell from './PublicShell';
 import { useAuth } from '../context/AuthContext';
+import ChatWidget from './ChatWidget';
 
 export function RootLayout() {
   const location = useLocation();
@@ -22,16 +23,22 @@ export function RootLayout() {
       return <Navigate to="/login" replace />;
     }
     return (
-      <PublicShell>
-        <Outlet />
-      </PublicShell>
+      <>
+        <PublicShell>
+          <Outlet />
+        </PublicShell>
+        <ChatWidget />
+      </>
     );
   }
 
   return (
-    <AppShell>
-      <Outlet />
-    </AppShell>
+    <>
+      <AppShell>
+        <Outlet />
+      </AppShell>
+      <ChatWidget />
+    </>
   );
 }
 

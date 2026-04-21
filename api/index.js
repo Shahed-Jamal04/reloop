@@ -23,9 +23,26 @@ const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(express.json());
+
+// CORS: support one or more comma-separated origins in FRONTEND_URL.
+// Example: FRONTEND_URL=https://reloop.netlify.app,https://deploy-preview-12--reloop.netlify.app
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+  origin: (origin, cb) => {
+    // allow same-origin / curl / health checks (no Origin header)
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    // allow any *.netlify.app preview deploy if main site is a netlify one
+    if (allowedOrigins.some((o) => o.endsWith('.netlify.app')) && /\.netlify\.app$/.test(new URL(origin).hostname)) {
+      return cb(null, true);
+    }
+    return cb(new Error(`CORS blocked: ${origin}`));
+  },
+  credentials: true,
 }));
 
 // Static uploads
