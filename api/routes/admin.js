@@ -11,6 +11,123 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+// Admin KPI overview (single call for the dashboard)
+router.get('/overview', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const pool = await getConnection();
+
+    const [
+      pendingMaterials,
+      pendingTestimonials,
+      usersBreakdown,
+      listingsBreakdown,
+      ordersBreakdown,
+      revenue,
+      recentMaterials,
+      recentTestimonials,
+      recentUsers,
+    ] = await Promise.all([
+      pool.request().query(`
+        SELECT COUNT(*) AS count
+        FROM materials m
+        JOIN material_status ms ON m.status_id = ms.id
+        WHERE m.is_deleted = 0 AND ms.status = 'pending'
+      `),
+      pool.request().query(`
+        SELECT COUNT(*) AS count
+        FROM testimonials
+        WHERE is_deleted = 0 AND is_active = 0
+      `),
+      pool.request().query(`
+        SELECT r.name AS role, COUNT(u.id) AS count
+        FROM roles r
+        LEFT JOIN users u ON u.role_id = r.id AND u.is_deleted = 0
+        GROUP BY r.name
+      `),
+      pool.request().query(`
+        SELECT ms.status, COUNT(m.id) AS count
+        FROM material_status ms
+        LEFT JOIN materials m ON m.status_id = ms.id AND m.is_deleted = 0
+        GROUP BY ms.status
+      `),
+      pool.request().query(`
+        SELECT os.status, COUNT(o.id) AS count
+        FROM order_status os
+        LEFT JOIN orders o ON o.status_id = os.id AND o.is_deleted = 0
+        GROUP BY os.status
+      `),
+      pool.request().query(`
+        SELECT COALESCE(SUM(p.amount), 0) AS total
+        FROM payments p
+        JOIN payment_status ps ON p.status_id = ps.id
+        WHERE p.is_deleted = 0 AND ps.status = 'paid'
+      `),
+      pool.request().query(`
+        SELECT TOP 5 m.id, m.title, m.created_at, u.name AS seller_name
+        FROM materials m
+        JOIN material_status ms ON m.status_id = ms.id
+        JOIN users u ON u.id = m.user_id
+        WHERE m.is_deleted = 0 AND ms.status = 'pending'
+        ORDER BY m.created_at DESC
+      `),
+      pool.request().query(`
+        SELECT TOP 5 id, author_name, quote, created_at
+        FROM testimonials
+        WHERE is_deleted = 0 AND is_active = 0
+        ORDER BY created_at DESC
+      `),
+      pool.request().query(`
+        SELECT TOP 5 u.id, u.name, u.email, r.name AS role, u.created_at
+        FROM users u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.is_deleted = 0
+        ORDER BY u.id DESC
+      `),
+    ]);
+
+    const usersByRole = {};
+    for (const row of usersBreakdown.recordset) {
+      usersByRole[row.role] = row.count;
+    }
+
+    const listingsByStatus = {};
+    for (const row of listingsBreakdown.recordset) {
+      listingsByStatus[row.status] = row.count;
+    }
+
+    const ordersByStatus = {};
+    for (const row of ordersBreakdown.recordset) {
+      ordersByStatus[row.status] = row.count;
+    }
+
+    const totalUsers = Object.values(usersByRole).reduce((a, b) => a + b, 0);
+    const totalListings = Object.values(listingsByStatus).reduce((a, b) => a + b, 0);
+    const totalOrders = Object.values(ordersByStatus).reduce((a, b) => a + b, 0);
+
+    res.json({
+      kpis: {
+        pending_materials: pendingMaterials.recordset[0].count,
+        pending_testimonials: pendingTestimonials.recordset[0].count,
+        total_users: totalUsers,
+        total_listings: totalListings,
+        total_orders: totalOrders,
+        revenue: Number(revenue.recordset[0].total || 0),
+      },
+      users_by_role: usersByRole,
+      listings_by_status: listingsByStatus,
+      orders_by_status: ordersByStatus,
+      recent: {
+        materials: recentMaterials.recordset,
+        testimonials: recentTestimonials.recordset,
+        users: recentUsers.recordset,
+      },
+    });
+  } catch (err) {
+    console.error('Admin overview error:', err);
+    res.status(500).json({ error: 'Failed to fetch admin overview' });
+  }
+});
+
 // List pending materials for approval
 router.get('/materials/pending', authenticate, requireAdmin, async (req, res) => {
   try {

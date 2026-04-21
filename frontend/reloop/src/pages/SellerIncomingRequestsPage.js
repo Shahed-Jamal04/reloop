@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import RequestThreadModal from '../components/RequestThreadModal';
 import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -13,6 +14,7 @@ export function SellerIncomingRequestsPage() {
   const [error, setError] = useState('');
   const [savingId, setSavingId] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const [chat, setChat] = useState(null); // { id, title, counterpart }
 
   const load = async () => {
     try {
@@ -126,30 +128,50 @@ export function SellerIncomingRequestsPage() {
               </div>
               {r.message && <p className="mt-2 mb-0 small">{r.message}</p>}
 
-              {(r.status || '').toLowerCase() === 'pending' && (
-                <div className="d-flex gap-2 flex-wrap mt-3">
-                  <button
-                    type="button"
-                    className="btn btn-success fw-bold"
-                    disabled={savingId === r.id}
-                    onClick={() => updateStatus(r.id, 'accepted')}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger fw-bold"
-                    disabled={savingId === r.id}
-                    onClick={() => updateStatus(r.id, 'rejected')}
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
+              <div className="d-flex gap-2 flex-wrap mt-3">
+                {(r.status || '').toLowerCase() === 'pending' && (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-success fw-bold"
+                      disabled={savingId === r.id}
+                      onClick={() => updateStatus(r.id, 'accepted')}
+                    >
+                      <i className="bi bi-check-lg me-1" aria-hidden="true" />
+                      Accept
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger fw-bold"
+                      disabled={savingId === r.id}
+                      onClick={() => updateStatus(r.id, 'rejected')}
+                    >
+                      <i className="bi bi-x-lg me-1" aria-hidden="true" />
+                      Reject
+                    </button>
+                  </>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-outline-success fw-semibold ms-auto ms-sm-0"
+                  onClick={() => setChat({ id: r.id, title: r.material_title, counterpart: r.buyer_name })}
+                >
+                  <i className="bi bi-chat-dots me-1" aria-hidden="true" />
+                  Message buyer
+                </button>
+              </div>
             </article>
           ))}
         </div>
       )}
+
+      <RequestThreadModal
+        open={!!chat}
+        onClose={() => setChat(null)}
+        requestId={chat?.id}
+        title={chat?.title}
+        counterpartName={chat?.counterpart}
+      />
     </div>
   );
 }

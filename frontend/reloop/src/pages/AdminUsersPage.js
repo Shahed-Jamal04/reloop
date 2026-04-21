@@ -1,10 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 const ROLE_OPTIONS = ['buyer', 'seller', 'admin'];
+
+function roleBadge(role) {
+  switch (role) {
+    case 'admin': return 'primary';
+    case 'seller': return 'info';
+    case 'buyer': return 'success';
+    default: return 'secondary';
+  }
+}
 
 export function AdminUsersPage() {
   const { token, user: me } = useAuth();
@@ -13,6 +23,8 @@ export function AdminUsersPage() {
   const [error, setError] = useState('');
   const [savingId, setSavingId] = useState(null);
   const [query, setQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const load = async () => {
     try {
@@ -36,12 +48,22 @@ export function AdminUsersPage() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return items;
     return items.filter((u) => {
+      if (roleFilter !== 'all' && u.role !== roleFilter) return false;
+      if (statusFilter === 'active' && u.is_deleted) return false;
+      if (statusFilter === 'disabled' && !u.is_deleted) return false;
+      if (!q) return true;
       const hay = `${u.name || ''} ${u.email || ''} ${u.role || ''}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [items, query]);
+  }, [items, query, roleFilter, statusFilter]);
+
+  const counts = useMemo(() => {
+    const total = items.length;
+    const active = items.filter((u) => !u.is_deleted).length;
+    const disabled = total - active;
+    return { total, active, disabled };
+  }, [items]);
 
   const updateRole = async (id, role) => {
     try {
@@ -77,110 +99,166 @@ export function AdminUsersPage() {
   };
 
   return (
-    <div className="container py-4">
-      <div className="d-flex align-items-start justify-content-between gap-2 flex-wrap">
-        <div>
-          <h1 className="h3 mb-1">Users</h1>
-          <p className="text-secondary mb-0">Manage roles and enable/disable accounts.</p>
+    <div className="role-page py-4 px-3">
+      <header className="role-page-hero role-page-hero--gradient mb-4">
+        <div className="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+          <div>
+            <h1 className="role-page-title">Users</h1>
+            <p className="role-page-lead mb-0">Manage roles and enable/disable accounts.</p>
+          </div>
+          <div className="d-flex gap-2 flex-wrap">
+            <span className="badge bg-light text-dark fw-semibold">Total: {counts.total}</span>
+            <span className="badge bg-success fw-semibold">Active: {counts.active}</span>
+            <span className="badge bg-secondary fw-semibold">Disabled: {counts.disabled}</span>
+          </div>
         </div>
-        <span className="text-secondary small">{items.length} total</span>
-      </div>
+      </header>
 
-      <div className="row g-2 align-items-center mt-3">
-        <div className="col-12 col-md-6">
-          <input
-            className="form-control"
-            placeholder="Search by name, email, role..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <div className="col-12 col-md-6 d-flex justify-content-md-end">
-          <button type="button" className="btn btn-outline-secondary" onClick={load} disabled={loading}>
-            Refresh
-          </button>
+      <div className="ds-surface ds-surface--pad mb-3">
+        <div className="row g-2 align-items-center">
+          <div className="col-12 col-md-5">
+            <div className="input-group">
+              <span className="input-group-text bg-white">
+                <i className="bi bi-search" aria-hidden="true" />
+              </span>
+              <input
+                className="form-control"
+                placeholder="Search by name, email, role…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <select className="form-select" value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
+              <option value="all">All roles</option>
+              {ROLE_OPTIONS.map((r) => (
+                <option key={r} value={r} className="text-capitalize">
+                  {r}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="all">All status</option>
+              <option value="active">Active</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+          <div className="col-12 col-md-2 d-flex justify-content-md-end">
+            <button type="button" className="btn btn-outline-secondary w-100" onClick={load} disabled={loading}>
+              <i className="bi bi-arrow-clockwise me-1" aria-hidden="true" />
+              Refresh
+            </button>
+          </div>
         </div>
       </div>
 
       {loading && (
-        <div className="d-flex align-items-center gap-2 mt-3">
-          <div className="spinner-border" role="status" aria-label="Loading" />
-          <span className="fw-semibold">Loading...</span>
+        <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
+          <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
+          <span>Loading users…</span>
         </div>
       )}
 
       {error && (
-        <div className="alert alert-danger mt-3" role="alert">
+        <div className="alert alert-danger" role="alert">
           {error}
         </div>
       )}
 
       {!loading && !error && filtered.length === 0 && (
-        <div className="alert alert-info mt-3" role="alert">
-          No users found.
+        <div className="empty-state">
+          <div className="empty-state-icon" aria-hidden="true">
+            <i className="bi bi-people" />
+          </div>
+          <p className="fw-semibold text-secondary mb-1">No users found</p>
+          <p className="text-secondary small mb-0">Try clearing the search or filters.</p>
         </div>
       )}
 
       {!loading && filtered.length > 0 && (
-        <div className="table-responsive mt-3">
-          <table className="table align-middle">
-            <thead>
-              <tr>
-                <th style={{ width: 70 }}>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th style={{ width: 140 }}>Role</th>
-                <th style={{ width: 140 }}>Status</th>
-                <th style={{ width: 180 }} />
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((u) => {
-                const isMe = String(me?.id) === String(u.id);
-                const disabled = savingId === u.id;
-                return (
-                  <tr key={u.id}>
-                    <td className="text-secondary">{u.id}</td>
-                    <td className="fw-semibold">{u.name || '-'}</td>
-                    <td className="text-secondary">{u.email || '-'}</td>
-                    <td>
-                      <select
-                        className="form-select"
-                        value={u.role || 'buyer'}
-                        disabled={disabled || isMe}
-                        onChange={(e) => updateRole(u.id, e.target.value)}
-                        title={isMe ? 'You cannot change your own role' : undefined}
-                      >
-                        {ROLE_OPTIONS.map((r) => (
-                          <option key={r} value={r}>
-                            {r}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
-                      {u.is_deleted ? (
-                        <span className="badge bg-secondary">Disabled</span>
-                      ) : (
-                        <span className="badge bg-success">Active</span>
-                      )}
-                    </td>
-                    <td className="text-end">
-                      <button
-                        type="button"
-                        className={`btn ${u.is_deleted ? 'btn-success' : 'btn-outline-danger'}`}
-                        disabled={disabled || isMe}
-                        onClick={() => toggleEnabled(u)}
-                        title={isMe ? 'You cannot disable your own account' : undefined}
-                      >
-                        {u.is_deleted ? 'Enable' : 'Disable'}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="ds-surface">
+          <div className="table-responsive">
+            <table className="table align-middle mb-0">
+              <thead className="small text-secondary">
+                <tr>
+                  <th style={{ width: 70 }}>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th style={{ width: 160 }}>Role</th>
+                  <th style={{ width: 120 }}>Status</th>
+                  <th style={{ width: 160 }} />
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((u) => {
+                  const isMe = String(me?.id) === String(u.id);
+                  const disabled = savingId === u.id;
+                  return (
+                    <tr key={u.id}>
+                      <td className="text-secondary">{u.id}</td>
+                      <td>
+                        <div className="fw-semibold">
+                          {u.name || '-'}
+                          {isMe && <span className="badge text-bg-light border ms-2 fw-normal">you</span>}
+                        </div>
+                      </td>
+                      <td className="text-secondary">{u.email || '-'}</td>
+                      <td>
+                        <div className="d-flex align-items-center gap-2">
+                          <span className={`badge text-bg-${roleBadge(u.role)}`}>{u.role}</span>
+                          <select
+                            className="form-select form-select-sm"
+                            value={u.role || 'buyer'}
+                            disabled={disabled || isMe}
+                            onChange={(e) => updateRole(u.id, e.target.value)}
+                            title={isMe ? 'You cannot change your own role' : 'Change role'}
+                            style={{ maxWidth: 110 }}
+                          >
+                            {ROLE_OPTIONS.map((r) => (
+                              <option key={r} value={r}>
+                                {r}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </td>
+                      <td>
+                        {u.is_deleted ? (
+                          <span className="badge bg-secondary">Disabled</span>
+                        ) : (
+                          <span className="badge bg-success">Active</span>
+                        )}
+                      </td>
+                      <td className="text-end">
+                        <button
+                          type="button"
+                          className={`btn btn-sm ${u.is_deleted ? 'btn-success' : 'btn-outline-danger'}`}
+                          disabled={disabled || isMe}
+                          onClick={() => toggleEnabled(u)}
+                          title={isMe ? 'You cannot disable your own account' : undefined}
+                        >
+                          {u.is_deleted ? (
+                            <>
+                              <i className="bi bi-check-lg me-1" aria-hidden="true" />
+                              Enable
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-slash-circle me-1" aria-hidden="true" />
+                              Disable
+                            </>
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
@@ -188,4 +266,3 @@ export function AdminUsersPage() {
 }
 
 export default AdminUsersPage;
-

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import RequestThreadModal from '../components/RequestThreadModal';
 import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -12,6 +13,7 @@ export function BuyerRequestsPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [chat, setChat] = useState(null); // { id, title, counterpart }
 
   useEffect(() => {
     const load = async () => {
@@ -86,13 +88,32 @@ export function BuyerRequestsPage() {
               </div>
               <div className="text-secondary small">Seller: {r.seller_name}</div>
               {r.message && <p className="mt-2 mb-0 small">{r.message}</p>}
-              <Link to={`/materials/${r.material_id}`} className="btn btn-outline-success btn-sm fw-semibold">
-                View material
-              </Link>
+              <div className="d-flex gap-2 flex-wrap mt-2">
+                <Link to={`/materials/${r.material_id}`} className="btn btn-outline-success btn-sm fw-semibold">
+                  <i className="bi bi-box-seam me-1" aria-hidden="true" />
+                  View material
+                </Link>
+                <button
+                  type="button"
+                  className="btn btn-success btn-sm fw-semibold"
+                  onClick={() => setChat({ id: r.id, title: r.material_title, counterpart: r.seller_name })}
+                >
+                  <i className="bi bi-chat-dots me-1" aria-hidden="true" />
+                  Message seller
+                </button>
+              </div>
             </article>
           ))}
         </div>
       )}
+
+      <RequestThreadModal
+        open={!!chat}
+        onClose={() => setChat(null)}
+        requestId={chat?.id}
+        title={chat?.title}
+        counterpartName={chat?.counterpart}
+      />
     </div>
   );
 }
