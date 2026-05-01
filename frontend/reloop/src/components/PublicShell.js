@@ -45,9 +45,13 @@ export function PublicShell({ children }) {
           <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
             <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none text-dark flex-shrink-0">
               <span className="brand-pill">
-                <i className="bi bi-recycle" />
+                <img
+                  src={`${process.env.PUBLIC_URL}/recyclex-logo.png`}
+                  alt="RecycleX logo"
+                  className="brand-logo"
+                />
               </span>
-              <span className="fw-bold fs-5 public-brand-text">Reloop</span>
+              <span className="fw-bold fs-5 public-brand-text">RecycleX</span>
             </Link>
 
             <nav className="d-none d-lg-flex align-items-center justify-content-center gap-4 flex-grow-1 public-nav-center">

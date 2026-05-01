@@ -17,8 +17,8 @@
 .env
 .env.local
 api/.env
-frontend/reloop/.env
-frontend/reloop/.env.local
+frontend/recyclexapp/.env
+frontend/recyclexapp/.env.local
 
 # Angular CLI and build artefacts
 /.angular-cli.json

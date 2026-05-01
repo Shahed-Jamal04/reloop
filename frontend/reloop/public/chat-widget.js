@@ -8,14 +8,14 @@
  *
  * You can either:
  *   (a) hardcode the ID here in CHATLING_BOT_ID, or
- *   (b) set REACT_APP_CHATLING_BOT_ID in frontend/reloop/.env and restart `npm start`.
+ *   (b) set REACT_APP_CHATLING_BOT_ID in frontend/recyclexapp/.env and restart `npm start`.
  *
  * Source pattern: https://dev.to/limacodes/free-ai-chatbot-options-with-axios-and-reactjs-4h27
  */
 
 (function (window, document) {
-  if (window.__reloopChatlingLoaded) return;
-  window.__reloopChatlingLoaded = true;
+  if (window.__recyclexChatlingLoaded) return;
+  window.__recyclexChatlingLoaded = true;
 
   // Prefer env var if present; otherwise set CHATLING_BOT_ID below.
   var CHATLING_BOT_ID = '';

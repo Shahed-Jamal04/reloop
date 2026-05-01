@@ -18,11 +18,11 @@
 }
 
 .public-shell .brand-pill {
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .public-header a.text-decoration-none:hover .brand-pill {
-  background: var(--reloop-green-700) !important;
+  transform: scale(1.05);
 }
 
 .public-main {
@@ -33,7 +33,7 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: var(--reloop-green-600);
+  /* background: var(--reloop-green-600); */
   display: inline-flex;
   align-items: center;
   justify-content: center;

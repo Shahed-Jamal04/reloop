@@ -18,6 +18,8 @@ import SellerIncomingRequestsPage from './pages/SellerIncomingRequestsPage';
 import AdminApprovalsPage from './pages/AdminApprovalsPage';
 import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import GamePage from './pages/GamePage';
+import LeaderboardPage from './pages/LeaderboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppShell from './components/AppShell';
 import PublicNav from './components/PublicNav';
@@ -55,6 +57,8 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/materials/:id" element={<MaterialDetail />} />
+            <Route path="/game" element={<GamePage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
 
             {/* Auth-only redirect helper */}
             <Route

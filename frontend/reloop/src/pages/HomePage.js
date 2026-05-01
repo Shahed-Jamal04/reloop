@@ -15,7 +15,7 @@ const PLACEHOLDER_TESTIMONIALS = [
     id: 'ph-1',
     _placeholder: true,
     quote:
-      'Reloop made it easy to find quality surplus materials for our production. The process is transparent and reliable.',
+      'RecycleX made it easy to find quality surplus materials for our production. The process is transparent and reliable.',
     author_name: 'Sarah Chen',
     author_role: 'Operations Manager',
     rating: 5,
@@ -178,7 +178,7 @@ export function HomePage() {
             loop
             playsInline
             preload="metadata"
-            poster="https://via.placeholder.com/1920x900?text=Reloop"
+            poster="https://via.placeholder.com/1920x900?text=RecycleX"
           >
             <source src="https://www.31-agency.com/31New/Requirements/Videos/Banner.mp4" type="video/mp4" />
           </video>
@@ -402,7 +402,7 @@ export function HomePage() {
           <motion.div className="text-center mb-4 mb-md-5" {...m.fadeUp(0)}>
             <h2 className="section-title">How It Works</h2>
             <p className="section-subtitle">
-              Getting started with Reloop is simple. Follow these three easy steps to start exchanging materials.
+              Getting started with RecycleX is simple. Follow these three easy steps to start exchanging materials.
             </p>
           </motion.div>
 

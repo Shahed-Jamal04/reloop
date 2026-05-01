@@ -19,7 +19,7 @@ JWT_SECRET=change_me
 FRONTEND_URL=http://localhost:3000
 
 # Recommended (SQL Authentication)
-DB_CONNECTION_STRING=Server=127.0.0.1,1433;Database=Reloop;User Id=reloop_app;Password=StrongPass123!;Encrypt=False;TrustServerCertificate=True;
+DB_CONNECTION_STRING=Server=127.0.0.1,1433;Database=RecycleX;User Id=recyclexapp;Password=StrongPass123!;Encrypt=False;TrustServerCertificate=True;
 ```
 
 ---
@@ -88,21 +88,21 @@ Run this in SSMS (edit the password first):
 ```sql
 USE master;
 GO
-CREATE LOGIN reloop_app WITH PASSWORD = 'StrongPass123!', CHECK_POLICY = OFF;
+CREATE LOGIN recyclexapp WITH PASSWORD = 'StrongPass123!', CHECK_POLICY = OFF;
 GO
 
-USE Reloop;
+USE RecycleX;
 GO
-CREATE USER reloop_app FOR LOGIN reloop_app;
+CREATE USER recyclexapp FOR LOGIN recyclexapp;
 GO
-ALTER ROLE db_owner ADD MEMBER reloop_app;
+ALTER ROLE db_owner ADD MEMBER recyclexapp;
 GO
 ```
 
 Then use this in `api/.env`:
 
 ```env
-DB_CONNECTION_STRING=Server=127.0.0.1,1433;Database=Reloop;User Id=reloop_app;Password=StrongPass123!;Encrypt=False;TrustServerCertificate=True;
+DB_CONNECTION_STRING=Server=127.0.0.1,1433;Database=RecycleX;User Id=recyclexapp;Password=StrongPass123!;Encrypt=False;TrustServerCertificate=True;
 ```
 
 ---
@@ -155,7 +155,7 @@ Fix:
 - Use a SQL login in the connection string:
 
 ```env
-DB_CONNECTION_STRING=Server=127.0.0.1,1433;Database=Reloop;User Id=reloop_app;Password=StrongPass123!;Encrypt=False;TrustServerCertificate=True;
+DB_CONNECTION_STRING=Server=127.0.0.1,1433;Database=RecycleX;User Id=recyclexapp;Password=StrongPass123!;Encrypt=False;TrustServerCertificate=True;
 ```
 
 ### “Works in SSMS but not in Node”

@@ -49,14 +49,22 @@
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: var(--reloop-green-600);
-  border: 1px solid rgba(255, 255, 255, 0.14);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: 1000;
   flex: 0 0 auto;
+}
+
+.brand-mark i,
+.brand-mark img,
+.brand-pill img,
+.footer-brand-pill img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: inline-block;
 }
 
 .brand-mark i {

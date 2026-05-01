@@ -1,35 +1,35 @@
-# Reloop - Login & Registration System
+# RecycleX - Login & Registration System
 
-Complete authentication system for the Reloop project with React frontend and Node.js/Express backend.
+Complete authentication system for the RecycleX project with React frontend and Node.js/Express backend.
 
 ## Project Structure
 
 ```
-reloop/
-├── api/                           # Backend (Node.js/Express)
+recyclexapp/
+├── api/                              # Backend (Node.js/Express)
 │   ├── routes/
-│   │   └── auth.js               # Authentication endpoints
-│   ├── db.js                     # Database connection
-│   ├── config.js                 # Configuration
-│   ├── index.js                  # Main server file
+│   │   └── auth.js                  # Authentication endpoints
+│   ├── db.js                        # Database connection
+│   ├── config.js                    # Configuration
+│   ├── index.js                     # Main server file
 │   ├── package.json
-│   └── .env.example              # Environment variables template
+│   └── .env.example                 # Environment variables template
 │
-└── frontend/reloop/              # Frontend (React)
+└── frontend/recyclexapp/            # Frontend (React)
     ├── src/
     │   ├── pages/
-    │   │   ├── LoginPage.js       # Login component
-    │   │   ├── RegisterPage.js    # Register component
-    │   │   ├── Dashboard.js       # Protected dashboard page
-    │   │   └── Auth.css           # Auth pages styles
+    │   │   ├── LoginPage.js         # Login component
+    │   │   ├── RegisterPage.js      # Register component
+    │   │   ├── Dashboard.js         # Protected dashboard page
+    │   │   └── Auth.css             # Auth pages styles
     │   ├── components/
-    │   │   └── ProtectedRoute.js  # Route protection component
+    │   │   └── ProtectedRoute.js    # Route protection component
     │   ├── context/
-    │   │   └── AuthContext.js     # Authentication context & hooks
-    │   ├── App.js                 # Main app with routing
-    │   └── index.js               # Entry point
+    │   │   └── AuthContext.js       # Authentication context & hooks
+    │   ├── App.js                   # Main app with routing
+    │   └── index.js                 # Entry point
     ├── package.json
-    ├── .env                       # Environment variables
+    ├── .env                         # Environment variables
     └── public/
         └── index.html
 ```
@@ -70,13 +70,13 @@ reloop/
    ```env
    PORT=5000
    JWT_SECRET=your_secret_key_here
-   DB_CONNECTION_STRING=Driver={ODBC Driver 17 for SQL Server};Server=your_server;Database=Reloop;Trusted_Connection=yes;TrustServerCertificate=yes;
+   DB_CONNECTION_STRING=Driver={ODBC Driver 17 for SQL Server};Server=your_server;Database=RecycleX;Trusted_Connection=yes;TrustServerCertificate=yes;
    FRONTEND_URL=http://localhost:3000
    ```
 
 4. **Configure Database Connection:**
    - Ensure SQL Server is running
-   - Database `Reloop` exists with all tables created
+   - Database `RecycleX` exists with all tables created
    - Run the SQL schema provided
 
 5. **Start the backend server:**
@@ -174,7 +174,7 @@ Response: 200 OK
 
 1. **Install dependencies:**
    ```bash
-   cd frontend/reloop
+   cd frontend/recyclexapp
    npm install
    ```
 
@@ -473,4 +473,4 @@ INSERT INTO material_status (status) VALUES ('pending');
 
 ## License
 
-This project is part of the Reloop application. See LICENSE file for details.
+This project is part of the RecycleX application. See LICENSE file for details.

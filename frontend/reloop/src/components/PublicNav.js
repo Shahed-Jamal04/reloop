@@ -17,7 +17,7 @@ export function PublicNav() {
     <div className="public-nav">
       <div className="container public-nav-inner">
         <Link to="/" className="public-brand">
-          Reloop <span>marketplace</span>
+          RecycleX <span>marketplace</span>
         </Link>
 
         <div className="public-links">
@@ -29,6 +29,18 @@ export function PublicNav() {
             className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
           >
             Marketplace
+          </NavLink>
+          <NavLink
+            to="/game"
+            className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
+          >
+            🎮 Play Game
+          </NavLink>
+          <NavLink
+            to="/leaderboard"
+            className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
+          >
+            🏆 Leaderboard
           </NavLink>
 
           {isAuthenticated ? (

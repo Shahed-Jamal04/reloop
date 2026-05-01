@@ -13,6 +13,7 @@ import ordersRoutes from './routes/orders.js';
 import uploadsRoutes from './routes/uploads.js';
 import testimonialsRoutes from './routes/testimonials.js';
 import usersRoutes from './routes/users.js';
+import gamesRoutes from './routes/games.js';
 import { getConnection, closeConnection } from './db.js';
 
 dotenv.config();
@@ -27,7 +28,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 // CORS: support one or more comma-separated origins in FRONTEND_URL.
-// Example: FRONTEND_URL=https://reloop.netlify.app,https://deploy-preview-12--reloop.netlify.app
+// Example: FRONTEND_URL=https://recyclexapp.netlify.app,https://deploy-preview-12--recyclexapp.netlify.app
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
   .split(',')
   .map((s) => s.trim())
@@ -62,6 +63,7 @@ app.use('/api/requests', messagesRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/uploads', uploadsRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
+app.use('/api/games', gamesRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

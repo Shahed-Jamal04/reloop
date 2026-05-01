@@ -63,7 +63,7 @@ export function AppShell({ children }) {
 
   const [collapsed, setCollapsed] = useState(() => {
     try {
-      return localStorage.getItem('reloop_sidebar_collapsed') === '1';
+      return localStorage.getItem('recyclexapp_sidebar_collapsed') === '1';
     } catch {
       return false;
     }
@@ -71,7 +71,7 @@ export function AppShell({ children }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem('reloop_sidebar_collapsed', collapsed ? '1' : '0');
+      localStorage.setItem('recyclexapp_sidebar_collapsed', collapsed ? '1' : '0');
     } catch {
       // ignore
     }
@@ -106,7 +106,7 @@ export function AppShell({ children }) {
     if (location.pathname.startsWith('/materials/')) return 'Material';
     if (location.pathname.startsWith('/orders')) return 'Orders';
     if (location.pathname.startsWith('/admin')) return 'Admin';
-    return 'Reloop';
+    return 'RecycleX';
   })();
 
   return (
@@ -114,11 +114,15 @@ export function AppShell({ children }) {
       <aside className="app-sidebar d-flex flex-column">
         <div className="sidebar-brand">
           <div className="brand-left">
-            <div className="brand-mark" aria-hidden="true" title="Reloop">
-              <i className="bi bi-recycle" />
+            <div className="brand-mark" aria-hidden="true" title="RecycleX">
+              <img
+                src={`${process.env.PUBLIC_URL}/recyclex-logo.png`}
+                alt="RecycleX logo"
+                className="brand-logo"
+              />
             </div>
             <div className="brand-text">
-              <div className="brand-title">Reloop</div>
+              <div className="brand-title">RecycleX</div>
               <span className="brand-subtitle">Circular marketplace</span>
             </div>
           </div>

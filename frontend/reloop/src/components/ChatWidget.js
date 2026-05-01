@@ -32,12 +32,12 @@ export function ChatWidget() {
     }
 
     if (SCRIPT_URL) {
-      loadScriptOnce(SCRIPT_URL, 'reloop-chat-widget');
+      loadScriptOnce(SCRIPT_URL, 'recyclexapp-chat-widget');
       return;
     }
 
-    window.__RELOOP_CHAT__ = window.__RELOOP_CHAT__ || {};
-    loadScriptOnce(`${process.env.PUBLIC_URL || ''}/chat-widget.js`, 'reloop-chat-widget-local');
+    window.__RECYCLEXCHAT__ = window.__RECYCLEXCHAT__ || {};
+    loadScriptOnce(`${process.env.PUBLIC_URL || ''}/chat-widget.js`, 'recyclexapp-chat-widget-local');
   }, []);
 
   return null;

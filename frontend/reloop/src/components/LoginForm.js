@@ -42,9 +42,13 @@ export function LoginForm() {
       <header className="auth-header auth-card-panel">
         <div className="auth-brand">
           <span className="brand-pill" aria-hidden="true">
-            <i className="bi bi-recycle" />
+            <img
+              src={`${process.env.PUBLIC_URL}/recyclex-logo.png`}
+              alt="RecycleX logo"
+              className="brand-logo"
+            />
           </span>
-          <span className="auth-brand-name">Reloop</span>
+          <span className="auth-brand-name">RecycleX</span>
         </div>
         <h1 className="auth-title">Welcome back</h1>
         <p className="auth-subtitle">Sign in to your account to continue.</p>
