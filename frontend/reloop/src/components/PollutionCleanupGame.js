@@ -22,7 +22,7 @@ const BEACH_TRASH_OPTIONS = [
   { id: 2, label: 'Tin Can', emoji: '🥫', points: 20 },
   { id: 3, label: 'Plastic Bag', emoji: '🛍️', points: 30 },
   { id: 4, label: 'Soda Cup', emoji: '🥤', points: 15 },
-  { id: 5, label: 'Fishing Net', emoji: '🪝', points: 35 },
+  { id: 5, label: 'Fishing Net', emoji: '🪝', points: 40 },
   { id: 6, label: 'Beach Ball', emoji: '🏐', points: 10 },
   { id: 7, label: 'Shoe', emoji: '👟', points: 20 },
   { id: 8, label: 'Bottle Cap', emoji: '🧢', points: 15 },
@@ -30,6 +30,26 @@ const BEACH_TRASH_OPTIONS = [
   { id: 10, label: 'Sunglasses', emoji: '🕶️', points: 10 },
   { id: 11, label: 'Straw', emoji: '🥤', points: 15 },
   { id: 12, label: 'Cigarette Butt', emoji: '🚬', points: 20 },
+
+  // 🔥 New additions
+  { id: 13, label: 'Glass Bottle', emoji: '🍾', points: 25 },
+  { id: 14, label: 'Broken Glass', emoji: '💥', points: 35 },
+  { id: 15, label: 'Flip Flop', emoji: '🩴', points: 15 },
+  { id: 16, label: 'Aluminum Can', emoji: '🥤', points: 20 },
+  { id: 17, label: 'Plastic Cutlery', emoji: '🍴', points: 20 },
+  { id: 18, label: 'Takeout Container', emoji: '🥡', points: 25 },
+  { id: 19, label: 'Rope', emoji: '🧵', points: 20 },
+  { id: 20, label: 'Fishing Line', emoji: '🧶', points: 35 },
+  { id: 21, label: 'Styrofoam Box', emoji: '📦', points: 30 },
+  { id: 22, label: 'Drink Lid', emoji: '🥤', points: 10 },
+  { id: 23, label: 'Chip Bag', emoji: '🍟', points: 20 },
+  { id: 24, label: 'Ice Cream Wrapper', emoji: '🍦', points: 15 },
+  { id: 25, label: 'Disposable Mask', emoji: '😷', points: 25 },
+  { id: 26, label: 'Battery', emoji: '🔋', points: 40 },
+  { id: 27, label: 'Spray Can', emoji: '🧴', points: 30 },
+  { id: 28, label: 'Diaper', emoji: '👶', points: 35 },
+  { id: 29, label: 'Cup Sleeve', emoji: '☕', points: 10 },
+  { id: 30, label: 'Paper Bag', emoji: '🛍️', points: 10 },
 ];
 
 const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);

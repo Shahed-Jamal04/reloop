@@ -8,18 +8,36 @@ import { playActionSound, playSuccessSound, playFailSound, playWinSound, playLos
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 const TRASH_ITEMS = [
-  { id: 1, item: 'Cardboard Box', bin: 'Paper' },
-  { id: 2, item: 'Plastic Bottle', bin: 'Plastic' },
-  { id: 3, item: 'Tin Can', bin: 'Metal' },
-  { id: 4, item: 'Apple Core', bin: 'Organic' },
-  { id: 5, item: 'Glass Bottle', bin: 'Glass' },
-  { id: 6, item: 'Newspaper', bin: 'Paper' },
-  { id: 7, item: 'Pizza Box', bin: 'Paper' },
-  { id: 8, item: 'Shampoo Bottle', bin: 'Plastic' },
-  { id: 9, item: 'Soda Can', bin: 'Metal' },
-  { id: 10, item: 'Banana Peel', bin: 'Organic' },
-  { id: 11, item: 'Wine Bottle', bin: 'Glass' },
-  { id: 12, item: 'Magazine', bin: 'Paper' },
+  { item: '📦 Cardboard Box', bin: 'Paper' },
+  { item: '📰 Newspaper', bin: 'Paper' },
+  { item: '📄 Office Paper', bin: 'Paper' },
+  { item: '📚 Magazine', bin: 'Paper' },
+  { item: '🥚 Egg Carton', bin: 'Paper' },
+  { item: '🥤 Plastic Bottle', bin: 'Plastic' },
+  { item: '🧴 Shampoo Bottle', bin: 'Plastic' },
+  { item: '🛍️ Plastic Bag', bin: 'Plastic' },
+  { item: '🥡 Food Container', bin: 'Plastic' },
+  { item: '🧃 Juice Carton (Plastic-lined)', bin: 'Plastic' },
+  { item: '🥫 Tin Can', bin: 'Metal' },
+  { item: '🥤 Soda Can', bin: 'Metal' },
+  { item: '🍴 Aluminum Foil (clean)', bin: 'Metal' },
+  { item: '🔩 Screws', bin: 'Metal' },
+  { item: '🍷 Glass Bottle', bin: 'Glass' },
+  { item: '🥛 Glass Jar', bin: 'Glass' },
+  { item: '🍾 Wine Bottle', bin: 'Glass' },
+  { item: '🍏 Apple Core', bin: 'Organic' },
+  { item: '🍌 Banana Peel', bin: 'Organic' },
+  { item: '🍗 Chicken Bone', bin: 'Organic' },
+  { item: '🥦 Vegetable Scraps', bin: 'Organic' },
+  { item: '☕ Coffee Grounds', bin: 'Organic' },
+  { item: '🔋 Battery', bin: 'Hazardous' },
+  { item: '💡 Light Bulb', bin: 'Hazardous' },
+  { item: '🧪 Chemicals', bin: 'Hazardous' },
+  { item: '🖥️ Electronics', bin: 'Hazardous' },
+  { item: '🍕 Greasy Pizza Box', bin: 'General' },
+  { item: '🧻 Used Tissue', bin: 'General' },
+  { item: '🍬 Candy Wrapper', bin: 'General' },
+  { item: '📿 Prayer Beads', bin: 'General' },
 ];
 
 const BINS = [
@@ -28,6 +46,8 @@ const BINS = [
   { label: 'Metal', emoji: '🔩' },
   { label: 'Glass', emoji: '🍾' },
   { label: 'Organic', emoji: '🍎' },
+  { label: 'Hazardous', emoji: '☣️' },
+  { label: 'General', emoji: '🗑️' },
 ];
 
 const FAIL_GIFS = [

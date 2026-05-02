@@ -9,17 +9,35 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api
 
 const TRASH_ITEMS = [
   { item: '📦 Cardboard Box', bin: 'Paper' },
-  { item: '🥤 Plastic Bottle', bin: 'Plastic' },
-  { item: '🥫 Tin Can', bin: 'Metal' },
-  { item: '🍏 Apple Core', bin: 'Organic' },
-  { item: '🍷 Glass Bottle', bin: 'Glass' },
   { item: '📰 Newspaper', bin: 'Paper' },
-  { item: '🧴 Shampoo Bottle', bin: 'Plastic' },
-  { item: '🥩 Pizza Box', bin: 'Paper' },
+  { item: '📄 Office Paper', bin: 'Paper' },
+  { item: '📚 Magazine', bin: 'Paper' },
   { item: '🥚 Egg Carton', bin: 'Paper' },
+  { item: '🥤 Plastic Bottle', bin: 'Plastic' },
+  { item: '🧴 Shampoo Bottle', bin: 'Plastic' },
+  { item: '🛍️ Plastic Bag', bin: 'Plastic' },
+  { item: '🥡 Food Container', bin: 'Plastic' },
+  { item: '🧃 Juice Carton (Plastic-lined)', bin: 'Plastic' },
+  { item: '🥫 Tin Can', bin: 'Metal' },
+  { item: '🥤 Soda Can', bin: 'Metal' },
+  { item: '🍴 Aluminum Foil (clean)', bin: 'Metal' },
+  { item: '🔩 Screws', bin: 'Metal' },
+  { item: '🍷 Glass Bottle', bin: 'Glass' },
+  { item: '🥛 Glass Jar', bin: 'Glass' },
+  { item: '🍾 Wine Bottle', bin: 'Glass' },
+  { item: '🍏 Apple Core', bin: 'Organic' },
+  { item: '🍌 Banana Peel', bin: 'Organic' },
   { item: '🍗 Chicken Bone', bin: 'Organic' },
-  { item: '🔋 Battery', bin: 'Metal' },
-  { item: '📿 Prayer Beads', bin: 'Plastic' },
+  { item: '🥦 Vegetable Scraps', bin: 'Organic' },
+  { item: '☕ Coffee Grounds', bin: 'Organic' },
+  { item: '🔋 Battery', bin: 'Hazardous' },
+  { item: '💡 Light Bulb', bin: 'Hazardous' },
+  { item: '🧪 Chemicals', bin: 'Hazardous' },
+  { item: '🖥️ Electronics', bin: 'Hazardous' },
+  { item: '🍕 Greasy Pizza Box', bin: 'General' },
+  { item: '🧻 Used Tissue', bin: 'General' },
+  { item: '🍬 Candy Wrapper', bin: 'General' },
+  { item: '📿 Prayer Beads', bin: 'General' },
 ];
 
 const BINS = [
@@ -28,6 +46,8 @@ const BINS = [
   { label: 'Metal', emoji: '🔩' },
   { label: 'Glass', emoji: '🍾' },
   { label: 'Organic', emoji: '🍎' },
+  { label: 'Hazardous', emoji: '☣️' },
+  { label: 'General', emoji: '🗑️' },
 ];
 
 const SUCCESS_GIFS = [

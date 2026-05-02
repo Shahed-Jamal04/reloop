@@ -30,6 +30,28 @@ const MATERIAL_PAIRS = [
   { material: '📦 Cardboard', industry: '📚 Packaging', id: 8 },
   { material: '🍷 Glass Shards', industry: '🍾 Glassworks', id: 9 },
   { material: '💡 Tungsten Filament', industry: '🔌 Lighting', id: 10 },
+
+  // 🔥 New additions
+  { material: '🛢️ Recycled Oil', industry: '🚗 Automotive', id: 11 },
+  { material: '🔋 Lithium Cells', industry: '🔌 Energy Storage', id: 12 },
+  { material: '📱 E-Waste Components', industry: '💻 Electronics', id: 13 },
+  { material: '🧴 HDPE Plastic Flakes', industry: '🧪 Packaging', id: 14 },
+  { material: '🧪 PET Plastic', industry: '🥤 Beverage', id: 15 },
+  { material: '🪶 Rubber Granules', industry: '🏀 Sports Surfaces', id: 16 },
+  { material: '🚗 Tire Shreds', industry: '🛣️ Road Construction', id: 17 },
+  { material: '🌾 Organic Compost', industry: '🌱 Agriculture', id: 18 },
+  { material: '🧂 Silica Sand (Recycled Glass)', industry: '🏭 Construction Materials', id: 19 },
+  { material: '🧵 Polyester Fibers', industry: '👕 Textile Manufacturing', id: 20 },
+  { material: '📀 Recycled CDs Plastic', industry: '🎨 Creative Design', id: 21 },
+  { material: '🪟 Glass Panels', industry: '🏢 Architecture', id: 22 },
+  { material: '🧲 Rare Earth Metals', industry: '⚙️ High-Tech Manufacturing', id: 23 },
+  { material: '📦 Paper Pulp', industry: '📰 Printing', id: 24 },
+  { material: '🧫 Food Waste Slurry', industry: '⚡ Biogas Energy', id: 25 },
+  { material: '🧴 Cosmetic Containers', industry: '💄 Personal Care', id: 26 },
+  { material: '🔌 Copper Tubing', industry: '❄️ HVAC Systems', id: 27 },
+  { material: '🧱 Fly Ash', industry: '🏗️ Cement Production', id: 28 },
+  { material: '🪵 Wood Chips', industry: '🔥 Biomass Energy', id: 29 },
+  { material: '🧼 Fabric Fibers', industry: '🧻 Insulation', id: 30 },
 ];
 
 export function MaterialMasterGame() {
@@ -51,7 +73,10 @@ export function MaterialMasterGame() {
 
   const shufflePairs = (pairs) => [...pairs].sort(() => Math.random() - 0.5);
   const randomGif = (list) => list[Math.floor(Math.random() * list.length)];
-
+  const getRandomPairs = (pairs, count = 10) => {
+    const shuffled = [...pairs].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  };
   // Timer logic
   useEffect(() => {
     if (gameState !== 'playing' || timeLeft === 0) return;
@@ -68,6 +93,8 @@ export function MaterialMasterGame() {
 
     return () => clearInterval(timer);
   }, [gameState, timeLeft]);
+const selectedPairs = getRandomPairs(MATERIAL_PAIRS, 10);
+
 
   const startGame = () => {
     setGameState('playing');
@@ -80,8 +107,8 @@ export function MaterialMasterGame() {
     setMessage('');
     setFeedbackGif('');
     setResultGif('');
-    setMaterials(shufflePairs(MATERIAL_PAIRS));
-    setIndustries(shufflePairs(MATERIAL_PAIRS));
+    setMaterials(shufflePairs(selectedPairs));
+    setIndustries(shufflePairs(selectedPairs));
     playActionSound();
   };
 
