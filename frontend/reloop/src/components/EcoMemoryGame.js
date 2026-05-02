@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './MaterialMasterGame.css';
+import './ecoMemoryGame.css';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { playActionSound, playSuccessSound, playFailSound, playWinSound } from '../utils/gameAudio';
