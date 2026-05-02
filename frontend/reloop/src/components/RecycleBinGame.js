@@ -7,6 +7,29 @@ import { playActionSound, playSuccessSound, playFailSound, playWinSound, playLos
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+const TRASH_ITEMS = [
+  { item: '📦 Cardboard Box', bin: 'Paper' },
+  { item: '🥤 Plastic Bottle', bin: 'Plastic' },
+  { item: '🥫 Tin Can', bin: 'Metal' },
+  { item: '🍏 Apple Core', bin: 'Organic' },
+  { item: '🍷 Glass Bottle', bin: 'Glass' },
+  { item: '📰 Newspaper', bin: 'Paper' },
+  { item: '🧴 Shampoo Bottle', bin: 'Plastic' },
+  { item: '🥩 Pizza Box', bin: 'Paper' },
+  { item: '🥚 Egg Carton', bin: 'Paper' },
+  { item: '🍗 Chicken Bone', bin: 'Organic' },
+  { item: '🔋 Battery', bin: 'Metal' },
+  { item: '📿 Prayer Beads', bin: 'Plastic' },
+];
+
+const BINS = [
+  { label: 'Paper', emoji: '📄' },
+  { label: 'Plastic', emoji: '🥤' },
+  { label: 'Metal', emoji: '🔩' },
+  { label: 'Glass', emoji: '🍾' },
+  { label: 'Organic', emoji: '🍎' },
+];
+
 const SUCCESS_GIFS = [
   `${process.env.PUBLIC_URL}/win-1.jfif`,
   `${process.env.PUBLIC_URL}/win-2.gif`,
@@ -19,40 +42,22 @@ const FAIL_GIFS = [
   `${process.env.PUBLIC_URL}/lose-3.gif`,
 ];
 
-const MATERIAL_PAIRS = [
-  { material: '🪨 Steel Scrap', industry: '🏗️ Construction', id: 1 },
-  { material: '🪵 Reclaimed Wood', industry: '🏠 Furniture', id: 2 },
-  { material: '♻️ Plastic Pellets', industry: '🛠️ Manufacturing', id: 3 },
-  { material: '🔧 Aluminum Offcuts', industry: '✈️ Aerospace', id: 4 },
-  { material: '🧱 Concrete Chunks', industry: '🚧 Civil Works', id: 5 },
-  { material: '🔩 Copper Wire', industry: '⚡ Electrical', id: 6 },
-  { material: '🧼 Textile Scrap', industry: '👕 Apparel', id: 7 },
-  { material: '📦 Cardboard', industry: '📚 Packaging', id: 8 },
-  { material: '🍷 Glass Shards', industry: '🍾 Glassworks', id: 9 },
-  { material: '💡 Tungsten Filament', industry: '🔌 Lighting', id: 10 },
-];
-
-export function MaterialMasterGame() {
+export function RecycleBinGame() {
   const { user, token, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [gameState, setGameState] = useState('menu'); // menu, playing, finished
+  const [gameState, setGameState] = useState('menu');
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(90);
-  const [matched, setMatched] = useState([]);
-  const [selectedMaterial, setSelectedMaterial] = useState(null);
-  const [selectedIndustry, setSelectedIndustry] = useState(null);
-  const [materials, setMaterials] = useState([]);
-  const [industries, setIndustries] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [currentItem, setCurrentItem] = useState(TRASH_ITEMS[0]);
+  const [selectedBin, setSelectedBin] = useState(null);
   const failStreakRef = useRef(0);
   const [feedbackGif, setFeedbackGif] = useState('');
   const [resultGif, setResultGif] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const shufflePairs = (pairs) => [...pairs].sort(() => Math.random() - 0.5);
   const randomGif = (list) => list[Math.floor(Math.random() * list.length)];
 
-  // Timer logic
   useEffect(() => {
     if (gameState !== 'playing' || timeLeft === 0) return;
 
@@ -69,47 +74,44 @@ export function MaterialMasterGame() {
     return () => clearInterval(timer);
   }, [gameState, timeLeft]);
 
+  const pickItem = () => {
+    const next = TRASH_ITEMS[Math.floor(Math.random() * TRASH_ITEMS.length)];
+    setCurrentItem(next);
+  };
+
   const startGame = () => {
     setGameState('playing');
     setScore(0);
-    setTimeLeft(90);
-    setMatched([]);
+    setTimeLeft(60);
+    setSelectedBin(null);
     failStreakRef.current = 0;
-    setSelectedMaterial(null);
-    setSelectedIndustry(null);
-    setMessage('');
     setFeedbackGif('');
     setResultGif('');
-    setMaterials(shufflePairs(MATERIAL_PAIRS));
-    setIndustries(shufflePairs(MATERIAL_PAIRS));
+    setMessage('');
+    pickItem();
     playActionSound();
   };
 
-  const handleMaterialClick = (material) => {
-    if (matched.includes(material.id)) return;
-    setSelectedMaterial(material);
+  const handleBinClick = (bin) => {
+    if (gameState !== 'playing') return;
+    setSelectedBin(bin);
   };
 
-  const handleIndustryClick = (industry) => {
-    if (matched.includes(industry.id)) return;
-    setSelectedIndustry(industry);
-  };
-
-  // Check for match
   useEffect(() => {
-    if (!selectedMaterial || !selectedIndustry) return;
+    if (!selectedBin) return;
 
-    const isMatch = selectedMaterial.id === selectedIndustry.id;
+    const isCorrect = selectedBin === currentItem.bin;
     const currentFailStreak = failStreakRef.current;
-    const nextFailStreak = isMatch ? 0 : currentFailStreak + 1;
+    const nextFailStreak = isCorrect ? 0 : currentFailStreak + 1;
 
-    if (isMatch) {
-      setMessage('✅ Perfect match! +100 points');
+    if (isCorrect) {
+      setScore((prev) => prev + 100);
+      setMessage('✅ Nice! Correct bin.');
       setFeedbackGif(randomGif(SUCCESS_GIFS));
       failStreakRef.current = 0;
       playSuccessSound();
     } else {
-      setMessage('❌ Not a match, try again');
+      setMessage(`❌ Nope — ${currentItem.item} belongs in ${currentItem.bin}.`);
       failStreakRef.current = nextFailStreak;
       setFeedbackGif(randomGif(FAIL_GIFS));
       playFailSound();
@@ -121,27 +123,14 @@ export function MaterialMasterGame() {
     }
 
     const timeout = setTimeout(() => {
-      if (isMatch) {
-        setMatched((prev) => {
-          const newMatched = [...prev, selectedMaterial.id];
-          if (newMatched.length === 6) {
-            setGameState('finished');
-            setResultGif(randomGif(SUCCESS_GIFS));
-            playWinSound();
-          }
-          return newMatched;
-        });
-        setScore((prev) => prev + 100);
-      }
-
-      setSelectedMaterial(null);
-      setSelectedIndustry(null);
+      setSelectedBin(null);
       setMessage('');
       setFeedbackGif('');
-    }, 900);
+      pickItem();
+    }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [selectedMaterial, selectedIndustry]);
+  }, [selectedBin, currentItem]);
 
   const submitScore = async () => {
     if (!isAuthenticated || !user || !token) return;
@@ -150,9 +139,9 @@ export function MaterialMasterGame() {
     try {
       await axios.post(`${API_BASE_URL}/games/scores`, {
         userId: user.id,
-        gameName: 'material-master',
-        score: score,
-        timeSpent: 90 - timeLeft,
+        gameName: 'trash-toss',
+        score,
+        timeSpent: 60 - timeLeft,
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -168,8 +157,8 @@ export function MaterialMasterGame() {
   return (
     <div className="game-container">
       <div className="game-header">
-        <h1>🎮 Material Master</h1>
-        <p>Match materials to their best industries!</p>
+        <h1>♻️ Trash Toss</h1>
+        <p>Choose the right recycling bin for each item.</p>
       </div>
 
       {gameState === 'menu' && (
@@ -177,14 +166,14 @@ export function MaterialMasterGame() {
           <div className="game-info">
             <h2>How to Play</h2>
             <ul>
-              <li>✅ Match materials with their best use case</li>
-              <li>⏱️ You have 90 seconds</li>
-              <li>💯 Each match = 100 points</li>
-              <li>🏆 Make it to the leaderboard!</li>
+              <li>✅ Pick the correct bin for the item shown</li>
+              <li>⏱️ You have 60 seconds</li>
+              <li>💯 Each correct toss = 100 points</li>
+              <li>🏆 Save your score when you finish</li>
             </ul>
           </div>
           <button onClick={startGame} className="btn btn-success btn-lg game-start-btn">
-            Start Game
+            Start Trash Toss
           </button>
         </div>
       )}
@@ -202,55 +191,30 @@ export function MaterialMasterGame() {
                 {timeLeft}s
               </span>
             </div>
-            <div className="stat">
-              <span className="stat-label">Matched</span>
-              <span className="stat-value">{matched.length}/6</span>
-            </div>
+          </div>
+
+          <div className="item-card">
+            <span>{currentItem.item}</span>
           </div>
 
           {message && <div className="game-message">{message}</div>}
           {feedbackGif && (
             <div className="feedback-gif">
-              <img src={feedbackGif} alt="game feedback" />
+              <img src={feedbackGif} alt="feedback" />
             </div>
           )}
 
-          <div className="game-grid">
-            <div className="game-column">
-              <h3>Materials</h3>
-              <div className="material-list">
-                {materials.map((mat) => (
-                  <button
-                    key={mat.id}
-                    className={`material-card ${
-                      matched.includes(mat.id) ? 'matched' : ''
-                    } ${selectedMaterial?.id === mat.id ? 'selected' : ''}`}
-                    onClick={() => handleMaterialClick(mat)}
-                    disabled={matched.includes(mat.id)}
-                  >
-                    {mat.material}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="game-column">
-              <h3>Industries</h3>
-              <div className="industry-list">
-                {industries.map((ind) => (
-                  <button
-                    key={ind.id}
-                    className={`industry-card ${
-                      matched.includes(ind.id) ? 'matched' : ''
-                    } ${selectedIndustry?.id === ind.id ? 'selected' : ''}`}
-                    onClick={() => handleIndustryClick(ind)}
-                    disabled={matched.includes(ind.id)}
-                  >
-                    {ind.industry}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="bin-list">
+            {BINS.map((bin) => (
+              <button
+                key={bin.label}
+                className={`bin-card ${selectedBin === bin.label ? 'selected' : ''}`}
+                onClick={() => handleBinClick(bin.label)}
+              >
+                <span className="bin-emoji">{bin.emoji}</span>
+                {bin.label}
+              </button>
+            ))}
           </div>
         </div>
       )}
@@ -264,9 +228,9 @@ export function MaterialMasterGame() {
               <span className="score-label">Points</span>
             </div>
             <p className="finish-message">
-              {matched.length === 6
-                ? '🎉 Perfect! You matched everything!'
-                : `Good effort! You matched ${matched.length}/6 pairs`}
+              {score >= 400
+                ? 'Great job! You know your recycling bins.'
+                : 'Keep practicing — recycling is a skill!'}
             </p>
             {resultGif && (
               <div className="result-gif">
@@ -297,4 +261,4 @@ export function MaterialMasterGame() {
   );
 }
 
-export default MaterialMasterGame;
+export default RecycleBinGame;

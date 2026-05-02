@@ -1,0 +1,66 @@
+.game-page {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.game-selection-bar {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.game-switch-btn {
+  padding: 0.9rem 1.4rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 999px;
+  background: white;
+  color: #111827;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.game-switch-btn:hover {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.game-switch-btn.active {
+  border-color: #16a34a;
+  background: #16a34a;
+  color: white;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.2);
+}
+
+.game-selection-bar {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: rgba(249, 250, 251, 0.9);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(22, 163, 74, 0.15);
+}
+
+.game-switch-btn {
+  padding: 0.9rem 1.4rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 999px;
+  background: white;
+  color: #111827;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 124px;
+}
+
+.game-switch-btn:hover {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+

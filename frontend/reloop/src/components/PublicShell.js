@@ -33,6 +33,8 @@ export function PublicShell({ children }) {
     () => [
       { to: '/', label: 'Home', end: true },
       { to: '/marketplace', label: 'Browse Materials', end: false },
+      { to: '/game', label: '🎮 Play Game', end: false },
+      { to: '/leaderboard', label: '🏆 Leaderboard', end: false },
       { to: addMaterialPath(role, isAuthenticated), label: 'Add Material', end: false },
     ],
     [role, isAuthenticated]

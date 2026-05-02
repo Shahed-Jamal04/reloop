@@ -1,5 +1,5 @@
 import express from 'express';
-import pool from '../db.js';
+import { getConnection } from '../db.js';
 import { authenticate } from '../authMiddleware.js';
 
 const router = express.Router();
@@ -21,11 +21,17 @@ router.post('/scores', authenticate, async (req, res) => {
     }
 
     const query = `
-      INSERT INTO GameScores (userId, gameName, score, timeSpent, createdAt)
-      VALUES (@userId, @gameName, @score, @timeSpent, GETDATE());
-      SELECT SCOPE_IDENTITY() as id;
+      MERGE GameScores AS target
+      USING (SELECT @userId as userId, @gameName as gameName) AS source
+      ON target.userId = source.userId AND target.gameName = source.gameName
+      WHEN MATCHED THEN
+        UPDATE SET score = @score, timeSpent = @timeSpent, createdAt = GETDATE()
+      WHEN NOT MATCHED THEN
+        INSERT (userId, gameName, score, timeSpent, createdAt)
+        VALUES (@userId, @gameName, @score, @timeSpent, GETDATE());
     `;
 
+    const pool = await getConnection();
     const request = pool.request();
     request.input('userId', userId);
     request.input('gameName', gameName);
@@ -33,15 +39,13 @@ router.post('/scores', authenticate, async (req, res) => {
     request.input('timeSpent', timeSpent || null);
 
     const result = await request.query(query);
-    const scoreId = result.recordset[0].id;
 
     // Check for achievements
     await checkAchievements(userId, gameName, score);
 
     res.json({
       success: true,
-      message: 'Score submitted successfully',
-      scoreId,
+      message: 'Score saved',
     });
   } catch (error) {
     console.error('Error submitting game score:', error);
@@ -83,6 +87,7 @@ router.get('/leaderboard', async (req, res) => {
       ORDER BY gs.score DESC;
     `;
 
+    const pool = await getConnection();
     const request = pool.request();
     request.input('gameName', gameName);
 
@@ -118,6 +123,7 @@ router.get('/user-stats/:userId', async (req, res) => {
       WHERE userId = @userId AND gameName = @gameName;
     `;
 
+    const pool = await getConnection();
     const request = pool.request();
     request.input('userId', parseInt(userId));
     request.input('gameName', gameName);
@@ -155,6 +161,7 @@ router.get('/achievements/:userId', async (req, res) => {
       ORDER BY earnedAt DESC;
     `;
 
+    const pool = await getConnection();
     const request = pool.request();
     request.input('userId', parseInt(userId));
 
@@ -176,6 +183,7 @@ router.get('/achievements/:userId', async (req, res) => {
  */
 async function checkAchievements(userId, gameName, score) {
   try {
+    const pool = await getConnection();
     // First Play Achievement
     const checkFirstPlay = await pool
       .request()
@@ -233,6 +241,7 @@ async function awardAchievement(userId, type, name, badge) {
       END
     `;
 
+    const pool = await getConnection();
     const request = pool.request();
     request.input('userId', userId);
     request.input('type', type);

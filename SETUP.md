@@ -49,6 +49,7 @@ recyclexapp/
 ## Backend Setup
 
 ### Prerequisites
+
 - Node.js 14+
 - SQL Server (with database created from the schema)
 - ODBC Driver 17 for SQL Server
@@ -56,17 +57,20 @@ recyclexapp/
 ### Installation & Setup
 
 1. **Install dependencies:**
+
    ```bash
    cd api
    npm install
    ```
 
 2. **Create .env file:**
+
    ```bash
    cp .env.example .env
    ```
 
 3. **Update .env with your SQL Server details:**
+
    ```env
    PORT=5000
    JWT_SECRET=your_secret_key_here
@@ -91,6 +95,7 @@ The API will be available at `http://localhost:5000`
 ### Authentication Routes (`/api/auth`)
 
 #### Register
+
 ```
 POST /api/auth/register
 Content-Type: application/json
@@ -116,6 +121,7 @@ Response: 201 Created
 ```
 
 #### Login
+
 ```
 POST /api/auth/login
 Content-Type: application/json
@@ -139,6 +145,7 @@ Response: 200 OK
 ```
 
 #### Verify Token
+
 ```
 POST /api/auth/verify
 Authorization: Bearer <token>
@@ -155,6 +162,7 @@ Response: 200 OK
 ```
 
 #### Health Check
+
 ```
 GET /api/health
 
@@ -167,18 +175,21 @@ Response: 200 OK
 ## Frontend Setup
 
 ### Prerequisites
+
 - Node.js 14+
 - npm or yarn
 
 ### Installation & Setup
 
 1. **Install dependencies:**
+
    ```bash
    cd frontend/recyclexapp
    npm install
    ```
 
 2. **Verify .env file:**
+
    ```bash
    cat .env
    # Should contain: REACT_APP_API_URL=http://localhost:5000/api
@@ -194,12 +205,14 @@ The app will open at `http://localhost:3000`
 ## Frontend Pages
 
 ### Login Page (`/login`)
+
 - Email and password input
 - Validation and error handling
 - Link to register and forgot password pages
 - Redirects to dashboard on success
 
 ### Register Page (`/register`)
+
 - Full name, email, phone input
 - Account type selection (buyer/seller)
 - Password confirmation
@@ -207,6 +220,7 @@ The app will open at `http://localhost:3000`
 - Redirects to login on success
 
 ### Dashboard (`/dashboard`) - Protected Route
+
 - Displays user information
 - Quick action cards (Listings, Cart, Messages, Settings)
 - Logout button
@@ -285,26 +299,31 @@ The system uses these tables:
 ## Security Features
 
 🔒 **Password Security**
+
 - Passwords hashed with bcryptjs (salt rounds: 10)
 - Never stored in plain text
 
 🔐 **JWT Tokens**
+
 - 24-hour expiration
 - Verified on each protected route
 - Stored in localStorage (can be enhanced with HttpOnly cookies)
 
 ✅ **Validation**
+
 - Email format validation
 - Password length requirements
 - Required field validation
 
 🛡️ **CORS**
+
 - Configured to accept requests from frontend
 - Prevents cross-origin vulnerabilities
 
 ## Troubleshooting
 
 ### Backend Connection Issues
+
 ```bash
 # Check if SQL Server is running
 # Verify ODBC Driver 17 is installed
@@ -312,15 +331,18 @@ The system uses these tables:
 ```
 
 ### Token Expiration
+
 - Tokens expire after 24 hours
 - User must login again
 - Consider implementing refresh tokens for better UX
 
 ### CORS Errors
+
 - Ensure FRONTEND_URL in .env matches your frontend URL
 - Check browser console for specific errors
 
 ### Port Already in Use
+
 ```bash
 # Change PORT in .env
 PORT=5001
@@ -329,6 +351,7 @@ PORT=5001
 ## Environment Variables
 
 ### Backend (.env)
+
 ```
 PORT=5000                    # Server port
 JWT_SECRET=your_secret      # JWT signing secret
@@ -337,6 +360,7 @@ FRONTEND_URL=...            # Allowed frontend URL
 ```
 
 ### Frontend (.env)
+
 ```
 REACT_APP_API_URL=...       # Backend API URL
 ```

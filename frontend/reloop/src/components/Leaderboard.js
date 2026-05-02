@@ -1,61 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Leaderboard.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+const GAME_OPTIONS = [
+  { gameName: 'material-master', label: 'Material Master' },
+  { gameName: 'trash-toss', label: 'Trash Toss' },
+  { gameName: 'recycling-quiz', label: 'Recycling Quiz' },
+  { gameName: 'eco-memory', label: 'Eco Memory' },
+  { gameName: 'waste-sorting', label: 'Waste Sorting' },
+  { gameName: 'carbon-adventure', label: 'Carbon Adventure' },
+  { gameName: 'pollution-cleanup', label: 'Pollution Cleanup' },
+];
+
+const getGameLabel = (name) => GAME_OPTIONS.find((option) => option.gameName === name)?.label || 'Game';
+
 export function Leaderboard() {
   const [scores, setScores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [filter, setFilter] = useState('all-time'); // all-time, weekly, today
+  const [period, setPeriod] = useState('all');
+  const [gameName, setGameName] = useState('material-master');
 
-  useEffect(() => {
-    fetchLeaderboard();
-  }, [filter]);
-
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/games/leaderboard`, {
-        params: { period: filter === 'today' ? 'today' : filter === 'weekly' ? 'weekly' : 'all' },
+        params: { gameName, period },
       });
       setScores(response.data || []);
       setError('');
     } catch (err) {
       setError('Failed to load leaderboard');
       console.error(err);
-      // Demo data if API fails
-      setScores([
-        {
-          rank: 1,
-          name: 'Alex Champion',
-          score: 5200,
-          game: 'material-master',
-          date: new Date(),
-          badge: '👑',
-        },
-        {
-          rank: 2,
-          name: 'Jordan Swift',
-          score: 4800,
-          game: 'material-master',
-          date: new Date(),
-          badge: '🥈',
-        },
-        {
-          rank: 3,
-          name: 'Sam Leader',
-          score: 4500,
-          game: 'material-master',
-          date: new Date(),
-          badge: '🥉',
-        },
-      ]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [gameName, period]);
+
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [fetchLeaderboard]);
 
   const getMedalEmoji = (rank) => {
     if (rank === 1) return '👑';
@@ -75,28 +62,41 @@ export function Leaderboard() {
     <div className="leaderboard-container">
       <div className="leaderboard-header">
         <h1>🏆 Leaderboard</h1>
-        <p>Top Material Masters</p>
+        <p>Top players across all RecycleX games</p>
       </div>
 
       <div className="leaderboard-filters">
-        <button
-          className={`filter-btn ${filter === 'today' ? 'active' : ''}`}
-          onClick={() => setFilter('today')}
-        >
-          Today
-        </button>
-        <button
-          className={`filter-btn ${filter === 'weekly' ? 'active' : ''}`}
-          onClick={() => setFilter('weekly')}
-        >
-          This Week
-        </button>
-        <button
-          className={`filter-btn ${filter === 'all-time' ? 'active' : ''}`}
-          onClick={() => setFilter('all-time')}
-        >
-          All Time
-        </button>
+        <div className="filter-group">
+          {GAME_OPTIONS.map((option) => (
+            <button
+              key={option.gameName}
+              className={`filter-btn ${gameName === option.gameName ? 'active' : ''}`}
+              onClick={() => setGameName(option.gameName)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <div className="filter-group">
+          <button
+            className={`filter-btn ${period === 'today' ? 'active' : ''}`}
+            onClick={() => setPeriod('today')}
+          >
+            Today
+          </button>
+          <button
+            className={`filter-btn ${period === 'weekly' ? 'active' : ''}`}
+            onClick={() => setPeriod('weekly')}
+          >
+            This Week
+          </button>
+          <button
+            className={`filter-btn ${period === 'all' ? 'active' : ''}`}
+            onClick={() => setPeriod('all')}
+          >
+            All Time
+          </button>
+        </div>
       </div>
 
       {loading && <div className="loading">Loading leaderboard...</div>}
@@ -105,7 +105,7 @@ export function Leaderboard() {
 
       {!loading && scores.length === 0 && (
         <div className="empty-state">
-          <p>No scores yet. Be the first to play Material Master!</p>
+          <p>No scores yet. Be the first to play {getGameLabel(gameName)}!</p>
         </div>
       )}
 
@@ -155,7 +155,7 @@ export function Leaderboard() {
                 <div className="col-rank medal">{getMedalEmoji(player.rank || idx + 1)}</div>
                 <div className="col-player">
                   <span className="player-name">{player.name || `Player ${idx + 1}`}</span>
-                  <span className="player-game">Material Master</span>
+                  <span className="player-game">{getGameLabel(player.gameName)}</span>
                 </div>
                 <div className="col-score">
                   <span className="score-badge">{player.score}</span>
@@ -173,9 +173,9 @@ export function Leaderboard() {
 
       <div className="leaderboard-cta">
         <p>Want to see your name on the leaderboard?</p>
-        <a href="/game" className="btn btn-success">
-          Play Material Master Now
-        </a>
+        <Link to="/game" className="btn btn-success">
+          Play Now
+        </Link>
       </div>
     </div>
   );

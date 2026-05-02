@@ -163,4 +163,3 @@ DB_CONNECTION_STRING=Server=127.0.0.1,1433;Database=RecycleX;User Id=recyclexapp
 SSMS can connect via Shared Memory; Node needs TCP.
 
 Verify TCP is enabled and the port is fixed (1433 recommended).
-

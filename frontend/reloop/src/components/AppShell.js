@@ -10,6 +10,8 @@ function getMenuForRole(role) {
       items: [
         { to: '/', label: 'Home', icon: 'bi-house' },
         { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
+        { to: '/game', label: 'Play Game', icon: 'bi-controller' },
+        { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
         { to: '/login', label: 'Login', icon: 'bi-box-arrow-in-right' },
         { to: '/register', label: 'Register', icon: 'bi-person-plus' },
       ],
@@ -24,6 +26,8 @@ function getMenuForRole(role) {
         { to: '/admin/materials', label: 'Approvals', icon: 'bi-check2-circle' },
         { to: '/admin/testimonials', label: 'Testimonials', icon: 'bi-chat-quote' },
         { to: '/admin/users', label: 'Users', icon: 'bi-people' },
+        { to: '/game', label: 'Play Game', icon: 'bi-controller' },
+        { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
       ],
     };
   }
@@ -37,6 +41,8 @@ function getMenuForRole(role) {
         { to: '/seller/requests', label: 'Requests', icon: 'bi-inbox' },
         { to: '/orders', label: 'Orders', icon: 'bi-receipt' },
         { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
+        { to: '/game', label: 'Play Game', icon: 'bi-controller' },
+        { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
       ],
     };
   }
@@ -48,6 +54,8 @@ function getMenuForRole(role) {
       { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
       { to: '/requests', label: 'My Requests', icon: 'bi-chat-left-text' },
       { to: '/orders', label: 'Orders', icon: 'bi-receipt' },
+      { to: '/game', label: 'Play Game', icon: 'bi-controller' },
+      { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
     ],
   };
 }
