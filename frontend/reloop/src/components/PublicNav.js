@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './PublicNav.css';
 
 export function PublicNav() {
   const { isAuthenticated, user } = useAuth();
+  const { t } = useTheme();
 
   const dashboardLink =
     user?.role === 'admin'
@@ -22,7 +24,7 @@ export function PublicNav() {
 
         <div className="public-links">
           <NavLink to="/" className={({ isActive }) => `public-link${isActive ? ' active' : ''}`} end>
-            Home
+            {t('home')}
           </NavLink>
           <NavLink
             to="/marketplace"
@@ -34,13 +36,13 @@ export function PublicNav() {
             to="/game"
             className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
           >
-            🎮 Play Game
+            🎮 {t('games')}
           </NavLink>
           <NavLink
             to="/leaderboard"
             className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
           >
-            🏆 Leaderboard
+            🏆 {t('leaderboard')}
           </NavLink>
 
           {isAuthenticated ? (
@@ -50,7 +52,7 @@ export function PublicNav() {
           ) : (
             <>
               <NavLink to="/login" className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}>
-                Login
+                {t('login')}
               </NavLink>
               <Link to="/register" className="public-cta">
                 Register

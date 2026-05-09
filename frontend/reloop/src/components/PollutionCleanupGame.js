@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './MaterialMasterGame.css';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { playActionSound, playSuccessSound, playWinSound, playLoseSound } from '../utils/gameAudio';
 
@@ -58,6 +59,7 @@ const generateBeachItems = () => shuffle(BEACH_TRASH_OPTIONS).slice(0, 6);
 
 export function PollutionCleanupGame() {
   const { user, token, isAuthenticated } = useAuth();
+  const { t } = useTheme();
   const navigate = useNavigate();
   const [gameState, setGameState] = useState('menu');
   const [timeLeft, setTimeLeft] = useState(30);
@@ -157,23 +159,23 @@ export function PollutionCleanupGame() {
   return (
     <div className="game-container">
       <div className="game-header">
-        <h1>🏖️ Beach Cleanup</h1>
-        <p>Click trash items on the beach to clean them before time runs out.</p>
+        <h1>{t('pollutionCleanupHeading')}</h1>
+        <p>{t('pollutionCleanupDescription')}</p>
       </div>
 
       {gameState === 'menu' && (
         <div className="game-menu">
           <div className="game-info">
-            <h2>How to Play</h2>
+            <h2>{t('howToPlay')}</h2>
             <ul>
-              <li>✅ Click trash cards on the beach to clean them up</li>
-              <li>💯 Each item gives points, and boosts increase your cleaning power</li>
-              <li>⏱️ You have 30 seconds to remove as much pollution as possible</li>
-              <li>🎯 Finish the beach or get a high score before time expires</li>
+              <li>{t('pollutionCleanupInstr1')}</li>
+              <li>{t('pollutionCleanupInstr2')}</li>
+              <li>{t('pollutionCleanupInstr3')}</li>
+              <li>{t('pollutionCleanupInstr4')}</li>
             </ul>
           </div>
           <button onClick={startGame} className="btn btn-success btn-lg game-start-btn">
-            Start Beach Cleanup
+            {t('startGame')}
           </button>
         </div>
       )}
@@ -182,15 +184,15 @@ export function PollutionCleanupGame() {
         <div className="game-board beach-board">
           <div className="game-stats">
             <div className="stat">
-              <span className="stat-label">Score</span>
+              <span className="stat-label">{t('score')}</span>
               <span className="stat-value">{score}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Time</span>
+              <span className="stat-label">{t('time')}</span>
               <span className={`stat-value ${timeLeft < 10 ? 'warning' : ''}`}>{timeLeft}s</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Boost</span>
+              <span className="stat-label">{t('boost')}</span>
               <span className="stat-value">x{cleanPower}</span>
             </div>
           </div>
@@ -208,8 +210,8 @@ export function PollutionCleanupGame() {
 
           <div className="beach-hint">
             {beachItems.length > 0
-              ? `Trash left: ${beachItems.length} — click fast!`
-              : 'All visible trash cleaned. Wait for your final score.'}
+              ? `${t('trashLeft')}: ${beachItems.length} — ${t('clickFast')}`
+              : t('allTrashCleaned')}
           </div>
         </div>
       )}
@@ -217,15 +219,17 @@ export function PollutionCleanupGame() {
       {gameState === 'finished' && (
         <div className="game-finish">
           <div className="finish-card">
-            <h2>Cleanup Complete!</h2>
+            <h2>{score >= 100 ? t('beachCleanupComplete') : t('gameFailed')}</h2>
             <div className="finish-score">
               <span className="score-value">{score}</span>
-              <span className="score-label">Points</span>
+              <span className="score-label">{t('points')}</span>
             </div>
             <p className="finish-message">
-              {score >= 180
-                ? 'Amazing! You cleaned the beach and helped the shoreline.'
-                : 'Good effort! Try again to beat your cleanup score.'}
+              {score < 100
+                ? t('scoreBelow100')
+                : score >= 180
+                ? t('pollutionCleanupSuccess')
+                : t('pollutionCleanupFailed')}
             </p>
             {resultGif && (
               <div className="feedback-gif">
@@ -233,15 +237,15 @@ export function PollutionCleanupGame() {
               </div>
             )}
             <div className="finish-actions">
-              {isAuthenticated ? (
+              {isAuthenticated && score >= 100 ? (
                 <button onClick={submitScore} disabled={loading} className="btn btn-success btn-lg">
-                  {loading ? 'Saving...' : '📊 Save Score & View Leaderboard'}
+                  {loading ? t('saving') : t('saveScore')}
                 </button>
-              ) : (
-                <p className="text-muted">Log in to save your score!</p>
-              )}
+              ) : !isAuthenticated ? (
+                <p className="text-muted">{t('loginToSave')}</p>
+              ) : null}
               <button onClick={startGame} className="btn btn-outline-secondary btn-lg">
-                Play Again
+                {t('playAgain')}
               </button>
             </div>
           </div>

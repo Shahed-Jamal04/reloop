@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
 import './rolePages.css';
 
@@ -51,6 +52,7 @@ function statusBadgeClass(status) {
 
 export function OrdersPage() {
   const { token, user } = useAuth();
+  const { t } = useTheme();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -100,7 +102,7 @@ export function OrdersPage() {
       );
       await load();
     } catch (err) {
-      setError(err.response?.data?.error || 'Payment failed.');
+      setError(err.response?.data?.error || t('paymentFailed'));
     } finally {
       setActionId(null);
     }
@@ -117,7 +119,7 @@ export function OrdersPage() {
       );
       await load();
     } catch (err) {
-      setError(err.response?.data?.error || 'Update failed.');
+      setError(err.response?.data?.error || t('updateFailed'));
     } finally {
       setActionId(null);
     }
@@ -145,20 +147,20 @@ export function OrdersPage() {
 
   const validatePayForm = () => {
     const next = {};
-    if (!payForm.nameOnCard.trim()) next.nameOnCard = 'Name on card is required.';
+    if (!payForm.nameOnCard.trim()) next.nameOnCard = t('nameOnCardRequired');
 
     const cardDigits = digitsOnly(payForm.cardNumber);
-    if (!cardDigits) next.cardNumber = 'Card number is required.';
-    else if (!luhnCheck(cardDigits)) next.cardNumber = 'Card number looks invalid.';
+    if (!cardDigits) next.cardNumber = t('cardNumberRequired');
+    else if (!luhnCheck(cardDigits)) next.cardNumber = t('cardNumberInvalid');
 
     const exp = parseExpiry(payForm.expiry);
-    if (!payForm.expiry.trim()) next.expiry = 'Expiry is required (MM/YY).';
-    else if (!exp) next.expiry = 'Use MM/YY (e.g. 08/28).';
-    else if (exp.expiresAt < new Date()) next.expiry = 'Card is expired.';
+    if (!payForm.expiry.trim()) next.expiry = t('expiryRequired');
+    else if (!exp) next.expiry = t('expiryInvalid');
+    else if (exp.expiresAt < new Date()) next.expiry = t('cardExpired');
 
     const cvvDigits = digitsOnly(payForm.cvv);
-    if (!cvvDigits) next.cvv = 'CVV is required.';
-    else if (cvvDigits.length < 3 || cvvDigits.length > 4) next.cvv = 'CVV must be 3–4 digits.';
+    if (!cvvDigits) next.cvv = t('cvvRequired');
+    else if (cvvDigits.length < 3 || cvvDigits.length > 4) next.cvv = t('cvvInvalid');
 
     setPayErrors(next);
     return Object.keys(next).length === 0;
@@ -175,18 +177,18 @@ export function OrdersPage() {
   return (
     <div className="role-page py-4 px-3">
       <header className="role-page-hero role-page-hero--gradient mb-4">
-        <h1 className="role-page-title">Orders</h1>
+        <h1 className="role-page-title">{t('orders')}</h1>
         <p className="role-page-lead mb-0">
           {isSeller
-            ? 'Orders that include your materials. After the buyer pays (mock), you can mark the order complete when fulfilled.'
-            : 'Pay with the mock checkout to confirm an order, then you or the seller can mark it complete.'}
+            ? t('ordersDescriptionSeller')
+            : t('ordersDescriptionBuyer')}
         </p>
       </header>
 
       {loading && (
         <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
           <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
-          <span>Loading orders…</span>
+          <span>{t('loadingOrders')}</span>
         </div>
       )}
 

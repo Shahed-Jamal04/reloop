@@ -3,6 +3,7 @@ import axios from 'axios';
 import './MaterialMasterGame.css';
 import './ecoMemoryGame.css';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { playActionSound, playSuccessSound, playFailSound, playWinSound } from '../utils/gameAudio';
 
@@ -28,6 +29,7 @@ const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);
 
 export function EcoMemoryGame() {
   const { user, token, isAuthenticated } = useAuth();
+  const { t } = useTheme();
   const navigate = useNavigate();
   const [gameState, setGameState] = useState('menu');
   const [cards, setCards] = useState([]);
@@ -48,17 +50,13 @@ export function EcoMemoryGame() {
       if (isMatch) {
         setMatchedIds((prev) => [...prev, firstChoice.pairId]);
         setScore((prev) => prev + 120);
-        setMessage('✅ Match! Great job.');
+        setMessage(t('matchSuccess'));
         playSuccessSound();
       } else {
-        setMessage('❌ Not a match. Try again.');
-        playFailSound();
-      }
-
-      setFirstChoice(null);
+        setMessage(t('matchFail'));
       setSecondChoice(null);
       setTimeout(() => setMessage(''), 800);
-    }, 800);
+    }}, 800);
 
     return () => clearTimeout(timeout);
   }, [firstChoice, secondChoice]);
@@ -78,7 +76,7 @@ export function EcoMemoryGame() {
     setSecondChoice(null);
     setMatchedIds([]);
     setScore(0);
-    setMessage('Memorize all cards. The game starts in 5 seconds!');
+    setMessage(t('previewStartMessage'));
     setResultGif('');
     setLoading(false);
     setPreviewCountdown(5);
@@ -89,7 +87,7 @@ export function EcoMemoryGame() {
     if (gameState !== 'preview') return;
     if (previewCountdown <= 0) {
       setGameState('playing');
-      setMessage('Match the item with the correct bin.');
+      setMessage(t('matchCardsPrompt'));
       return;
     }
 
@@ -154,7 +152,9 @@ export function EcoMemoryGame() {
     return (
       <div className="memory-card-front">
         <div className="memory-card-label">{card.label}</div>
-        <div className="memory-card-type">{card.type === 'item' ? 'ITEM' : 'BIN'}</div>
+        <div className="memory-card-type">
+          {card.type === 'item' ? t('itemLabel') : t('binLabel')}
+        </div>
       </div>
     );
   };
@@ -162,23 +162,23 @@ export function EcoMemoryGame() {
   return (
     <div className="game-container">
       <div className="game-header">
-        <h1>🧩 Eco Memory Match</h1>
-        <p>Match recycling items to the right bin.</p>
+        <h1>🧩 {t('ecoMemory')}</h1>
+        <p>{t('ecoMemoryDescription')}</p>
       </div>
 
       {gameState === 'menu' && (
         <div className="game-menu">
           <div className="game-info">
-            <h2>How to Play</h2>
+            <h2>{t('howToPlay')}</h2>
             <ul>
-              <li>✅ Flip two cards to match the recycling item with the correct bin</li>
-              <li>🧠 Look for patterns and remember the card positions</li>
-              <li>💯 Each match gives 120 points</li>
-              <li>🎯 Match all the pairs to win</li>
+              <li>{t('ecoMemoryInstr1')}</li>
+              <li>{t('ecoMemoryInstr2')}</li>
+              <li>{t('ecoMemoryInstr3')}</li>
+              <li>{t('ecoMemoryInstr4')}</li>
             </ul>
           </div>
           <button onClick={startGame} className="btn btn-success btn-lg game-start-btn">
-            Start Memory Match
+            {t('startGame')}
           </button>
         </div>
       )}
@@ -187,16 +187,16 @@ export function EcoMemoryGame() {
         <div className="game-board">
           <div className="game-stats">
             <div className="stat">
-              <span className="stat-label">Score</span>
+              <span className="stat-label">{t('score')}</span>
               <span className="stat-value">{score}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Matches</span>
+              <span className="stat-label">{t('matches')}</span>
               <span className="stat-value">{matchedIds.length}/{PAIRS.length / 2}</span>
             </div>
             {gameState === 'preview' && (
               <div className="stat">
-                <span className="stat-label">Preview</span>
+                <span className="stat-label">{t('preview')}</span>
                 <span className="stat-value">{previewCountdown}s</span>
               </div>
             )}
@@ -229,15 +229,15 @@ export function EcoMemoryGame() {
       {gameState === 'finished' && (
         <div className="game-finish">
           <div className="finish-card">
-            <h2>Memory Match Complete!</h2>
+            <h2>{t('memoryMatchComplete')}</h2>
             <div className="finish-score">
               <span className="score-value">{score}</span>
-              <span className="score-label">Points</span>
+              <span className="score-label">{t('points')}</span>
             </div>
             <p className="finish-message">
               {score >= 480
-                ? 'Excellent memory! You matched every pair quickly.'
-                : 'Well done! Keep improving your recycling recall.'}
+                ? t('ecoMemoryFinishGreat')
+                : t('ecoMemoryFinishGood')}
             </p>
             {resultGif && (
               <div className="feedback-gif">
@@ -247,13 +247,13 @@ export function EcoMemoryGame() {
             <div className="finish-actions">
               {isAuthenticated ? (
                 <button onClick={submitScore} disabled={loading} className="btn btn-success btn-lg">
-                  {loading ? 'Saving...' : '📊 Save Score & View Leaderboard'}
+                  {loading ? t('saving') : t('saveScore')}
                 </button>
               ) : (
-                <p className="text-muted">Log in to save your score!</p>
+                <p className="text-muted">{t('loginToSave')}</p>
               )}
               <button onClick={startGame} className="btn btn-outline-secondary btn-lg">
-                Play Again
+                {t('playAgain')}
               </button>
             </div>
           </div>

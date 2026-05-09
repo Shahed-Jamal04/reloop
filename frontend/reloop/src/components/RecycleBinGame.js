@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './MaterialMasterGame.css';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { playActionSound, playSuccessSound, playFailSound, playWinSound, playLoseSound } from '../utils/gameAudio';
 
@@ -64,6 +65,7 @@ const FAIL_GIFS = [
 
 export function RecycleBinGame() {
   const { user, token, isAuthenticated } = useAuth();
+  const { t } = useTheme();
   const navigate = useNavigate();
   const [gameState, setGameState] = useState('menu');
   const [score, setScore] = useState(0);
@@ -177,23 +179,23 @@ export function RecycleBinGame() {
   return (
     <div className="game-container">
       <div className="game-header">
-        <h1>♻️ Trash Toss</h1>
-        <p>Choose the right recycling bin for each item.</p>
+        <h1>♻️ {t('trashToss')}</h1>
+        <p>{t('trashTossDescription')}</p>
       </div>
 
       {gameState === 'menu' && (
         <div className="game-menu">
           <div className="game-info">
-            <h2>How to Play</h2>
+            <h2>{t('howToPlay')}</h2>
             <ul>
-              <li>✅ Pick the correct bin for the item shown</li>
-              <li>⏱️ You have 60 seconds</li>
-              <li>💯 Each correct toss = 100 points</li>
-              <li>🏆 Save your score when you finish</li>
+              <li>{t('trashTossInstr1')}</li>
+              <li>{t('trashTossInstr2')}</li>
+              <li>{t('trashTossInstr3')}</li>
+              <li>{t('trashTossInstr4')}</li>
             </ul>
           </div>
           <button onClick={startGame} className="btn btn-success btn-lg game-start-btn">
-            Start Trash Toss
+            {t('startGame')}
           </button>
         </div>
       )}

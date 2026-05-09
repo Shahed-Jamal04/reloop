@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './MaterialMasterGame.css';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { playActionSound, playSuccessSound, playFailSound, playWinSound, playLoseSound } from '../utils/gameAudio';
 
@@ -56,6 +57,7 @@ const MATERIAL_PAIRS = [
 
 export function MaterialMasterGame() {
   const { user, token, isAuthenticated } = useAuth();
+  const { t } = useTheme();
   const navigate = useNavigate();
   const [gameState, setGameState] = useState('menu'); // menu, playing, finished
   const [score, setScore] = useState(0);
@@ -195,23 +197,23 @@ const selectedPairs = getRandomPairs(MATERIAL_PAIRS, 10);
   return (
     <div className="game-container">
       <div className="game-header">
-        <h1>🎮 Material Master</h1>
-        <p>Match materials to their best industries!</p>
+        <h1>🎮 {t('materialMaster')}</h1>
+        <p>{t('matchMaterials')}</p>
       </div>
 
       {gameState === 'menu' && (
         <div className="game-menu">
           <div className="game-info">
-            <h2>How to Play</h2>
+            <h2>{t('howToPlay')}</h2>
             <ul>
-              <li>✅ Match materials with their best use case</li>
-              <li>⏱️ You have 90 seconds</li>
-              <li>💯 Each match = 100 points</li>
-              <li>🏆 Make it to the leaderboard!</li>
+              <li>{t('materialMasterInstr1')}</li>
+              <li>{t('materialMasterInstr2')}</li>
+              <li>{t('materialMasterInstr3')}</li>
+              <li>{t('materialMasterInstr4')}</li>
             </ul>
           </div>
           <button onClick={startGame} className="btn btn-success btn-lg game-start-btn">
-            Start Game
+            {t('startGame')}
           </button>
         </div>
       )}
@@ -220,17 +222,17 @@ const selectedPairs = getRandomPairs(MATERIAL_PAIRS, 10);
         <div className="game-board">
           <div className="game-stats">
             <div className="stat">
-              <span className="stat-label">Score</span>
+              <span className="stat-label">{t('score')}</span>
               <span className="stat-value">{score}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Time</span>
+              <span className="stat-label">{t('time')}</span>
               <span className={`stat-value ${timeLeft < 10 ? 'warning' : ''}`}>
                 {timeLeft}s
               </span>
             </div>
             <div className="stat">
-              <span className="stat-label">Matched</span>
+              <span className="stat-label">{t('matches')}</span>
               <span className="stat-value">{matched.length}/6</span>
             </div>
           </div>
@@ -262,7 +264,7 @@ const selectedPairs = getRandomPairs(MATERIAL_PAIRS, 10);
             </div>
 
             <div className="game-column">
-              <h3>Industries</h3>
+              <h3>{t('industries')}</h3>
               <div className="industry-list">
                 {industries.map((ind) => (
                   <button
@@ -285,15 +287,15 @@ const selectedPairs = getRandomPairs(MATERIAL_PAIRS, 10);
       {gameState === 'finished' && (
         <div className="game-finish">
           <div className="finish-card">
-            <h2>Game Over!</h2>
+            <h2>{score >= 100 ? t('gameOver') : t('gameFailed')}</h2>
             <div className="finish-score">
               <span className="score-value">{score}</span>
               <span className="score-label">Points</span>
             </div>
             <p className="finish-message">
               {matched.length === 6
-                ? '🎉 Perfect! You matched everything!'
-                : `Good effort! You matched ${matched.length}/6 pairs`}
+                ? t('perfectMatch')
+                : `${t('goodEffort')} ${matched.length}/6 ${t('pairs')}`}
             </p>
             {resultGif && (
               <div className="result-gif">
@@ -308,13 +310,13 @@ const selectedPairs = getRandomPairs(MATERIAL_PAIRS, 10);
                   disabled={loading}
                   className="btn btn-success btn-lg"
                 >
-                  {loading ? 'Saving...' : '📊 Save Score & View Leaderboard'}
+                  {loading ? t('saving') : t('saveScore')}
                 </button>
               ) : (
                 <p className="text-muted">Log in to save your score!</p>
               )}
               <button onClick={startGame} className="btn btn-outline-secondary btn-lg">
-                Play Again
+                {t('tryAgain')}
               </button>
             </div>
           </div>

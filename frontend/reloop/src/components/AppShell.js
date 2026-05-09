@@ -1,73 +1,76 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './AppShell.css';
 
-function getMenuForRole(role) {
+function getMenuForRole(role, t) {
   if (role === 'guest') {
     return {
-      section: 'Explore',
+      section: t('explore'),
       items: [
-        { to: '/', label: 'Home', icon: 'bi-house' },
-        { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
-        { to: '/game', label: 'Play Game', icon: 'bi-controller' },
-        { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
-        { to: '/login', label: 'Login', icon: 'bi-box-arrow-in-right' },
-        { to: '/register', label: 'Register', icon: 'bi-person-plus' },
+        { to: '/', label: t('home'), icon: 'bi-house' },
+        { to: '/marketplace', label: t('marketplace'), icon: 'bi-bag' },
+        { to: '/game', label: t('games'), icon: 'bi-controller' },
+        { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
+        { to: '/login', label: t('login'), icon: 'bi-box-arrow-in-right' },
+        { to: '/register', label: t('register'), icon: 'bi-person-plus' },
       ],
     };
   }
 
   if (role === 'admin') {
     return {
-      section: 'Admin',
+      section: t('admin'),
       items: [
-        { to: '/admin', label: 'Dashboard', icon: 'bi-speedometer2' },
-        { to: '/admin/materials', label: 'Approvals', icon: 'bi-check2-circle' },
-        { to: '/admin/testimonials', label: 'Testimonials', icon: 'bi-chat-quote' },
-        { to: '/admin/users', label: 'Users', icon: 'bi-people' },
-        { to: '/game', label: 'Play Game', icon: 'bi-controller' },
-        { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
+        { to: '/admin', label: t('dashboard'), icon: 'bi-speedometer2' },
+        { to: '/admin/materials', label: t('approvals'), icon: 'bi-check2-circle' },
+        { to: '/admin/testimonials', label: t('testimonials'), icon: 'bi-chat-quote' },
+        { to: '/admin/users', label: t('users'), icon: 'bi-people' },
+        { to: '/game', label: t('games'), icon: 'bi-controller' },
+        { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
       ],
     };
   }
 
   if (role === 'seller') {
     return {
-      section: 'Seller',
+      section: t('seller'),
       items: [
-        { to: '/dashboard/seller', label: 'Dashboard', icon: 'bi-speedometer2' },
-        { to: '/seller/listings', label: 'My Listings', icon: 'bi-card-list' },
-        { to: '/seller/requests', label: 'Requests', icon: 'bi-inbox' },
-        { to: '/orders', label: 'Orders', icon: 'bi-receipt' },
-        { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
-        { to: '/game', label: 'Play Game', icon: 'bi-controller' },
-        { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
+        { to: '/dashboard/seller', label: t('dashboard'), icon: 'bi-speedometer2' },
+        { to: '/seller/listings', label: t('listings'), icon: 'bi-card-list' },
+        { to: '/seller/requests', label: t('requests'), icon: 'bi-inbox' },
+        { to: '/orders', label: t('orders'), icon: 'bi-receipt' },
+        { to: '/marketplace', label: t('marketplace'), icon: 'bi-bag' },
+        { to: '/game', label: t('games'), icon: 'bi-controller' },
+        { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
       ],
     };
   }
 
   return {
-    section: 'Buyer',
+    section: t('buyer'),
     items: [
-      { to: '/dashboard/buyer', label: 'Dashboard', icon: 'bi-speedometer2' },
-      { to: '/marketplace', label: 'Marketplace', icon: 'bi-bag' },
-      { to: '/requests', label: 'My Requests', icon: 'bi-chat-left-text' },
-      { to: '/orders', label: 'Orders', icon: 'bi-receipt' },
-      { to: '/game', label: 'Play Game', icon: 'bi-controller' },
-      { to: '/leaderboard', label: 'Leaderboard', icon: 'bi-trophy' },
+      { to: '/dashboard/buyer', label: t('dashboard'), icon: 'bi-speedometer2' },
+      { to: '/marketplace', label: t('marketplace'), icon: 'bi-bag' },
+      { to: '/requests', label: t('requests'), icon: 'bi-chat-left-text' },
+      { to: '/orders', label: t('orders'), icon: 'bi-receipt' },
+      { to: '/game', label: t('games'), icon: 'bi-controller' },
+      { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
     ],
   };
 }
 
 export function AppShell({ children }) {
   const { user, logout, isAuthenticated } = useAuth();
+  const { theme, toggleTheme, language, toggleLanguage, t } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef(null);
 
   const role = isAuthenticated ? (user?.role || 'buyer') : 'guest';
-  const menu = useMemo(() => getMenuForRole(role), [role]);
+  const menu = useMemo(() => getMenuForRole(role, t), [role, t]);
 
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -108,12 +111,15 @@ export function AppShell({ children }) {
   };
 
   const pageTitle = (() => {
-    if (location.pathname.startsWith('/dashboard')) return 'Dashboard';
-    if (location.pathname.startsWith('/seller/listings')) return 'My Listings';
-    if (location.pathname.startsWith('/marketplace')) return 'Marketplace';
-    if (location.pathname.startsWith('/materials/')) return 'Material';
-    if (location.pathname.startsWith('/orders')) return 'Orders';
-    if (location.pathname.startsWith('/admin')) return 'Admin';
+    if (location.pathname.startsWith('/dashboard')) return t('dashboard');
+    if (location.pathname.startsWith('/seller/listings')) return t('listings');
+    if (location.pathname.startsWith('/marketplace')) return t('marketplace');
+    if (location.pathname.startsWith('/materials/')) return t('material');
+    if (location.pathname.startsWith('/orders')) return t('orders');
+    if (location.pathname.startsWith('/admin')) return t('dashboard');
+    if (location.pathname.startsWith('/game')) return t('games');
+    if (location.pathname.startsWith('/leaderboard')) return t('leaderboard');
+    if (location.pathname.startsWith('/requests')) return t('requests');
     return 'RecycleX';
   })();
 
@@ -131,7 +137,7 @@ export function AppShell({ children }) {
             </div>
             <div className="brand-text">
               <div className="brand-title">RecycleX</div>
-              <span className="brand-subtitle">Circular marketplace</span>
+              <span className="brand-subtitle">{t('circularMarketplace')}</span>
             </div>
           </div>
           <button
@@ -170,7 +176,7 @@ export function AppShell({ children }) {
               <span className="logout-icon" aria-hidden="true">
                 <i className="bi bi-box-arrow-in-right" />
               </span>
-              <span className="nav-label">Login</span>
+              <span className="nav-label">{t('login')}</span>
             </button>
           </div>
         )}
@@ -180,13 +186,25 @@ export function AppShell({ children }) {
         <header className="app-topbar">
           <div className="topbar-title">{pageTitle}</div>
           <div className="topbar-right" ref={menuRef}>
+            <div className="theme-actions">
+              <button type="button" className="theme-toggle-btn" onClick={toggleLanguage}>
+                {language === 'en' ? 'العربية' : 'English'}
+              </button>
+              <DarkModeSwitch
+                checked={theme === 'dark'}
+                onChange={toggleTheme}
+                size={24}
+                sunColor="#111827"
+                moonColor="#f5f5f5"
+              />
+            </div>
             {isAuthenticated ? (
               <>
                 <button
                   type="button"
                   className="avatar-btn"
                   onClick={() => setUserMenuOpen((v) => !v)}
-                  aria-label="User menu"
+                  aria-label={t('profile')}
                   title={user?.name || 'User'}
                 >
                   {(user?.name || 'U').slice(0, 1).toUpperCase()}
@@ -194,7 +212,7 @@ export function AppShell({ children }) {
                 {userMenuOpen && (
                   <div className="avatar-menu">
                     <Link to="/profile" onClick={() => setUserMenuOpen(false)}>
-                      <i className="bi bi-person-circle" /> Profile
+                      <i className="bi bi-person-circle" /> {t('profile')}
                     </Link>
                     <div className="divider" />
                     <button
@@ -204,13 +222,13 @@ export function AppShell({ children }) {
                         handleLogout();
                       }}
                     >
-                      <i className="bi bi-box-arrow-right" /> Logout
+                      <i className="bi bi-box-arrow-right" /> {t('logout')}
                     </button>
                   </div>
                 )}
               </>
             ) : (
-              <div className="topbar-hint">Welcome</div>
+              <div className="topbar-hint">{t('welcome')}</div>
             )}
           </div>
         </header>

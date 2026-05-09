@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import SiteFooter from './SiteFooter';
 import './PublicShell.css';
 
@@ -24,6 +26,7 @@ function addMaterialPath(role, isAuthenticated) {
 export function PublicShell({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme, toggleTheme, language, toggleLanguage, t } = useTheme();
   const { isAuthenticated, user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -31,13 +34,13 @@ export function PublicShell({ children }) {
 
   const centerNav = useMemo(
     () => [
-      { to: '/', label: 'Home', end: true },
-      { to: '/marketplace', label: 'Browse Materials', end: false },
-      { to: '/game', label: '🎮 Play Game', end: false },
-      { to: '/leaderboard', label: '🏆 Leaderboard', end: false },
-      { to: addMaterialPath(role, isAuthenticated), label: 'Add Material', end: false },
+      { to: '/', label: t('home'), end: true },
+      { to: '/marketplace', label: t('browseMaterials'), end: false },
+      { to: '/game', label: `🎮 ${t('games')}`, end: false },
+      { to: '/leaderboard', label: `🏆 ${t('leaderboard')}`, end: false },
+      { to: addMaterialPath(role, isAuthenticated), label: t('addMaterials'), end: false },
     ],
-    [role, isAuthenticated]
+    [role, isAuthenticated, t]
   );
 
   return (
@@ -72,13 +75,23 @@ export function PublicShell({ children }) {
             </nav>
 
             <div className="d-none d-lg-flex align-items-center gap-1 flex-shrink-0 public-nav-actions">
+              <button type="button" className="theme-toggle-btn" onClick={toggleLanguage}>
+                {language === 'en' ? 'العربية' : 'English'}
+              </button>
+              <DarkModeSwitch
+                checked={theme === 'dark'}
+                onChange={toggleTheme}
+                size={24}
+                sunColor="#111827"
+                moonColor="#f5f5f5"
+              />
               {isAuthenticated ? (
                 <>
                   <Link to={requestsPath(role)} className="btn btn-link public-ghost-link text-decoration-none">
-                    {role === 'admin' ? 'Approvals' : 'Requests'}
+                    {role === 'admin' ? t('approvals') : t('requests')}
                   </Link>
                   <Link to={dashboardPath(role)} className="btn btn-link public-ghost-link text-decoration-none">
-                    Dashboard
+                    {t('dashboard')}
                   </Link>
                   <button
                     type="button"
@@ -88,22 +101,22 @@ export function PublicShell({ children }) {
                       navigate('/login');
                     }}
                   >
-                    Logout
+                    {t('logout')}
                   </button>
                 </>
               ) : (
                 <>
                   <Link to="/requests" className="btn btn-link public-ghost-link text-decoration-none">
-                    Requests
+                    {t('requests')}
                   </Link>
                   <Link to="/dashboard" className="btn btn-link public-ghost-link text-decoration-none">
-                    Dashboard
+                    {t('dashboard')}
                   </Link>
                   <Link to="/login" className="btn btn-outline-dark public-nav-login">
-                    Login
+                    {t('login')}
                   </Link>
                   <Link to="/register" className="btn btn-success fw-semibold public-nav-register">
-                    Register
+                    {t('register')}
                   </Link>
                 </>
               )}
@@ -139,14 +152,14 @@ export function PublicShell({ children }) {
                       className="public-mobile-link"
                       onClick={() => setMobileOpen(false)}
                     >
-                      {role === 'admin' ? 'Approvals' : 'Requests'}
+                      {role === 'admin' ? t('approvals') : t('requests')}
                     </Link>
                     <Link
                       to={dashboardPath(role)}
                       className="public-mobile-link"
                       onClick={() => setMobileOpen(false)}
                     >
-                      Dashboard
+                      {t('dashboard')}
                     </Link>
                     <button
                       type="button"
@@ -157,27 +170,39 @@ export function PublicShell({ children }) {
                         navigate('/login');
                       }}
                     >
-                      Logout
+                      {t('logout')}
                     </button>
                   </>
                 ) : (
                   <>
                     <Link to="/requests" className="public-mobile-link" onClick={() => setMobileOpen(false)}>
-                      Requests
+                      {t('requests')}
                     </Link>
                     <Link to="/dashboard" className="public-mobile-link" onClick={() => setMobileOpen(false)}>
-                      Dashboard
+                      {t('dashboard')}
                     </Link>
                     <div className="d-flex gap-2 mt-2">
                       <Link to="/login" className="btn btn-outline-dark w-100" onClick={() => setMobileOpen(false)}>
-                        Login
+                        {t('login')}
                       </Link>
                       <Link to="/register" className="btn btn-success w-100 fw-semibold" onClick={() => setMobileOpen(false)}>
-                        Register
+                        {t('register')}
                       </Link>
                     </div>
                   </>
                 )}
+                <div className="d-flex gap-2 mt-3 align-items-center">
+                  <button type="button" className="theme-toggle-btn w-100" onClick={toggleLanguage}>
+                    {language === 'en' ? 'العربية' : 'English'}
+                  </button>
+                  <DarkModeSwitch
+                    checked={theme === 'dark'}
+                    onChange={toggleTheme}
+                    size={22}
+                    sunColor="#111827"
+                    moonColor="#f5f5f5"
+                  />
+                </div>
               </div>
             </div>
           )}

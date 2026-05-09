@@ -9,7 +9,7 @@ export function RootLayout() {
   const location = useLocation();
   const { isAuthenticated, loading } = useAuth();
 
-  // While auth state loads, avoid flicker
+  // While auth loads
   if (loading) {
     return <Outlet />;
   }
@@ -17,11 +17,13 @@ export function RootLayout() {
   const publicPaths = ['/', '/login', '/register', '/marketplace'];
   const isMaterialDetail = location.pathname.startsWith('/materials/');
 
-  // Guests can only access public pages, and they should be clean (no sidebar/topbar)
+
+  // Guest view
   if (!isAuthenticated) {
     if (!publicPaths.includes(location.pathname) && !isMaterialDetail) {
       return <Navigate to="/login" replace />;
     }
+
     return (
       <>
         <PublicShell>
@@ -32,6 +34,7 @@ export function RootLayout() {
     );
   }
 
+  // Authenticated view
   return (
     <>
       <AppShell>
@@ -43,4 +46,3 @@ export function RootLayout() {
 }
 
 export default RootLayout;
-

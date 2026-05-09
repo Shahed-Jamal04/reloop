@@ -1,21 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
 import './Leaderboard.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
-const GAME_OPTIONS = [
-  { gameName: 'material-master', label: 'Material Master' },
-  { gameName: 'trash-toss', label: 'Trash Toss' },
-  { gameName: 'recycling-quiz', label: 'Recycling Quiz' },
-  { gameName: 'eco-memory', label: 'Eco Memory' },
-  { gameName: 'waste-sorting', label: 'Waste Sorting' },
-  { gameName: 'carbon-adventure', label: 'Carbon Adventure' },
-  { gameName: 'pollution-cleanup', label: 'Pollution Cleanup' },
-];
-
-const getGameLabel = (name) => GAME_OPTIONS.find((option) => option.gameName === name)?.label || 'Game';
 
 export function Leaderboard() {
   const [scores, setScores] = useState([]);
@@ -23,6 +12,19 @@ export function Leaderboard() {
   const [error, setError] = useState('');
   const [period, setPeriod] = useState('all');
   const [gameName, setGameName] = useState('material-master');
+  const { t } = useTheme();
+
+  const GAME_OPTIONS = [
+    { gameName: 'material-master', label: t('materialMaster') },
+    { gameName: 'trash-toss', label: t('trashToss') },
+    { gameName: 'recycling-quiz', label: t('recyclingQuiz') },
+    { gameName: 'eco-memory', label: t('ecoMemory') },
+    { gameName: 'waste-sorting', label: t('wasteSorting') },
+    { gameName: 'carbon-adventure', label: t('carbonAdventure') },
+    { gameName: 'pollution-cleanup', label: t('pollutionCleanup') },
+  ];
+
+  const getGameLabel = (name) => GAME_OPTIONS.find((option) => option.gameName === name)?.label || 'Game';
 
   const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
@@ -61,8 +63,10 @@ export function Leaderboard() {
   return (
     <div className="leaderboard-container">
       <div className="leaderboard-header">
-        <h1>🏆 Leaderboard</h1>
-        <p>Top players across all RecycleX games</p>
+        <h1>🏆 {t('leaderboard')}</h1>
+        <p>
+          {t('topPlayersFor')} {getGameLabel(gameName)}
+        </p>
       </div>
 
       <div className="leaderboard-filters">
@@ -82,19 +86,19 @@ export function Leaderboard() {
             className={`filter-btn ${period === 'today' ? 'active' : ''}`}
             onClick={() => setPeriod('today')}
           >
-            Today
+            {t('today')}
           </button>
           <button
             className={`filter-btn ${period === 'weekly' ? 'active' : ''}`}
             onClick={() => setPeriod('weekly')}
           >
-            This Week
+            {t('thisWeek')}
           </button>
           <button
             className={`filter-btn ${period === 'all' ? 'active' : ''}`}
             onClick={() => setPeriod('all')}
           >
-            All Time
+            {t('allTime')}
           </button>
         </div>
       </div>
@@ -144,10 +148,10 @@ export function Leaderboard() {
           {/* Ranking Table */}
           <div className="ranking-table">
             <div className="table-header">
-              <div className="col-rank">Rank</div>
-              <div className="col-player">Player</div>
-              <div className="col-score">Score</div>
-              <div className="col-date">Date</div>
+              <div className="col-rank">{t('rank')}</div>
+              <div className="col-player">{t('player')}</div>
+              <div className="col-score">{t('score')}</div>
+              <div className="col-date">{t('date')}</div>
             </div>
 
             {scores.map((player, idx) => (
@@ -172,9 +176,9 @@ export function Leaderboard() {
       )}
 
       <div className="leaderboard-cta">
-        <p>Want to see your name on the leaderboard?</p>
+        <p>{t('wantToSeeName')}</p>
         <Link to="/game" className="btn btn-success">
-          Play Now
+          {t('playNow')}
         </Link>
       </div>
     </div>

@@ -28,6 +28,24 @@
   --reloop-footer: #111827;
 }
 
+/* Dark mode variables */
+[data-theme="dark"] {
+  --reloop-bg: #111827;
+  --reloop-gray-50: #111827;
+  --reloop-gray-100: #1f2937;
+  --reloop-gray-200: #374151;
+  --reloop-gray-400: #6b7280;
+  --reloop-gray-500: #9ca3af;
+  --reloop-gray-600: #d1d5db;
+  --reloop-gray-900: #f9fafb;
+  --reloop-surface: #1f2937;
+  --reloop-text: #f9fafb;
+  --reloop-muted: #9ca3af;
+  --reloop-border: rgba(255, 255, 255, 0.10);
+  --reloop-shadow: 0 10px 30px rgba(0, 0, 0, 0.30);
+  --reloop-footer: #1f2937;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
 }
@@ -36,6 +54,16 @@ body {
   background: var(--reloop-bg);
   color: var(--reloop-text);
   font-size: var(--reloop-fs-body);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* RTL support for Arabic */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .btn {
+  text-align: center;
 }
 
 /* Bootstrap theme-ish overrides (CSS-only) */
@@ -47,6 +75,7 @@ body {
   --bs-btn-active-bg: var(--reloop-green-700);
   --bs-btn-active-border-color: var(--reloop-green-700);
 }
+
 
 .btn-outline-primary {
   --bs-btn-color: var(--reloop-green-600);
@@ -74,3 +103,68 @@ body {
   border-radius: var(--reloop-radius);
 }
 
+html[data-theme="dark"] body {
+  background-color: var(--reloop-bg);
+  color: var(--reloop-text);
+}
+
+/* Shells */
+html[data-theme="dark"] .app-shell,
+html[data-theme="dark"] .public-shell {
+  background-color: var(--reloop-surface);
+}
+
+/* Navbar / sidebar */
+html[data-theme="dark"] .navbar,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .app-topbar,
+html[data-theme="dark"] .public-nav,
+html[data-theme="dark"] .public-header,
+html[data-theme="dark"] .public-shell,
+html[data-theme="dark"] .public-main {
+  background-color: #111827 !important;
+}
+
+/* Cards / surfaces */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .surface,
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .auth-card-panel,
+html[data-theme="dark"] .dashboard-card,
+html[data-theme="dark"] .market-card,
+html[data-theme="dark"] .detail-card,
+html[data-theme="dark"] .testimonial-card-home,
+html[data-theme="dark"] .request-card,
+html[data-theme="dark"] .ds-surface,
+html[data-theme="dark"] .public-mobile-link,
+html[data-theme="dark"] .public-nav-link,
+html[data-theme="dark"] .public-ghost-link,
+html[data-theme="dark"] .material-card,
+html[data-theme="dark"] .industry-card,
+html[data-theme="dark"] .option-card,
+html[data-theme="dark"] .memory-card,
+html[data-theme="dark"] .question-card,
+html[data-theme="dark"] .pollution-card,
+html[data-theme="dark"] .finish-card {
+  background-color: #1f2937;
+  color: var(--reloop-text);
+  border-color: #374151;
+}
+
+/* Buttons */
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] .public-cta,
+html[data-theme="dark"] .public-link,
+html[data-theme="dark"] .theme-toggle-btn {
+  border-color: #374151;
+}
+
+/* Inputs */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .form-control {
+  background-color: #1f2937;
+  color: var(--reloop-text);
+  border: 1px solid #374151;
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import FormInput from './FormInput';
 import ErrorMessage from './ErrorMessage';
 import Button from './Button';
@@ -13,6 +14,7 @@ export function LoginForm() {
   
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,13 +52,13 @@ export function LoginForm() {
           </span>
           <span className="auth-brand-name">RecycleX</span>
         </div>
-        <h1 className="auth-title">Welcome back</h1>
+        <h1 className="auth-title">{t('welcome')}</h1>
         <p className="auth-subtitle">Sign in to your account to continue.</p>
       </header>
 
       <div className="auth-card-panel pt-0">
         <div className="auth-card-panel-head">
-          <h2 className="auth-card-panel-title">Login</h2>
+          <h2 className="auth-card-panel-title">{t('login')}</h2>
           <p className="auth-card-panel-desc">Enter your credentials to access your account.</p>
         </div>
 
@@ -64,7 +66,7 @@ export function LoginForm() {
 
         <form onSubmit={handleSubmit} className="auth-form">
         <FormInput
-          label="Email Address"
+          label={t('email')}
           id="email"
           name="email"
           type="email"
@@ -76,7 +78,7 @@ export function LoginForm() {
         />
 
         <FormInput
-          label="Password"
+          label={t('password')}
           id="password"
           name="password"
           type="password"
@@ -88,25 +90,25 @@ export function LoginForm() {
         />
 
           <Button type="submit" disabled={loading} className="btn btn-success w-100 py-2 fw-bold auth-submit">
-            {loading ? 'Signing in…' : 'Sign in'}
+            {loading ? t('loading') : t('signIn')}
           </Button>
         </form>
       </div>
 
       <footer className="auth-footer auth-card-panel border-top bg-light">
         <p className="auth-footer-line mb-0">
-          Don&apos;t have an account? <Link to="/register">Create an account</Link>
+          {t('dontHaveAccount')} <Link to="/register">{t('createAccount')}</Link>
         </p>
         <p className="auth-footer-line auth-footer-line--sub mb-0">
           <Link to="/forgot-password" className="auth-footer-link-secondary">
-            Forgot password?
+            {t('forgotPassword')}
           </Link>
           <span className="auth-footer-sep" aria-hidden="true">
             {' '}
             ·{' '}
           </span>
           <Link to="/" className="auth-footer-link-secondary">
-            Back to home
+            {t('home')}
           </Link>
         </p>
       </footer>

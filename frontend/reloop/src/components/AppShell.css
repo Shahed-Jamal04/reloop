@@ -427,6 +427,38 @@
   border-bottom: 1px solid var(--reloop-border);
 }
 
+[dir="rtl"] .app-topbar {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .topbar-title {
+  text-align: right;
+}
+
+[dir="rtl"] .brand-left {
+  flex-direction: row-reverse;
+}
+
+.theme-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.theme-toggle-btn {
+  font-weight: 700;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: var(--reloop-surface);
+  color: var(--reloop-text);
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--reloop-border);
+}
+
 .topbar-title {
   font-weight: 900;
   letter-spacing: -0.4px;

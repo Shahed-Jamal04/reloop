@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './MaterialMasterGame.css';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { playActionSound, playSuccessSound, playFailSound, playWinSound, playLoseSound } from '../utils/gameAudio';
 
@@ -41,14 +42,16 @@ const TRASH_ITEMS = [
 ];
 
 const BINS = [
-  { label: 'Paper', emoji: '📄' },
-  { label: 'Plastic', emoji: '🥤' },
-  { label: 'Metal', emoji: '🔩' },
-  { label: 'Glass', emoji: '🍾' },
-  { label: 'Organic', emoji: '🍎' },
-  { label: 'Hazardous', emoji: '☣️' },
-  { label: 'General', emoji: '🗑️' },
+  { label: 'Paper', emoji: '📄', key: 'binPaper' },
+  { label: 'Plastic', emoji: '🥤', key: 'binPlastic' },
+  { label: 'Metal', emoji: '🔩', key: 'binMetal' },
+  { label: 'Glass', emoji: '🍾', key: 'binGlass' },
+  { label: 'Organic', emoji: '🍎', key: 'binOrganic' },
+  { label: 'Hazardous', emoji: '☣️', key: 'binHazardous' },
+  { label: 'General', emoji: '🗑️', key: 'binGeneral' },
 ];
+
+const ITEM_COUNT = 7;
 
 const FAIL_GIFS = [
   `${process.env.PUBLIC_URL}/lose-1.gif`,
@@ -67,6 +70,7 @@ const randomGif = (list) => list[Math.floor(Math.random() * list.length)];
 
 export function WasteSortingGame() {
   const { user, token, isAuthenticated } = useAuth();
+  const { t } = useTheme();
   const navigate = useNavigate();
   const [gameState, setGameState] = useState('menu');
   const [items, setItems] = useState([]);
@@ -96,7 +100,11 @@ export function WasteSortingGame() {
 
   const startGame = () => {
     setGameState('playing');
-    setItems(shuffle(TRASH_ITEMS));
+    setItems(
+      shuffle(TRASH_ITEMS)
+        .slice(0, ITEM_COUNT)
+        .map((entry, index) => ({ ...entry, id: index + 1 }))
+    );
     setScore(0);
     setTimeLeft(60);
     failStreakRef.current = 0;
@@ -131,7 +139,15 @@ export function WasteSortingGame() {
       }
     }
 
-    setItems((prev) => prev.filter((entry) => entry.id !== itemId));
+    setItems((prev) => {
+      const nextItems = prev.filter((entry) => entry.id !== itemId);
+      if (nextItems.length === 0) {
+        setGameState('finished');
+        setResultGif(randomGif(SUCCESS_GIFS));
+        playWinSound();
+      }
+      return nextItems;
+    });
     setTimeout(() => setMessage(''), 900);
   };
 
@@ -167,23 +183,23 @@ export function WasteSortingGame() {
   return (
     <div className="game-container">
       <div className="game-header">
-        <h1>🗑️ Waste Sorting</h1>
-        <p>Drag each item into the right recycling bin.</p>
+        <h1>🗑️ {t('wasteSorting')}</h1>
+        <p>{t('wasteSortingDescription')}</p>
       </div>
 
       {gameState === 'menu' && (
         <div className="game-menu">
           <div className="game-info">
-            <h2>How to Play</h2>
+            <h2>{t('howToPlay')}</h2>
             <ul>
-              <li>✅ Drag each item to the bin it belongs in</li>
-              <li>💯 Correct sorts give 100 points</li>
-              <li>⚠️ 3 wrong drops ends the game</li>
-              <li>⏱️ Finish as many as possible in 60 seconds</li>
+              <li>{t('wasteSortingInstr1')}</li>
+              <li>{t('wasteSortingInstr2')}</li>
+              <li>{t('wasteSortingInstr3')}</li>
+              <li>{t('wasteSortingInstr4')}</li>
             </ul>
           </div>
           <button onClick={startGame} className="btn btn-success btn-lg game-start-btn">
-            Start Waste Sorting
+            {t('startGame')}
           </button>
         </div>
       )}
@@ -192,15 +208,15 @@ export function WasteSortingGame() {
         <div className="game-board">
           <div className="game-stats">
             <div className="stat">
-              <span className="stat-label">Score</span>
+              <span className="stat-label">{t('score')}</span>
               <span className="stat-value">{score}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Time</span>
+              <span className="stat-label">{t('time')}</span>
               <span className={`stat-value ${timeLeft < 10 ? 'warning' : ''}`}>{timeLeft}s</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Remaining</span>
+              <span className="stat-label">{t('remaining')}</span>
               <span className="stat-value">{items.length}</span>
             </div>
           </div>
@@ -209,7 +225,7 @@ export function WasteSortingGame() {
 
           <div className="game-grid">
             <div className="game-column">
-              <h3>Items</h3>
+              <h3>{t('items')}</h3>
               <div className="material-list">
                 {items.map((item) => (
                   <button
@@ -225,7 +241,7 @@ export function WasteSortingGame() {
             </div>
 
             <div className="game-column">
-              <h3>Bins</h3>
+              <h3>{t('bins')}</h3>
               <div className="bin-list">
                 {BINS.map((bin) => (
                   <div
@@ -235,7 +251,7 @@ export function WasteSortingGame() {
                     onDragOver={(event) => event.preventDefault()}
                   >
                     <span className="bin-emoji">{bin.emoji}</span>
-                    {bin.label}
+                    {t(bin.key)}
                   </div>
                 ))}
               </div>
@@ -247,15 +263,15 @@ export function WasteSortingGame() {
       {gameState === 'finished' && (
         <div className="game-finish">
           <div className="finish-card">
-            <h2>Game Over!</h2>
+            <h2>{t('gameOver')}</h2>
             <div className="finish-score">
               <span className="score-value">{score}</span>
-              <span className="score-label">Points</span>
+              <span className="score-label">{t('points')}</span>
             </div>
             <p className="finish-message">
               {items.length === 0 && score > 0
-                ? 'Great work! You sorted all the items.'
-                : 'Nice attempt! Practice makes sorting easier.'}
+                ? t('wasteSortingFinishAll')
+                : t('wasteSortingFinishPartial')}
             </p>
             {resultGif && (
               <div className="feedback-gif">
@@ -265,13 +281,13 @@ export function WasteSortingGame() {
             <div className="finish-actions">
               {isAuthenticated ? (
                 <button onClick={submitScore} disabled={loading} className="btn btn-success btn-lg">
-                  {loading ? 'Saving...' : '📊 Save Score & View Leaderboard'}
+                  {loading ? t('saving') : t('saveScore')}
                 </button>
               ) : (
-                <p className="text-muted">Log in to save your score!</p>
+                <p className="text-muted">{t('loginToSave')}</p>
               )}
               <button onClick={startGame} className="btn btn-outline-secondary btn-lg">
-                Play Again
+                {t('playAgain')}
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import './MaterialMasterGame.css';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { playActionSound, playSuccessSound, playFailSound, playWinSound, playLoseSound } from '../utils/gameAudio';
 
@@ -66,6 +67,7 @@ const SCENARIOS = [
 
 export function CarbonFootprintGame() {
   const { user, token, isAuthenticated } = useAuth();
+  const { t } = useTheme();
   const navigate = useNavigate();
   const [gameState, setGameState] = useState('menu');
   const [currentStep, setCurrentStep] = useState(0);
@@ -89,8 +91,9 @@ export function CarbonFootprintGame() {
   const handleChoice = (delta, label) => {
     if (gameState !== 'playing') return;
 
-    setScore((prev) => prev + delta);
-    setMessage(`You chose ${label}.`);
+    const newScore = score + delta;
+    setScore(newScore);
+    setMessage(`${t('youChose')} ${label}.`);
 
     const isPoorChoice = delta <= 0;
     if (isPoorChoice) {
@@ -107,7 +110,7 @@ export function CarbonFootprintGame() {
         setGameState('finished');
         setResultGif(`${process.env.PUBLIC_URL}/lose-2.gif`);
         playLoseSound();
-        setMessage('Too many poor choices. Game over.');
+        setMessage('');
       }, 800);
       return;
     }
@@ -115,7 +118,7 @@ export function CarbonFootprintGame() {
     if (nextStep >= SCENARIOS.length) {
       setTimeout(() => {
         setGameState('finished');
-        if (score + delta >= 80) {
+        if (newScore >= 80) {
           setResultGif(`${process.env.PUBLIC_URL}/win-3.gif`);
           playWinSound();
         } else {
@@ -163,22 +166,22 @@ export function CarbonFootprintGame() {
   return (
     <div className="game-container">
       <div className="game-header">
-        <h1>🌿 Carbon Footprint Adventure</h1>
-        <p>Choose eco-friendly habits and earn the best footprint score.</p>
+        <h1>🌿 {t('carbonAdventure')}</h1>
+        <p>{t('carbonFootprintDescription')}</p>
       </div>
 
       {gameState === 'menu' && (
         <div className="game-menu">
           <div className="game-info">
-            <h2>How to Play</h2>
+            <h2>{t('howToPlay')}</h2>
             <ul>
-              <li>✅ Pick the most sustainable choice for each scenario</li>
-              <li>💯 Better choices earn more points</li>
-              <li>🎯 Finish 5 scenarios to complete the adventure</li>
+              <li>{t('carbonFootprintInstr1')}</li>
+              <li>{t('carbonFootprintInstr2')}</li>
+              <li>{t('carbonFootprintInstr3')}</li>
             </ul>
           </div>
           <button onClick={startGame} className="btn btn-success btn-lg game-start-btn">
-            Start Adventure
+            {t('startGame')}
           </button>
         </div>
       )}
@@ -187,11 +190,11 @@ export function CarbonFootprintGame() {
         <div className="game-board">
           <div className="game-stats">
             <div className="stat">
-              <span className="stat-label">Footprint Score</span>
+              <span className="stat-label">{t('footprintScore')}</span>
               <span className="stat-value">{score}</span>
             </div>
             <div className="stat">
-              <span className="stat-label">Scenario</span>
+              <span className="stat-label">{t('scenario')}</span>
               <span className="stat-value">{currentStep + 1}/{SCENARIOS.length}</span>
             </div>
           </div>
@@ -225,17 +228,21 @@ export function CarbonFootprintGame() {
       {gameState === 'finished' && (
         <div className="game-finish">
           <div className="finish-card">
-            <h2>Adventure Complete!</h2>
+            <h2>{score >= 100 ? t('carbonFootprintComplete') : t('gameFailed')}</h2>
             <div className="finish-score">
               <span className="score-value">{score}</span>
-              <span className="score-label">Points</span>
+              <span className="score-label">{t('points')}</span>
             </div>
             <p className="finish-message">
-              {score >= 80
-                ? 'Eco-champion! Your choices were very green.'
+              {score < 100
+                ? t('scoreBelow100')
+                : failStreakRef.current >= 3
+                ? t('tooManyWrong')
+                : score >= 80
+                ? t('carbonFootprintExcellent')
                 : score >= 40
-                ? 'Solid effort! There is room to improve.'
-                : 'Keep going! Try making greener choices next time.'}
+                ? t('carbonFootprintGood')
+                : t('carbonFootprintOkay')}
             </p>
             {resultGif && (
               <div className="feedback-gif">
@@ -243,15 +250,15 @@ export function CarbonFootprintGame() {
               </div>
             )}
             <div className="finish-actions">
-              {isAuthenticated ? (
+              {isAuthenticated && score >= 100 ? (
                 <button onClick={submitScore} disabled={loading} className="btn btn-success btn-lg">
-                  {loading ? 'Saving...' : '📊 Save Score & View Leaderboard'}
+                  {loading ? t('saving') : t('saveScore')}
                 </button>
-              ) : (
-                <p className="text-muted">Log in to save your score!</p>
-              )}
+              ) : !isAuthenticated ? (
+                <p className="text-muted">{t('loginToSave')}</p>
+              ) : null}
               <button onClick={startGame} className="btn btn-outline-secondary btn-lg">
-                Play Again
+                {t('playAgain')}
               </button>
             </div>
           </div>

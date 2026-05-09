@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './rolePages.css';
 import './ProfilePage.css';
 
@@ -43,6 +44,7 @@ function roleIcon(role) {
 
 export function ProfilePage() {
   const { token, updateUser } = useAuth();
+  const { t } = useTheme();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -100,13 +102,13 @@ export function ProfilePage() {
 
   const validateProfile = () => {
     const errs = {};
-    if (!form.name.trim()) errs.name = 'Name is required';
-    if (form.name.trim().length > 100) errs.name = 'Name is too long';
+    if (!form.name.trim()) errs.name = t('nameRequired');
+    if (form.name.trim().length > 100) errs.name = t('nameTooLong');
     if (form.phone && !/^[+0-9\s\-()]{6,20}$/.test(form.phone.trim())) {
-      errs.phone = 'Phone looks invalid';
+      errs.phone = t('phoneInvalid');
     }
-    if (form.location && form.location.length > 255) errs.location = 'Too long';
-    if (form.bio && form.bio.length > 2000) errs.bio = 'Max 2000 characters';
+    if (form.location && form.location.length > 255) errs.location = t('locationTooLong');
+    if (form.bio && form.bio.length > 2000) errs.bio = t('bioMaxChars');
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -131,10 +133,10 @@ export function ProfilePage() {
       const updated = res.data.user;
       setProfile((prev) => ({ ...prev, ...updated }));
       updateUser({ name: updated.name });
-      setProfileMsg('Profile saved.');
+      setProfileMsg(t('profileSaved'));
       setTimeout(() => setProfileMsg(''), 3000);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to save profile.');
+      setError(err.response?.data?.error || t('failedToSaveProfile'));
     } finally {
       setSavingProfile(false);
     }
@@ -154,11 +156,11 @@ export function ProfilePage() {
 
   const validatePw = () => {
     const errs = {};
-    if (!pwForm.current) errs.current = 'Required';
-    if (!pwForm.next) errs.next = 'Required';
-    else if (pwForm.next.length < 6) errs.next = 'At least 6 characters';
-    if (pwForm.next && pwForm.next === pwForm.current) errs.next = 'Must differ from current';
-    if (pwForm.confirm !== pwForm.next) errs.confirm = 'Passwords do not match';
+    if (!pwForm.current) errs.current = t('required');
+    if (!pwForm.next) errs.next = t('required');
+    else if (pwForm.next.length < 6) errs.next = t('atLeast6Chars');
+    if (pwForm.next && pwForm.next === pwForm.current) errs.next = t('mustDiffer');
+    if (pwForm.confirm !== pwForm.next) errs.confirm = t('passwordsDontMatch');
     setPwErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -174,7 +176,7 @@ export function ProfilePage() {
         { current_password: pwForm.current, new_password: pwForm.next },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setPwMsg('Password updated.');
+      setPwMsg(t('passwordUpdated'));
       setPwForm({ current: '', next: '', confirm: '' });
       setPwErrors({});
       setTimeout(() => {
@@ -182,7 +184,7 @@ export function ProfilePage() {
         setPwOpen(false);
       }, 1500);
     } catch (err) {
-      setPwErrors({ current: err.response?.data?.error || 'Failed to change password.' });
+      setPwErrors({ current: err.response?.data?.error || t('failedToChangePassword') });
     } finally {
       setPwSaving(false);
     }
@@ -193,7 +195,7 @@ export function ProfilePage() {
       <div className="role-page py-4 px-3">
         <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
           <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
-          <span>Loading profile…</span>
+          <span>{t('loadingProfile')}</span>
         </div>
       </div>
     );
@@ -203,7 +205,7 @@ export function ProfilePage() {
     return (
       <div className="role-page py-4 px-3">
         <div className="alert alert-danger" role="alert">
-          {error || 'Unable to load profile.'}
+          {error || t('unableToLoadProfile')}
         </div>
       </div>
     );
@@ -237,7 +239,7 @@ export function ProfilePage() {
                 <span><i className="bi bi-geo-alt me-1" aria-hidden="true" />{profile.location}</span>
               )}
               {profile.created_at && (
-                <span><i className="bi bi-calendar3 me-1" aria-hidden="true" />Joined {formatJoined(profile.created_at)}</span>
+                <span><i className="bi bi-calendar3 me-1" aria-hidden="true" />{t('joined')} {formatJoined(profile.created_at)}</span>
               )}
             </div>
           </div>
@@ -251,31 +253,31 @@ export function ProfilePage() {
       {/* Activity stats */}
       <section className="row g-3 mb-4">
         {profile.role === 'seller' && (
-          <StatTile icon="bi-card-list" label="My listings" value={activity.listings ?? 0} to="/seller/listings" />
+          <StatTile icon="bi-card-list" label={t('myListings')} value={activity.listings ?? 0} to="/seller/listings" />
         )}
         <StatTile
           icon={profile.role === 'seller' ? 'bi-inbox' : 'bi-chat-left-text'}
-          label={profile.role === 'seller' ? 'Incoming requests' : 'My requests'}
+          label={profile.role === 'seller' ? t('incomingRequests') : t('myRequests')}
           value={activity.requests ?? 0}
           to={profile.role === 'seller' ? '/seller/requests' : '/requests'}
           hide={profile.role === 'admin'}
         />
         <StatTile
           icon="bi-receipt"
-          label="Orders"
+          label={t('orders')}
           value={activity.orders ?? 0}
           to="/orders"
           hide={profile.role === 'admin'}
         />
         <StatTile
           icon="bi-chat-dots"
-          label="Messages"
+          label={t('messages')}
           value={activity.messages ?? 0}
         />
         {profile.role !== 'admin' && (
           <StatTile
             icon="bi-star"
-            label="Rating"
+            label={t('rating')}
             value={Number(profile.rating ?? 0).toFixed(1)}
             suffix="/ 5"
           />
@@ -289,7 +291,7 @@ export function ProfilePage() {
             <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
               <h2 className="h6 fw-bold mb-0">
                 <i className="bi bi-person-gear text-success me-2" aria-hidden="true" />
-                Account information
+                {t('accountInformation')}
               </h2>
               {profileMsg && (
                 <span className="badge text-bg-success">
@@ -301,7 +303,7 @@ export function ProfilePage() {
 
             <div className="row g-3">
               <div className="col-12 col-md-6">
-                <label className="form-label small fw-semibold text-secondary">Full name</label>
+                <label className="form-label small fw-semibold text-secondary">{t('fullName')}</label>
                 <input
                   type="text"
                   className={`form-control ${fieldErrors.name ? 'is-invalid' : ''}`}
@@ -313,39 +315,39 @@ export function ProfilePage() {
               </div>
 
               <div className="col-12 col-md-6">
-                <label className="form-label small fw-semibold text-secondary">Email</label>
+                <label className="form-label small fw-semibold text-secondary">{t('email')}</label>
                 <input type="email" className="form-control" value={profile.email} disabled readOnly />
-                <div className="form-text small">Email cannot be changed yet.</div>
+                <div className="form-text small">{t('emailCannotBeChanged')}</div>
               </div>
 
               <div className="col-12 col-md-6">
-                <label className="form-label small fw-semibold text-secondary">Phone</label>
+                <label className="form-label small fw-semibold text-secondary">{t('phone')}</label>
                 <input
                   type="tel"
                   className={`form-control ${fieldErrors.phone ? 'is-invalid' : ''}`}
                   value={form.phone}
                   maxLength={20}
-                  placeholder="+20 100 123 4567"
+                  placeholder={t('phonePlaceholder')}
                   onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                 />
                 {fieldErrors.phone && <div className="invalid-feedback">{fieldErrors.phone}</div>}
               </div>
 
               <div className="col-12 col-md-6">
-                <label className="form-label small fw-semibold text-secondary">Location</label>
+                <label className="form-label small fw-semibold text-secondary">{t('location')}</label>
                 <input
                   type="text"
                   className={`form-control ${fieldErrors.location ? 'is-invalid' : ''}`}
                   value={form.location}
                   maxLength={255}
-                  placeholder="City, Country"
+                  placeholder={t('locationPlaceholder')}
                   onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
                 />
                 {fieldErrors.location && <div className="invalid-feedback">{fieldErrors.location}</div>}
               </div>
 
               <div className="col-12">
-                <label className="form-label small fw-semibold text-secondary">Bio</label>
+                <label className="form-label small fw-semibold text-secondary">{t('bio')}</label>
                 <textarea
                   className={`form-control ${fieldErrors.bio ? 'is-invalid' : ''}`}
                   rows={4}
@@ -353,8 +355,8 @@ export function ProfilePage() {
                   value={form.bio}
                   placeholder={
                     profile.role === 'seller'
-                      ? 'Tell buyers about your business, specialties, and delivery areas.'
-                      : 'A short intro about you or your projects.'
+                      ? t('sellerBioPlaceholder')
+                      : t('buyerBioPlaceholder')
                   }
                   onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
                 />
@@ -376,12 +378,12 @@ export function ProfilePage() {
                 {savingProfile ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
-                    Saving…
+                    {t('saving')}
                   </>
                 ) : (
                   <>
                     <i className="bi bi-check2 me-1" aria-hidden="true" />
-                    Save changes
+                    {t('saveChanges')}
                   </>
                 )}
               </button>
@@ -391,7 +393,7 @@ export function ProfilePage() {
                 onClick={resetProfile}
                 disabled={savingProfile || !isDirty}
               >
-                Discard
+                {t('discard')}
               </button>
             </div>
           </form>
@@ -404,7 +406,7 @@ export function ProfilePage() {
               <div className="d-flex align-items-center justify-content-between gap-2">
                 <h2 className="h6 fw-bold mb-0">
                   <i className="bi bi-shield-lock text-success me-2" aria-hidden="true" />
-                  Security
+                  {t('security')}
                 </h2>
                 <button
                   type="button"
@@ -415,44 +417,47 @@ export function ProfilePage() {
                     setPwErrors({});
                   }}
                 >
-                  {pwOpen ? 'Cancel' : 'Change password'}
+                  {pwOpen ? t('cancel') : t('changePassword')}
                 </button>
               </div>
 
               {!pwOpen && (
                 <p className="text-secondary small mb-0 mt-2">
-                  Keep your account secure by using a strong, unique password.
+                  {t('keepAccountSecure')}
                 </p>
               )}
 
               {pwOpen && (
                 <form className="mt-3 d-grid gap-2" onSubmit={submitPw} noValidate>
                   <PwField
-                    label="Current password"
+                    label={t('currentPassword')}
                     value={pwForm.current}
                     show={pwShow.current}
                     onToggle={() => setPwShow((s) => ({ ...s, current: !s.current }))}
                     onChange={(v) => setPwForm((f) => ({ ...f, current: v }))}
                     error={pwErrors.current}
                     autoComplete="current-password"
+                    t={t}
                   />
                   <PwField
-                    label="New password"
+                    label={t('newPassword')}
                     value={pwForm.next}
                     show={pwShow.next}
                     onToggle={() => setPwShow((s) => ({ ...s, next: !s.next }))}
                     onChange={(v) => setPwForm((f) => ({ ...f, next: v }))}
                     error={pwErrors.next}
                     autoComplete="new-password"
+                    t={t}
                   />
                   <PwField
-                    label="Confirm new password"
+                    label={t('confirmNewPassword')}
                     value={pwForm.confirm}
                     show={pwShow.confirm}
                     onToggle={() => setPwShow((s) => ({ ...s, confirm: !s.confirm }))}
                     onChange={(v) => setPwForm((f) => ({ ...f, confirm: v }))}
                     error={pwErrors.confirm}
                     autoComplete="new-password"
+                    t={t}
                   />
 
                   {pwMsg && (
@@ -464,7 +469,7 @@ export function ProfilePage() {
 
                   <div className="d-flex gap-2">
                     <button type="submit" className="btn btn-success fw-bold" disabled={pwSaving}>
-                      {pwSaving ? 'Saving…' : 'Update password'}
+                      {pwSaving ? t('saving') : t('updatePassword')}
                     </button>
                   </div>
                 </form>
@@ -474,18 +479,18 @@ export function ProfilePage() {
             <div className="ds-surface ds-surface--pad">
               <h2 className="h6 fw-bold mb-3">
                 <i className="bi bi-arrow-up-right-square text-success me-2" aria-hidden="true" />
-                Quick links
+                {t('quickLinks')}
               </h2>
               <div className="d-grid gap-2">
                 {profile.role === 'seller' && (
                   <>
                     <Link to="/seller/listings" className="btn btn-outline-success btn-sm fw-semibold text-start">
                       <i className="bi bi-card-list me-2" aria-hidden="true" />
-                      Manage listings
+                      {t('manageListings')}
                     </Link>
                     <Link to="/seller/requests" className="btn btn-outline-success btn-sm fw-semibold text-start">
                       <i className="bi bi-inbox me-2" aria-hidden="true" />
-                      Incoming requests
+                      {t('incomingRequests')}
                     </Link>
                   </>
                 )}
@@ -493,24 +498,24 @@ export function ProfilePage() {
                   <>
                     <Link to="/marketplace" className="btn btn-outline-success btn-sm fw-semibold text-start">
                       <i className="bi bi-bag me-2" aria-hidden="true" />
-                      Browse marketplace
+                      {t('browseMarketplace')}
                     </Link>
                     <Link to="/requests" className="btn btn-outline-success btn-sm fw-semibold text-start">
                       <i className="bi bi-chat-left-text me-2" aria-hidden="true" />
-                      My requests
+                      {t('myRequests')}
                     </Link>
                   </>
                 )}
                 {profile.role !== 'admin' && (
                   <Link to="/orders" className="btn btn-outline-success btn-sm fw-semibold text-start">
                     <i className="bi bi-receipt me-2" aria-hidden="true" />
-                    My orders
+                    {t('myOrders')}
                   </Link>
                 )}
                 {profile.role === 'admin' && (
                   <Link to="/admin" className="btn btn-outline-success btn-sm fw-semibold text-start">
                     <i className="bi bi-speedometer2 me-2" aria-hidden="true" />
-                    Admin dashboard
+                    {t('adminDashboard')}
                   </Link>
                 )}
               </div>
@@ -557,7 +562,7 @@ function StatTile({ icon, label, value, to, suffix, hide }) {
   );
 }
 
-function PwField({ label, value, show, onToggle, onChange, error, autoComplete }) {
+function PwField({ label, value, show, onToggle, onChange, error, autoComplete, t }) {
   return (
     <div>
       <label className="form-label small fw-semibold text-secondary">{label}</label>
@@ -574,7 +579,7 @@ function PwField({ label, value, show, onToggle, onChange, error, autoComplete }
           className="btn btn-outline-secondary"
           onClick={onToggle}
           tabIndex={-1}
-          aria-label={show ? 'Hide password' : 'Show password'}
+          aria-label={show ? t('hidePassword') : t('showPassword')}
         >
           <i className={`bi ${show ? 'bi-eye-slash' : 'bi-eye'}`} aria-hidden="true" />
         </button>
