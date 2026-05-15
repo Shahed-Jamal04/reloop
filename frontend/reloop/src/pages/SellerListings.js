@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './Marketplace.css';
 import './rolePages.css';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
@@ -9,6 +10,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api
 
 export function SellerListings() {
   const { token } = useAuth();
+  const { t } = useTheme();
   const [listings, setListings] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export function SellerListings() {
       setListings(response.data);
     } catch (err) {
       console.error('Failed to load listings:', err);
-      setError('Failed to load your listings.');
+      setError(t('failedLoadListings'));
     } finally {
       setLoading(false);
     }
@@ -102,7 +104,7 @@ export function SellerListings() {
 
       await loadListings();
     } catch (err) {
-      const msg = err.response?.data?.error || 'Failed to create listing.';
+      const msg = err.response?.data?.error || t('failedAddListing');
       setError(msg);
     } finally {
       setSaving(false);
@@ -121,8 +123,8 @@ export function SellerListings() {
     return (
       <div className="role-page py-4 px-3">
         <div className="d-flex align-items-center gap-2 py-5 justify-content-center text-secondary">
-          <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
-          <span className="fw-semibold">Loading your listings…</span>
+          <div className="spinner-border spinner-border-sm" role="status" aria-label={t('loading')} />
+          <span className="fw-semibold">{t('loadingListings')}</span>
         </div>
       </div>
     );
@@ -131,8 +133,8 @@ export function SellerListings() {
   return (
     <div className="role-page py-4 px-3">
       <header className="role-page-hero role-page-hero--gradient mb-4">
-        <h1 className="role-page-title">My listings</h1>
-        <p className="role-page-lead mb-0">Create listings (pending approval) and manage your stock.</p>
+        <h1 className="role-page-title">{t('myListings')}</h1>
+        <p className="role-page-lead mb-0">{t('manageListingsDesc')}</p>
       </header>
 
       {error && (
@@ -146,17 +148,17 @@ export function SellerListings() {
           <div className="ds-surface ds-surface--pad h-100">
             <h2 className="h5 mb-3 d-flex align-items-center gap-2">
               <i className="bi bi-plus-circle text-success" aria-hidden="true" />
-              Create new listing
+              {t('createNewListing')}
             </h2>
 
             <form onSubmit={handleSubmit} className="vstack gap-3">
               <div>
-                <label className="form-label fw-semibold">Title</label>
+                <label className="form-label fw-semibold">{t('title')}</label>
                 <input
                   type="text"
                   name="title"
                   className="form-control"
-                  placeholder="e.g. Surplus cotton fabric"
+                  placeholder={t('egSurplusCotton')}
                   value={form.title}
                   onChange={handleChange}
                   required
@@ -164,11 +166,11 @@ export function SellerListings() {
               </div>
 
               <div>
-                <label className="form-label fw-semibold">Description</label>
+                <label className="form-label fw-semibold">{t('description')}</label>
                 <textarea
                   name="description"
                   className="form-control"
-                  placeholder="Describe condition, packaging, notes..."
+                  placeholder={t('describeCondition')}
                   value={form.description}
                   onChange={handleChange}
                   rows={3}
@@ -177,25 +179,25 @@ export function SellerListings() {
 
               <div className="row g-2">
                 <div className="col-12 col-sm-6">
-                  <label className="form-label fw-semibold">Quantity</label>
+                  <label className="form-label fw-semibold">{t('quantity')}</label>
                   <input
                     type="number"
                     name="quantity"
                     className="form-control"
-                    placeholder="Optional"
+                    placeholder={t('optional')}
                     value={form.quantity}
                     onChange={handleChange}
                     min="0"
                   />
                 </div>
                 <div className="col-12 col-sm-6">
-                  <label className="form-label fw-semibold">Price</label>
+                  <label className="form-label fw-semibold">{t('price')}</label>
                   <input
                     type="number"
                     step="0.01"
                     name="price"
                     className="form-control"
-                    placeholder="Optional"
+                    placeholder={t('optional')}
                     value={form.price}
                     onChange={handleChange}
                     min="0"
@@ -204,7 +206,7 @@ export function SellerListings() {
               </div>
 
               <div>
-                <label className="form-label fw-semibold">Category</label>
+                <label className="form-label fw-semibold">{t('category')}</label>
                 <select
                   name="category_id"
                   className="form-select"
@@ -213,7 +215,7 @@ export function SellerListings() {
                   required
                 >
                   <option value="" disabled>
-                    Select category...
+                    {t('selectCategory')}
                   </option>
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -221,23 +223,23 @@ export function SellerListings() {
                     </option>
                   ))}
                 </select>
-                <div className="form-text">New listings are created as <strong>pending</strong> until admin approval.</div>
+                <div className="form-text">{t('listingPendingHelp')}</div>
               </div>
 
               <div>
-                <label className="form-label fw-semibold">Image</label>
+                <label className="form-label fw-semibold">{t('image')}</label>
                 <input
                   type="file"
                   className="form-control"
                   accept="image/png,image/jpeg,image/webp"
                   onChange={(e) => setImageFile(e.target.files?.[0] || null)}
                 />
-                <div className="form-text">Or provide a URL/path below (optional).</div>
+                <div className="form-text">{t('orProvideUrl')}</div>
                 <input
                   type="text"
                   name="image"
                   className="form-control mt-2"
-                  placeholder="Optional (URL or path)"
+                  placeholder={t('optionalUrl')}
                   value={form.image}
                   onChange={handleChange}
                 />
@@ -245,7 +247,7 @@ export function SellerListings() {
 
               <div className="d-flex gap-2 flex-wrap">
                 <button type="submit" className="btn btn-success fw-bold" disabled={saving}>
-                  {saving ? 'Saving…' : 'Create listing'}
+                  {saving ? t('saving') : t('createNewListing')}
                 </button>
                 <button
                   type="button"
@@ -262,7 +264,7 @@ export function SellerListings() {
                     })
                   }
                 >
-                  Clear
+                  {t('clear')}
                 </button>
               </div>
             </form>
@@ -274,9 +276,9 @@ export function SellerListings() {
             <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap mb-3">
               <h2 className="h5 mb-0 d-flex align-items-center gap-2">
                 <i className="bi bi-grid-3x3-gap text-success" aria-hidden="true" />
-                Existing listings
+                {t('existingListings')}
               </h2>
-              <span className="text-secondary small">{listings.length} total</span>
+              <span className="text-secondary small">{listings.length} {t('total')}</span>
             </div>
 
             {listings.length === 0 ? (
@@ -284,8 +286,8 @@ export function SellerListings() {
                 <div className="empty-state-icon" aria-hidden="true">
                   <i className="bi bi-box-seam" />
                 </div>
-                <p className="fw-semibold text-secondary mb-1">No listings yet</p>
-                <p className="text-secondary small mb-0">Use the form to add your first material.</p>
+                <p className="fw-semibold text-secondary mb-1">{t('noListings')}</p>
+                <p className="text-secondary small mb-0">{t('emptyListingsMessage')}</p>
               </div>
             ) : (
               <div className="row g-3">
@@ -311,7 +313,7 @@ export function SellerListings() {
 
                         <div className="d-flex gap-2 flex-wrap mt-2">
                           {item.category && <span className="badge text-bg-light border">{item.category}</span>}
-                          <span className="badge text-bg-light border">Qty: {item.quantity ?? '—'}</span>
+                          <span className="badge text-bg-light border">{t('qty')}: {item.quantity ?? '—'}</span>
                           {item.price != null && (
                             <span className="badge text-bg-light border">
                               ${Number(item.price).toLocaleString()}
@@ -320,7 +322,7 @@ export function SellerListings() {
                         </div>
 
                         <p className="text-secondary small mt-2 mb-0 line-clamp-2">
-                          {item.description || 'No description.'}
+                          {item.description || t('noDescription')}
                         </p>
                       </div>
                     </div>

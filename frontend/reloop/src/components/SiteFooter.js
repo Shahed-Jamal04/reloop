@@ -18,9 +18,13 @@ export function SiteFooter() {
           <div className="col-12 col-md-6 col-lg-3">
             <div className="d-flex align-items-center gap-2 mb-3">
               <span className="footer-brand-pill" aria-hidden="true">
-                <i className="bi bi-recycle" />
+                <img
+                  src={`${process.env.PUBLIC_URL}/recyclex-logo.png`}
+                  alt="RecycleX logo"
+                  className="footer-brand-logo"
+                />
               </span>
-              <span className="footer-brand-title">Reloop</span>
+              <span className="footer-brand-title">RecycleX</span>
             </div>
             <p className="footer-about">
               Connecting businesses and individuals to exchange surplus materials, reduce waste, and promote a
@@ -86,7 +90,7 @@ export function SiteFooter() {
             <ul className="list-unstyled footer-contact-list mb-0">
               <li className="d-flex gap-2 align-items-start">
                 <i className="bi bi-envelope footer-contact-ico" aria-hidden="true" />
-                <span>info@reloop.com</span>
+                <span>info@recyclex.com</span>
               </li>
               <li className="d-flex gap-2 align-items-start">
                 <i className="bi bi-telephone footer-contact-ico" aria-hidden="true" />
@@ -102,7 +106,7 @@ export function SiteFooter() {
 
         <div className="footer-divider" />
         <div className="footer-copy text-center">
-          &copy; {new Date().getFullYear()} Reloop. All rights reserved.
+          &copy; {new Date().getFullYear()} RecycleX. All rights reserved.
         </div>
       </div>
     </footer>

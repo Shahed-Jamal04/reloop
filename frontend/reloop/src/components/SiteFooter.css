@@ -9,11 +9,17 @@
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: var(--reloop-green-600);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+.footer-brand-pill img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: inline-block;
 }
 
 .footer-brand-pill i {

@@ -18,6 +18,14 @@
   gap: 14px;
 }
 
+[dir="rtl"] .public-nav-inner {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .public-links {
+  justify-content: flex-start;
+}
+
 .public-brand {
   display: inline-flex;
   align-items: baseline;

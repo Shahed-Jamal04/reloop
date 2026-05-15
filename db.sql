@@ -1,6 +1,6 @@
 
---create database reloop;
-USE Reloop;
+--create database RecycleX;
+USE RecycleX;
 GO
 
 ------------------------------------------------------------
@@ -279,8 +279,8 @@ ALTER TABLE messages ADD is_read BIT DEFAULT 0;
 ------------------------------------------------------------
 INSERT INTO testimonials (user_id, author_name, author_role, quote, rating, is_active)
 VALUES 
-(NULL, 'Ahmed Hassan', 'Production Manager', 'Reloop made it easy to find quality waste materials for our production. The process is transparent and reliable.', 5.0, 1),
-(NULL, 'Fatima Al-Mansouri', 'Factory Owner', 'As a seller, Reloop has opened new revenue streams from our waste. Great platform and responsive team.', 5.0, 1),
+(NULL, 'Ahmed Hassan', 'Production Manager', 'RecycleX made it easy to find quality waste materials for our production. The process is transparent and reliable.', 5.0, 1),
+(NULL, 'Fatima Al-Mansouri', 'Factory Owner', 'As a seller, RecycleX has opened new revenue streams from our waste. Great platform and responsive team.', 5.0, 1),
 (NULL, 'Mohammed Noor', 'Buyer', 'Love knowing that I am contributing to a sustainable future while getting quality materials at great prices.', 4.5, 1);
 
 ------------------------------------------------------------
@@ -349,9 +349,9 @@ VALUES
 
 INSERT INTO users (name, email, password, phone, role_id)
 VALUES
-  ('Demo Buyer',  'buyer@reloop.local',  'demo_hash', NULL, 1),
-  ('Demo Seller', 'seller@reloop.local', 'demo_hash', NULL, 2),
-  ('Demo Admin',  'admin@reloop.local',  'demo_hash', NULL, 3);
+  ('Demo Buyer',  'buyer@recyclexapp.local',  'demo_hash', NULL, 1),
+  ('Demo Seller', 'seller@recyclexapp.local', 'demo_hash', NULL, 2),
+  ('Demo Admin',  'admin@recyclexapp.local',  'demo_hash', NULL, 3);
 
 
   -- Profiles

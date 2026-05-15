@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import RequestThreadModal from '../components/RequestThreadModal';
 import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export function SellerIncomingRequestsPage() {
   const { token } = useAuth();
+  const { t } = useTheme();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [savingId, setSavingId] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const [chat, setChat] = useState(null); // { id, title, counterpart }
 
   const load = async () => {
     try {
@@ -24,7 +28,7 @@ export function SellerIncomingRequestsPage() {
       setItems(showAll ? data : data.filter((r) => (r.status || '').toLowerCase() === 'pending'));
     } catch (err) {
       console.error('Failed to load incoming requests:', err);
-      setError('Failed to load incoming requests.');
+      setError(t('failedLoadRequests'));
     } finally {
       setLoading(false);
     }
@@ -45,7 +49,7 @@ export function SellerIncomingRequestsPage() {
       );
       await load();
     } catch (err) {
-      const msg = err.response?.data?.error || 'Failed to update status.';
+      const msg = err.response?.data?.error || t('failedUpdateStatus');
       setError(msg);
     } finally {
       setSavingId(null);
@@ -65,8 +69,8 @@ export function SellerIncomingRequestsPage() {
       <header className="role-page-hero role-page-hero--gradient mb-4">
         <div className="d-flex flex-wrap align-items-start justify-content-between gap-3">
           <div>
-            <h1 className="role-page-title">Incoming requests</h1>
-            <p className="role-page-lead mb-0">Respond to buyers who are interested in your listings.</p>
+            <h1 className="role-page-title">{t('incomingRequests')}</h1>
+            <p className="role-page-lead mb-0">{t('respondToBuyers')}</p>
           </div>
           <div className="form-check form-switch text-white">
             <input
@@ -78,7 +82,7 @@ export function SellerIncomingRequestsPage() {
               onChange={(e) => setShowAll(e.target.checked)}
             />
             <label className="form-check-label" htmlFor="showAll">
-              Show accepted / rejected
+              {t('showAcceptedRejected')}
             </label>
           </div>
         </div>
@@ -87,7 +91,7 @@ export function SellerIncomingRequestsPage() {
       {loading && (
         <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
           <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
-          <span>Loading requests…</span>
+          <span>{t('loadingRequests')}</span>
         </div>
       )}
 
@@ -126,30 +130,50 @@ export function SellerIncomingRequestsPage() {
               </div>
               {r.message && <p className="mt-2 mb-0 small">{r.message}</p>}
 
-              {(r.status || '').toLowerCase() === 'pending' && (
-                <div className="d-flex gap-2 flex-wrap mt-3">
-                  <button
-                    type="button"
-                    className="btn btn-success fw-bold"
-                    disabled={savingId === r.id}
-                    onClick={() => updateStatus(r.id, 'accepted')}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger fw-bold"
-                    disabled={savingId === r.id}
-                    onClick={() => updateStatus(r.id, 'rejected')}
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
+              <div className="d-flex gap-2 flex-wrap mt-3">
+                {(r.status || '').toLowerCase() === 'pending' && (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-success fw-bold"
+                      disabled={savingId === r.id}
+                      onClick={() => updateStatus(r.id, 'accepted')}
+                    >
+                      <i className="bi bi-check-lg me-1" aria-hidden="true" />
+                      Accept
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger fw-bold"
+                      disabled={savingId === r.id}
+                      onClick={() => updateStatus(r.id, 'rejected')}
+                    >
+                      <i className="bi bi-x-lg me-1" aria-hidden="true" />
+                      Reject
+                    </button>
+                  </>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-outline-success fw-semibold ms-auto ms-sm-0"
+                  onClick={() => setChat({ id: r.id, title: r.material_title, counterpart: r.buyer_name })}
+                >
+                  <i className="bi bi-chat-dots me-1" aria-hidden="true" />
+                  Message buyer
+                </button>
+              </div>
             </article>
           ))}
         </div>
       )}
+
+      <RequestThreadModal
+        open={!!chat}
+        onClose={() => setChat(null)}
+        requestId={chat?.id}
+        title={chat?.title}
+        counterpartName={chat?.counterpart}
+      />
     </div>
   );
 }

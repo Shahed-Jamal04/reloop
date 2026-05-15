@@ -1,0 +1,34 @@
+.game-grid {
+  display: flex;
+  justify-content: center; /* center horizontally */
+  align-items: center;
+  width: 100%;
+}
+
+.game-column {
+  width: 100%;
+  max-width: 500px; /* control overall size */
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
+  gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.memory-card {
+  width: 100%;
+  height: 100px; /* or auto if you want flexible */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border-radius: 12px;
+}

@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './PublicNav.css';
 
 export function PublicNav() {
   const { isAuthenticated, user } = useAuth();
+  const { t } = useTheme();
 
   const dashboardLink =
     user?.role === 'admin'
@@ -17,18 +19,30 @@ export function PublicNav() {
     <div className="public-nav">
       <div className="container public-nav-inner">
         <Link to="/" className="public-brand">
-          Reloop <span>marketplace</span>
+          RecycleX <span>marketplace</span>
         </Link>
 
         <div className="public-links">
           <NavLink to="/" className={({ isActive }) => `public-link${isActive ? ' active' : ''}`} end>
-            Home
+            {t('home')}
           </NavLink>
           <NavLink
             to="/marketplace"
             className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
           >
             Marketplace
+          </NavLink>
+          <NavLink
+            to="/game"
+            className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
+          >
+            🎮 {t('games')}
+          </NavLink>
+          <NavLink
+            to="/leaderboard"
+            className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}
+          >
+            🏆 {t('leaderboard')}
           </NavLink>
 
           {isAuthenticated ? (
@@ -38,7 +52,7 @@ export function PublicNav() {
           ) : (
             <>
               <NavLink to="/login" className={({ isActive }) => `public-link${isActive ? ' active' : ''}`}>
-                Login
+                {t('login')}
               </NavLink>
               <Link to="/register" className="public-cta">
                 Register

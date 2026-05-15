@@ -1,35 +1,35 @@
-# Reloop - Login & Registration System
+# RecycleX - Login & Registration System
 
-Complete authentication system for the Reloop project with React frontend and Node.js/Express backend.
+Complete authentication system for the RecycleX project with React frontend and Node.js/Express backend.
 
 ## Project Structure
 
 ```
-reloop/
-├── api/                           # Backend (Node.js/Express)
+recyclexapp/
+├── api/                              # Backend (Node.js/Express)
 │   ├── routes/
-│   │   └── auth.js               # Authentication endpoints
-│   ├── db.js                     # Database connection
-│   ├── config.js                 # Configuration
-│   ├── index.js                  # Main server file
+│   │   └── auth.js                  # Authentication endpoints
+│   ├── db.js                        # Database connection
+│   ├── config.js                    # Configuration
+│   ├── index.js                     # Main server file
 │   ├── package.json
-│   └── .env.example              # Environment variables template
+│   └── .env.example                 # Environment variables template
 │
-└── frontend/reloop/              # Frontend (React)
+└── frontend/recyclexapp/            # Frontend (React)
     ├── src/
     │   ├── pages/
-    │   │   ├── LoginPage.js       # Login component
-    │   │   ├── RegisterPage.js    # Register component
-    │   │   ├── Dashboard.js       # Protected dashboard page
-    │   │   └── Auth.css           # Auth pages styles
+    │   │   ├── LoginPage.js         # Login component
+    │   │   ├── RegisterPage.js      # Register component
+    │   │   ├── Dashboard.js         # Protected dashboard page
+    │   │   └── Auth.css             # Auth pages styles
     │   ├── components/
-    │   │   └── ProtectedRoute.js  # Route protection component
+    │   │   └── ProtectedRoute.js    # Route protection component
     │   ├── context/
-    │   │   └── AuthContext.js     # Authentication context & hooks
-    │   ├── App.js                 # Main app with routing
-    │   └── index.js               # Entry point
+    │   │   └── AuthContext.js       # Authentication context & hooks
+    │   ├── App.js                   # Main app with routing
+    │   └── index.js                 # Entry point
     ├── package.json
-    ├── .env                       # Environment variables
+    ├── .env                         # Environment variables
     └── public/
         └── index.html
 ```
@@ -49,6 +49,7 @@ reloop/
 ## Backend Setup
 
 ### Prerequisites
+
 - Node.js 14+
 - SQL Server (with database created from the schema)
 - ODBC Driver 17 for SQL Server
@@ -56,27 +57,30 @@ reloop/
 ### Installation & Setup
 
 1. **Install dependencies:**
+
    ```bash
    cd api
    npm install
    ```
 
 2. **Create .env file:**
+
    ```bash
    cp .env.example .env
    ```
 
 3. **Update .env with your SQL Server details:**
+
    ```env
    PORT=5000
    JWT_SECRET=your_secret_key_here
-   DB_CONNECTION_STRING=Driver={ODBC Driver 17 for SQL Server};Server=your_server;Database=Reloop;Trusted_Connection=yes;TrustServerCertificate=yes;
+   DB_CONNECTION_STRING=Driver={ODBC Driver 17 for SQL Server};Server=your_server;Database=RecycleX;Trusted_Connection=yes;TrustServerCertificate=yes;
    FRONTEND_URL=http://localhost:3000
    ```
 
 4. **Configure Database Connection:**
    - Ensure SQL Server is running
-   - Database `Reloop` exists with all tables created
+   - Database `RecycleX` exists with all tables created
    - Run the SQL schema provided
 
 5. **Start the backend server:**
@@ -91,6 +95,7 @@ The API will be available at `http://localhost:5000`
 ### Authentication Routes (`/api/auth`)
 
 #### Register
+
 ```
 POST /api/auth/register
 Content-Type: application/json
@@ -116,6 +121,7 @@ Response: 201 Created
 ```
 
 #### Login
+
 ```
 POST /api/auth/login
 Content-Type: application/json
@@ -139,6 +145,7 @@ Response: 200 OK
 ```
 
 #### Verify Token
+
 ```
 POST /api/auth/verify
 Authorization: Bearer <token>
@@ -155,6 +162,7 @@ Response: 200 OK
 ```
 
 #### Health Check
+
 ```
 GET /api/health
 
@@ -167,18 +175,21 @@ Response: 200 OK
 ## Frontend Setup
 
 ### Prerequisites
+
 - Node.js 14+
 - npm or yarn
 
 ### Installation & Setup
 
 1. **Install dependencies:**
+
    ```bash
-   cd frontend/reloop
+   cd frontend/recyclexapp
    npm install
    ```
 
 2. **Verify .env file:**
+
    ```bash
    cat .env
    # Should contain: REACT_APP_API_URL=http://localhost:5000/api
@@ -194,12 +205,14 @@ The app will open at `http://localhost:3000`
 ## Frontend Pages
 
 ### Login Page (`/login`)
+
 - Email and password input
 - Validation and error handling
 - Link to register and forgot password pages
 - Redirects to dashboard on success
 
 ### Register Page (`/register`)
+
 - Full name, email, phone input
 - Account type selection (buyer/seller)
 - Password confirmation
@@ -207,6 +220,7 @@ The app will open at `http://localhost:3000`
 - Redirects to login on success
 
 ### Dashboard (`/dashboard`) - Protected Route
+
 - Displays user information
 - Quick action cards (Listings, Cart, Messages, Settings)
 - Logout button
@@ -285,26 +299,31 @@ The system uses these tables:
 ## Security Features
 
 🔒 **Password Security**
+
 - Passwords hashed with bcryptjs (salt rounds: 10)
 - Never stored in plain text
 
 🔐 **JWT Tokens**
+
 - 24-hour expiration
 - Verified on each protected route
 - Stored in localStorage (can be enhanced with HttpOnly cookies)
 
 ✅ **Validation**
+
 - Email format validation
 - Password length requirements
 - Required field validation
 
 🛡️ **CORS**
+
 - Configured to accept requests from frontend
 - Prevents cross-origin vulnerabilities
 
 ## Troubleshooting
 
 ### Backend Connection Issues
+
 ```bash
 # Check if SQL Server is running
 # Verify ODBC Driver 17 is installed
@@ -312,15 +331,18 @@ The system uses these tables:
 ```
 
 ### Token Expiration
+
 - Tokens expire after 24 hours
 - User must login again
 - Consider implementing refresh tokens for better UX
 
 ### CORS Errors
+
 - Ensure FRONTEND_URL in .env matches your frontend URL
 - Check browser console for specific errors
 
 ### Port Already in Use
+
 ```bash
 # Change PORT in .env
 PORT=5001
@@ -329,6 +351,7 @@ PORT=5001
 ## Environment Variables
 
 ### Backend (.env)
+
 ```
 PORT=5000                    # Server port
 JWT_SECRET=your_secret      # JWT signing secret
@@ -337,6 +360,7 @@ FRONTEND_URL=...            # Allowed frontend URL
 ```
 
 ### Frontend (.env)
+
 ```
 REACT_APP_API_URL=...       # Backend API URL
 ```
@@ -473,4 +497,4 @@ INSERT INTO material_status (status) VALUES ('pending');
 
 ## License
 
-This project is part of the Reloop application. See LICENSE file for details.
+This project is part of the RecycleX application. See LICENSE file for details.

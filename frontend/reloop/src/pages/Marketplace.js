@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import './Marketplace.css';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
 
@@ -34,6 +35,7 @@ export function Marketplace() {
   const [priceRange, setPriceRange] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { t } = useTheme();
 
   useEffect(() => {
     setQuery(searchParams.get('search') || '');
@@ -52,14 +54,14 @@ export function Marketplace() {
         setCategories(Array.isArray(catRes.data) ? catRes.data : []);
       } catch (err) {
         console.error('Failed to load marketplace:', err);
-        setError('Failed to load marketplace items. Please try again later.');
+        setError(t('failedLoadMarketplace'));
         setMaterials([]);
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, []);
+  }, [t]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -108,7 +110,7 @@ export function Marketplace() {
     return (
       <div className="browse-page">
         <div className="container py-5">
-          <p className="text-secondary mb-0">Loading materials…</p>
+          <p className="text-secondary mb-0">{t('loadingMaterials')}</p>
         </div>
       </div>
     );
@@ -118,9 +120,9 @@ export function Marketplace() {
     <div className="browse-page">
       <div className="browse-top border-bottom bg-white">
         <div className="container py-4 py-md-5">
-          <h1 className="browse-top-title">Browse Materials</h1>
+          <h1 className="browse-top-title">{t('browseMaterials')}</h1>
           <p className="browse-top-desc mb-0">
-            Discover sustainable surplus materials from businesses and individuals.
+            {t('discoverSustainable')}
           </p>
         </div>
       </div>
@@ -129,7 +131,7 @@ export function Marketplace() {
         <div className="browse-filters">
           <div className="browse-filters-head">
             <i className="bi bi-sliders" aria-hidden="true" />
-            <span>Filters &amp; Search</span>
+            <span>{t('filtersSearch')}</span>
           </div>
 
           <div className="row g-3">
@@ -139,7 +141,7 @@ export function Marketplace() {
                 <input
                   type="search"
                   className="form-control browse-input"
-                  placeholder="Search materials..."
+                  placeholder={t('searchMaterials')}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   aria-label="Search materials"
@@ -153,7 +155,7 @@ export function Marketplace() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 aria-label="Category"
               >
-                <option value="">All Categories</option>
+                <option value="">{t('allCategories')}</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.name}>
                     {c.name}
@@ -168,7 +170,7 @@ export function Marketplace() {
                 onChange={(e) => setPriceRange(e.target.value)}
                 aria-label="Price range"
               >
-                <option value="all">All Prices</option>
+                <option value="all">{t('allPrices')}</option>
                 <option value="0-20">$0 – $20</option>
                 <option value="20-50">$20 – $50</option>
                 <option value="50-100">$50 – $100</option>
@@ -182,17 +184,17 @@ export function Marketplace() {
                 onChange={(e) => setSortBy(e.target.value)}
                 aria-label="Sort by"
               >
-                <option value="latest">Latest</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="name">Name: A to Z</option>
+                <option value="latest">{t('latest')}</option>
+                <option value="price-low">{t('priceLowToHigh')}</option>
+                <option value="price-high">{t('priceHighToLow')}</option>
+                <option value="name">{t('nameAToZ')}</option>
               </select>
             </div>
           </div>
 
           {hasActiveFilters && (
             <button type="button" className="btn btn-outline-secondary btn-sm mt-3" onClick={clearFilters}>
-              Clear all filters
+              {t('clearAllFilters')}
             </button>
           )}
         </div>
@@ -204,7 +206,7 @@ export function Marketplace() {
         )}
 
         <p className="browse-results-count text-secondary mb-4">
-          Showing <span className="fw-semibold text-dark">{filtered.length}</span> materials
+          {t('showingMaterials')} <span className="fw-semibold text-dark">{filtered.length}</span> {t('materials')}
         </p>
 
         {filtered.length > 0 ? (
@@ -227,11 +229,11 @@ export function Marketplace() {
                     <h2 className="card-title">{item.title}</h2>
                     {item.category && <span className="pill-badge">{item.category}</span>}
                   </div>
-                  <p className="card-desc">{item.description || 'No description provided.'}</p>
+                  <p className="card-desc">{item.description || t('noDescription')}</p>
                   <div className="card-row">
                     <span className="meta">
                       <i className="bi bi-box-seam me-1" aria-hidden="true" />
-                      Qty {item.quantity ?? '—'}
+                      {t('qty')} {item.quantity ?? '—'}
                     </span>
                     {item.price != null && <span className="price">${Number(item.price).toLocaleString()}</span>}
                   </div>
@@ -242,7 +244,7 @@ export function Marketplace() {
                     </p>
                   )}
                   <div className="card-cta">
-                    <span className="btn btn-success btn-sm fw-semibold">View details</span>
+                    <span className="btn btn-success btn-sm fw-semibold">{t('viewDetails')}</span>
                   </div>
                 </div>
               </Link>
@@ -253,10 +255,10 @@ export function Marketplace() {
             <div className="browse-empty-icon mx-auto mb-4">
               <i className="bi bi-search" aria-hidden="true" />
             </div>
-            <h2 className="h4 fw-semibold mb-2">No materials found</h2>
-            <p className="text-secondary mb-4">Try adjusting your filters or search query.</p>
+            <h2 className="h4 fw-semibold mb-2">{t('noMaterialsFound')}</h2>
+            <p className="text-secondary mb-4">{t('tryAdjustingFilters')}</p>
             <button type="button" className="btn btn-outline-secondary" onClick={clearFilters}>
-              Clear filters
+              {t('clearFilters')}
             </button>
           </div>
         )}

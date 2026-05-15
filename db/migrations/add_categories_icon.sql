@@ -1,6 +1,6 @@
 /*
   Add Bootstrap Icons name per category (glyph after "bi-", e.g. tree, egg-fried).
-  Run against an existing Reloop database (SQL Server).
+  Run against an existing RecycleX database (SQL Server).
 */
 IF NOT EXISTS (
   SELECT 1 FROM sys.columns

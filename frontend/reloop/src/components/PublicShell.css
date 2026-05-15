@@ -18,11 +18,11 @@
 }
 
 .public-shell .brand-pill {
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .public-header a.text-decoration-none:hover .brand-pill {
-  background: var(--reloop-green-700) !important;
+  transform: scale(1.05);
 }
 
 .public-main {
@@ -33,7 +33,7 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: var(--reloop-green-600);
+  /* background: var(--reloop-green-600); */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -90,6 +90,27 @@
   gap: clamp(0.15rem, 1vw, 0.35rem) !important;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.theme-toggle-btn {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: var(--reloop-text);
+  background: var(--reloop-surface);
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--reloop-border);
+}
+
+[dir="rtl"] .public-header .d-flex {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .public-nav-actions {
+  justify-content: flex-start;
 }
 
 .public-ghost-link {

@@ -6,6 +6,7 @@ import './HomePage.css';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
 import { categoryIconClass } from '../utils/categoryIcon';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -15,7 +16,7 @@ const PLACEHOLDER_TESTIMONIALS = [
     id: 'ph-1',
     _placeholder: true,
     quote:
-      'Reloop made it easy to find quality surplus materials for our production. The process is transparent and reliable.',
+      'RecycleX made it easy to find quality surplus materials for our production. The process is transparent and reliable.',
     author_name: 'Sarah Chen',
     author_role: 'Operations Manager',
     rating: 5,
@@ -43,6 +44,7 @@ const PLACEHOLDER_TESTIMONIALS = [
 export function HomePage() {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const { t } = useTheme();
   const role = user?.role || 'buyer';
   const [categories, setCategories] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
@@ -160,7 +162,7 @@ export function HomePage() {
     return (
       <div className="home-container">
         <div style={{ textAlign: 'center', padding: '100px 20px' }}>
-          <p>Loading...</p>
+          <p>{t('loading')}</p>
         </div>
       </div>
     );
@@ -178,7 +180,7 @@ export function HomePage() {
             loop
             playsInline
             preload="metadata"
-            poster="https://via.placeholder.com/1920x900?text=Reloop"
+            poster="https://via.placeholder.com/1920x900?text=RecycleX"
           >
             <source src="https://www.31-agency.com/31New/Requirements/Videos/Banner.mp4" type="video/mp4" />
           </video>
@@ -187,25 +189,24 @@ export function HomePage() {
         <div className="container py-5">
           <div className="hero-inner">
             <motion.div className="hero-copy" {...m.hero}>
-              <h1 className="hero-title">Turn Surplus into Success</h1>
+              <h1 className="hero-title">{t('turnSurplusIntoSuccess')}</h1>
               <p className="hero-desc">
-                Join the circular economy revolution. Exchange surplus materials, reduce waste, and create value from
-                what others no longer need.
+                {t('joinCircularEconomy')}
               </p>
               <div className="d-flex flex-column flex-sm-row gap-3 mt-3">
                 <button className="btn btn-light text-success fw-bold px-4 py-2" onClick={() => navigate('/register')}>
-                  Get Started
+                  {t('getStarted')}
                   <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
                 </button>
                 <button
                   className="btn btn-outline-light fw-bold px-4 py-2"
                   onClick={() => navigate('/marketplace')}
                 >
-                  Browse Materials
+                  {t('browseMaterials')}
                 </button>
               </div>
             </motion.div>
-            <div className="hero-art" aria-hidden="true" />
+            {/* <div className="hero-art" aria-hidden="true" /> */}
           </div>
         </div>
       </section>
@@ -214,9 +215,9 @@ export function HomePage() {
       <section className="section section-gray py-5">
         <div className="container">
           <motion.div className="text-center mb-4 mb-md-5" {...m.fadeUp(0)}>
-            <h2 className="section-title">Get Started Today</h2>
+            <h2 className="section-title">{t('getStartedToday')}</h2>
             <p className="section-subtitle">
-              Whether you're looking to buy sustainable materials or sell your surplus, we've got you covered.
+              {t('getStartedSubtitle')}
             </p>
           </motion.div>
 
@@ -227,9 +228,9 @@ export function HomePage() {
                   <i className="bi bi-cart3" />
                 </div>
                 <div className="start-body">
-                  <h3 className="start-title">I'm a Buyer</h3>
+                  <h3 className="start-title">{t('imABuyer')}</h3>
                   <p className="start-text">
-                    Find high-quality surplus materials at competitive prices. Save money while supporting sustainability.
+                    {t('buyerDesc')}
                   </p>
                   <div className="start-actions">
                     <button
@@ -250,13 +251,13 @@ export function HomePage() {
                   <i className="bi bi-shop" />
                 </div>
                 <div className="start-body">
-                  <h3 className="start-title">I'm a Seller</h3>
+                  <h3 className="start-title">{t('imASeller')}</h3>
                   <p className="start-text">
-                    Turn your surplus materials into revenue. Reduce waste and connect with buyers who need what you have.
+                    {t('sellerDesc')}
                   </p>
                   <div className="start-actions">
                     <button type="button" className="btn btn-success start-cta fw-bold w-100" onClick={goListMaterials}>
-                      List Materials
+                      {t('listYourMaterials')}
                     </button>
                   </div>
                 </div>
@@ -270,14 +271,14 @@ export function HomePage() {
       <section className="section section-white py-5">
         <div className="container">
           <motion.div className="find-panel mx-auto" {...m.fadeUp(0)}>
-            <h2 className="section-title text-center mb-4">Find What You Need</h2>
+            <h2 className="section-title text-center mb-4">{t('findWhatYouNeed')}</h2>
             <div className="row g-3">
               <div className="col-12 col-md-8">
                 <div className="find-input-wrap">
                   <i className="bi bi-search find-input-icon" aria-hidden="true" />
                   <input
                     className="find-input-control"
-                    placeholder="Search materials..."
+                    placeholder={t('searchMaterials')}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -290,7 +291,7 @@ export function HomePage() {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   aria-label="Category filter"
                 >
-                  <option value="">All Categories</option>
+                  <option value="">{t('allCategories')}</option>
                   {(categories || []).map((c) => (
                     <option key={c.id} value={c.name}>
                       {c.name}
@@ -300,7 +301,7 @@ export function HomePage() {
               </div>
               <div className="col-12">
                 <button type="button" className="btn btn-success btn-lg fw-bold w-100 find-search-btn" onClick={runSearch}>
-                  Search Materials
+                  {t('searchMaterialsBtn')}
                   <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
                 </button>
               </div>
@@ -313,7 +314,7 @@ export function HomePage() {
       <section className="section section-gray py-5">
         <div className="container">
           <motion.div className="text-center mb-4 mb-md-5" {...m.fadeUp(0)}>
-            <h2 className="section-title">Browse by Category</h2>
+            <h2 className="section-title">{t('browseByCategory')}</h2>
           </motion.div>
 
           <div className="home-cat-grid">
@@ -328,7 +329,7 @@ export function HomePage() {
                     <i className={categoryIconClass(c.icon)} />
                   </span>
                   <span className="cat-tile-name">{c.name}</span>
-                  <span className="cat-tile-count">{c.item_count != null ? `${c.item_count} items` : ''}</span>
+                  <span className="cat-tile-count">{c.item_count != null ? `${c.item_count} ${t('items')}` : ''}</span>
                 </button>
               </motion.div>
             ))}
@@ -341,15 +342,15 @@ export function HomePage() {
         <div className="container">
           <motion.div className="d-flex align-items-end justify-content-between gap-3 flex-wrap mb-4" {...m.fadeUp(0)}>
             <div>
-              <h2 className="section-title mb-1">Featured Materials</h2>
-              <p className="section-subtitle section-subtitle--lead mb-0">Latest additions to our marketplace</p>
+              <h2 className="section-title mb-1">{t('featuredMaterials')}</h2>
+              <p className="section-subtitle section-subtitle--lead mb-0">{t('latestAdditions')}</p>
             </div>
             <button
               type="button"
               className="btn btn-outline-secondary fw-bold feat-view-all"
               onClick={() => navigate('/marketplace')}
             >
-              View All
+              {t('viewAll')}
               <i className="bi bi-arrow-right ms-1" aria-hidden="true" />
             </button>
           </motion.div>
@@ -357,7 +358,7 @@ export function HomePage() {
           <div className="row g-3 g-md-4">
             {featured.length === 0 ? (
               <div className="col-12">
-                <div className="surface p-4 text-center text-secondary">No featured materials yet.</div>
+                <div className="surface p-4 text-center text-secondary">{t('noFeaturedMaterials')}</div>
               </div>
             ) : (
               featured.map((material, index) => (
@@ -382,10 +383,10 @@ export function HomePage() {
                         <span className="feat-price">
                           {material.price != null ? `$${Number(material.price).toLocaleString()}` : '—'}
                         </span>
-                        <span className="text-secondary small">Qty {material.quantity ?? '—'}</span>
+                        <span className="text-secondary small">{t('qty')} {material.quantity ?? '—'}</span>
                       </div>
                       <div className="feat-actions">
-                        <span className="btn btn-dark btn-sm fw-bold">View Details</span>
+                        <span className="btn btn-dark btn-sm fw-bold">{t('viewDetails')}</span>
                       </div>
                     </div>
                   </button>
@@ -400,9 +401,9 @@ export function HomePage() {
       <section className="section section-how py-5">
         <div className="container">
           <motion.div className="text-center mb-4 mb-md-5" {...m.fadeUp(0)}>
-            <h2 className="section-title">How It Works</h2>
+            <h2 className="section-title">{t('howItWorks')}</h2>
             <p className="section-subtitle">
-              Getting started with Reloop is simple. Follow these three easy steps to start exchanging materials.
+              {t('howItWorksSubtitle')}
             </p>
           </motion.div>
 
@@ -413,9 +414,9 @@ export function HomePage() {
                   <i className="bi bi-cloud-upload how-step-icon how-step-icon--green" aria-hidden="true" />
                 </div>
                 <div className="how-step-badge how-step-badge--green">1</div>
-                <div className="how-title">Add Materials</div>
+                <div className="how-title">{t('addMaterials')}</div>
                 <div className="how-text">
-                  List your surplus materials with photos, descriptions, and pricing. It's quick and easy!
+                  {t('addMaterialsDesc')}
                 </div>
               </motion.div>
             </div>
@@ -425,9 +426,9 @@ export function HomePage() {
                   <i className="bi bi-chat-dots how-step-icon how-step-icon--blue" aria-hidden="true" />
                 </div>
                 <div className="how-step-badge how-step-badge--blue">2</div>
-                <div className="how-title">Send Requests</div>
+                <div className="how-title">{t('sendRequests')}</div>
                 <div className="how-text">
-                  Browse materials and send requests to sellers. Communicate directly to discuss details.
+                  {t('sendRequestsDesc')}
                 </div>
               </motion.div>
             </div>
@@ -437,9 +438,9 @@ export function HomePage() {
                   <i className="bi bi-check-circle how-step-icon how-step-icon--purple" aria-hidden="true" />
                 </div>
                 <div className="how-step-badge how-step-badge--purple">3</div>
-                <div className="how-title">Complete Orders</div>
+                <div className="how-title">{t('completeOrders')}</div>
                 <div className="how-text">
-                  Finalize the transaction and arrange delivery. Build sustainable business relationships!
+                  {t('completeOrdersDesc')}
                 </div>
               </motion.div>
             </div>
@@ -447,7 +448,7 @@ export function HomePage() {
 
           <motion.div className="text-center mt-4 mt-md-5" {...m.fadeUp(0.15)}>
             <button type="button" className="btn btn-success btn-lg fw-bold px-5" onClick={() => navigate('/register')}>
-              Start Your Journey
+              {t('startYourJourney')}
               <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
             </button>
           </motion.div>
@@ -458,9 +459,9 @@ export function HomePage() {
       <section className="section section-white py-5">
         <div className="container">
           <motion.div className="text-center mb-4" {...m.fadeUp(0)}>
-            <h2 className="section-title">What Our Users Say</h2>
+            <h2 className="section-title">{t('whatOurUsersSay')}</h2>
             <p className="section-subtitle">
-              Hear from businesses and individuals making a difference in the circular economy.
+              {t('usersSaySubtitle')}
             </p>
           </motion.div>
 
@@ -495,7 +496,7 @@ export function HomePage() {
 
           {testimonials.length === 0 && (
             <p className="text-center text-secondary small mt-3 mb-0">
-              Approved testimonials appear here after admin review. Submit yours below.
+              {t('testimonialsNote')}
             </p>
           )}
         </div>
@@ -505,8 +506,8 @@ export function HomePage() {
       <section className="section section-gray py-5">
         <div className="container">
           <motion.div className="text-center mb-4" {...m.fadeUp(0)}>
-            <h2 className="section-title">Share your experience</h2>
-            <p className="section-subtitle">Your testimonial will be reviewed by an admin before it appears publicly.</p>
+            <h2 className="section-title">{t('shareYourExperience')}</h2>
+            <p className="section-subtitle">{t('testimonialReviewNote')}</p>
           </motion.div>
 
           <motion.div className="row justify-content-center" {...m.fadeUp(0.08)}>
@@ -556,7 +557,7 @@ export function HomePage() {
                   >
                     <div className="row g-2">
                       <div className="col-12 col-md-6">
-                        <label className="form-label fw-semibold">Name</label>
+                        <label className="form-label fw-semibold">{t('name')}</label>
                         <input
                           className="form-control"
                           value={tForm.author_name}
@@ -565,18 +566,18 @@ export function HomePage() {
                         />
                       </div>
                       <div className="col-12 col-md-6">
-                        <label className="form-label fw-semibold">Role (optional)</label>
+                        <label className="form-label fw-semibold">{t('roleOptional')}</label>
                         <input
                           className="form-control"
                           value={tForm.author_role}
                           onChange={(e) => setTForm((p) => ({ ...p, author_role: e.target.value }))}
-                          placeholder="Buyer / Factory Owner / Manager..."
+                          placeholder={t('rolePlaceholder')}
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="form-label fw-semibold">Testimonial</label>
+                      <label className="form-label fw-semibold">{t('testimonial')}</label>
                       <textarea
                         className="form-control"
                         rows={4}
@@ -588,7 +589,7 @@ export function HomePage() {
 
                     <div className="row g-2 align-items-end">
                       <div className="col-12 col-md-4">
-                        <label className="form-label fw-semibold">Rating (optional)</label>
+                        <label className="form-label fw-semibold">{t('ratingOptional')}</label>
                         <div
                           className="stars"
                           onMouseLeave={() => setRatingHover(null)}
@@ -618,7 +619,7 @@ export function HomePage() {
                             );
                           })}
                           <span className="rating-hint">
-                            {tForm.rating === '' ? 'No rating' : `${tForm.rating}/5`}
+                            {tForm.rating === '' ? t('noRating') : `${tForm.rating}/5`}
                           </span>
                           {tForm.rating !== '' && (
                             <button
@@ -627,14 +628,14 @@ export function HomePage() {
                               onClick={() => setTForm((p) => ({ ...p, rating: '' }))}
                               disabled={tSubmitting}
                             >
-                              Clear
+                              {t('clear')}
                             </button>
                           )}
                         </div>
                       </div>
                       <div className="col-12 col-md-8">
                         <button type="submit" className="btn btn-success fw-bold w-100" disabled={tSubmitting}>
-                          {tSubmitting ? 'Submitting...' : 'Submit testimonial'}
+                          {tSubmitting ? t('submitting') : t('submitTestimonial')}
                         </button>
                       </div>
                     </div>
@@ -650,9 +651,9 @@ export function HomePage() {
       <section className="cta-green">
         <div className="container">
           <motion.div className="cta-block text-center" {...m.fadeUp(0)}>
-            <h2 className="cta-title">Ready to Make a Difference?</h2>
+            <h2 className="cta-title">{t('readyToMakeDifference')}</h2>
             <p className="cta-text mx-auto">
-              Join thousands of businesses and individuals reducing waste and creating value through the circular economy.
+              {t('ctaText')}
             </p>
             <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
               <button
@@ -660,14 +661,14 @@ export function HomePage() {
                 className="btn btn-light text-success fw-bold px-4 py-2"
                 onClick={() => navigate('/register')}
               >
-                Create Free Account
+                {t('createFreeAccount')}
               </button>
               <button
                 type="button"
                 className="btn btn-outline-light fw-bold px-4 py-2"
                 onClick={() => navigate('/marketplace')}
               >
-                Explore Platform
+                {t('explorePlatform')}
               </button>
             </div>
           </motion.div>

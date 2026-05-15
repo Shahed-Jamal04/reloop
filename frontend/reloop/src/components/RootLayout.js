@@ -3,12 +3,13 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import AppShell from './AppShell';
 import PublicShell from './PublicShell';
 import { useAuth } from '../context/AuthContext';
+import ChatWidget from './ChatWidget';
 
 export function RootLayout() {
   const location = useLocation();
   const { isAuthenticated, loading } = useAuth();
 
-  // While auth state loads, avoid flicker
+  // While auth loads
   if (loading) {
     return <Outlet />;
   }
@@ -16,24 +17,32 @@ export function RootLayout() {
   const publicPaths = ['/', '/login', '/register', '/marketplace'];
   const isMaterialDetail = location.pathname.startsWith('/materials/');
 
-  // Guests can only access public pages, and they should be clean (no sidebar/topbar)
+
+  // Guest view
   if (!isAuthenticated) {
     if (!publicPaths.includes(location.pathname) && !isMaterialDetail) {
       return <Navigate to="/login" replace />;
     }
+
     return (
-      <PublicShell>
-        <Outlet />
-      </PublicShell>
+      <>
+        <PublicShell>
+          <Outlet />
+        </PublicShell>
+        <ChatWidget />
+      </>
     );
   }
 
+  // Authenticated view
   return (
-    <AppShell>
-      <Outlet />
-    </AppShell>
+    <>
+      <AppShell>
+        <Outlet />
+      </AppShell>
+      <ChatWidget />
+    </>
   );
 }
 
 export default RootLayout;
-

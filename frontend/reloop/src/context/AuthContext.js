@@ -84,6 +84,11 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token');
   };
 
+  // Merge partial updates into the in-memory user (e.g. after profile edit)
+  const updateUser = (patch) => {
+    setUser((prev) => (prev ? { ...prev, ...patch } : prev));
+  };
+
   const isAuthenticated = !!user && !!token;
 
   return (
@@ -96,6 +101,7 @@ export function AuthProvider({ children }) {
         register,
         login,
         logout,
+        updateUser,
         isAuthenticated,
       }}
     >

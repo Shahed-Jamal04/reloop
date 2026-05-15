@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import FormInput from './FormInput';
 import ErrorMessage from './ErrorMessage';
 import Button from './Button';
@@ -20,6 +21,7 @@ export function RegisterForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { register } = useAuth();
+  const { t } = useTheme();
 
   useEffect(() => {
     const role = searchParams.get('role');
@@ -70,18 +72,22 @@ export function RegisterForm() {
       <header className="auth-header auth-card-panel">
         <div className="auth-brand">
           <span className="brand-pill" aria-hidden="true">
-            <i className="bi bi-recycle" />
+            <img
+              src={`${process.env.PUBLIC_URL}/recyclex-logo.png`}
+              alt="RecycleX logo"
+              className="brand-logo"
+            />
           </span>
-          <span className="auth-brand-name">Reloop</span>
+          <span className="auth-brand-name">RecycleX</span>
         </div>
-        <h1 className="auth-title">Create your account</h1>
-        <p className="auth-subtitle">Join the circular economy—list or find surplus materials in minutes.</p>
+        <h1 className="auth-title">{t('createAccount')}</h1>
+        <p className="auth-subtitle">{t('joinCircularEconomy')}</p>
       </header>
 
       <div className="auth-card-panel pt-0">
         <div className="auth-card-panel-head">
-          <h2 className="auth-card-panel-title">Sign up</h2>
-          <p className="auth-card-panel-desc">Fill in your details to create a new account.</p>
+          <h2 className="auth-card-panel-title">{t('signUp')}</h2>
+          <p className="auth-card-panel-desc">{t('fillDetails')}</p>
         </div>
 
         <ErrorMessage message={error} />
@@ -99,8 +105,8 @@ export function RegisterForm() {
                   aria-pressed={formData.role === 'buyer'}
                 >
                   <i className="bi bi-cart3 role-picker-ico role-picker-ico--buyer" aria-hidden="true" />
-                  <span className="role-picker-title">Buy materials</span>
-                  <span className="role-picker-hint">Find sustainable materials</span>
+                  <span className="role-picker-title">{t('buyer')}</span>
+                  <span className="role-picker-hint">{t('findSustainableMaterials')}</span>
                 </button>
               </div>
               <div className="col-md-6">
@@ -112,15 +118,15 @@ export function RegisterForm() {
                   aria-pressed={formData.role === 'seller'}
                 >
                   <i className="bi bi-shop role-picker-ico role-picker-ico--seller" aria-hidden="true" />
-                  <span className="role-picker-title">Sell materials</span>
-                  <span className="role-picker-hint">List your surplus</span>
+                  <span className="role-picker-title">{t('seller')}</span>
+                  <span className="role-picker-hint">{t('listYourSurplus')}</span>
                 </button>
               </div>
             </div>
           </div>
 
           <FormInput
-            label="Full Name"
+            label={t('fullName')}
             id="name"
             name="name"
             type="text"
@@ -132,7 +138,7 @@ export function RegisterForm() {
           />
 
           <FormInput
-            label="Email Address"
+            label={t('email')}
             id="email"
             name="email"
             type="email"
@@ -157,7 +163,7 @@ export function RegisterForm() {
           <div className="row g-2">
             <div className="col-md-6">
               <FormInput
-                label="Password"
+                label={t('password')}
                 id="password"
                 name="password"
                 type="password"
@@ -170,7 +176,7 @@ export function RegisterForm() {
             </div>
             <div className="col-md-6">
               <FormInput
-                label="Confirm Password"
+                label={t('confirmPassword')}
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
@@ -184,18 +190,18 @@ export function RegisterForm() {
           </div>
 
           <Button type="submit" disabled={loading} className="btn btn-success w-100 py-2 fw-bold auth-submit">
-            {loading ? 'Creating account…' : 'Create account'}
+            {loading ? t('loading') : t('createAccount')}
           </Button>
         </form>
       </div>
 
       <footer className="auth-footer auth-card-panel border-top bg-light">
         <p className="auth-footer-line mb-0">
-          Already have an account? <Link to="/login">Sign in</Link>
+          {t('alreadyHaveAccount')} <Link to="/login">{t('signIn')}</Link>
         </p>
         <p className="auth-footer-line mb-0">
           <Link to="/" className="auth-footer-link-secondary">
-            Back to home
+            {t('home')}
           </Link>
         </p>
       </footer>
