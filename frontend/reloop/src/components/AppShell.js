@@ -14,6 +14,7 @@ function getMenuForRole(role, t) {
         { to: '/marketplace', label: t('marketplace'), icon: 'bi-bag' },
         { to: '/game', label: t('games'), icon: 'bi-controller' },
         { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
+        { to: '/about', label: t('aboutUs'), icon: 'bi-people' },
         { to: '/login', label: t('login'), icon: 'bi-box-arrow-in-right' },
         { to: '/register', label: t('register'), icon: 'bi-person-plus' },
       ],
@@ -24,12 +25,14 @@ function getMenuForRole(role, t) {
     return {
       section: t('admin'),
       items: [
+        { to: '/', label: t('home'), icon: 'bi-house' },
         { to: '/admin', label: t('dashboard'), icon: 'bi-speedometer2' },
         { to: '/admin/materials', label: t('approvals'), icon: 'bi-check2-circle' },
         { to: '/admin/testimonials', label: t('testimonials'), icon: 'bi-chat-quote' },
         { to: '/admin/users', label: t('users'), icon: 'bi-people' },
         { to: '/game', label: t('games'), icon: 'bi-controller' },
         { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
+        { to: '/about', label: t('aboutUs'), icon: 'bi-people' },
       ],
     };
   }
@@ -38,6 +41,7 @@ function getMenuForRole(role, t) {
     return {
       section: t('seller'),
       items: [
+        { to: '/', label: t('home'), icon: 'bi-house' },
         { to: '/dashboard/seller', label: t('dashboard'), icon: 'bi-speedometer2' },
         { to: '/seller/listings', label: t('listings'), icon: 'bi-card-list' },
         { to: '/seller/requests', label: t('requests'), icon: 'bi-inbox' },
@@ -45,6 +49,7 @@ function getMenuForRole(role, t) {
         { to: '/marketplace', label: t('marketplace'), icon: 'bi-bag' },
         { to: '/game', label: t('games'), icon: 'bi-controller' },
         { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
+        { to: '/about', label: t('aboutUs'), icon: 'bi-people' },
       ],
     };
   }
@@ -52,12 +57,14 @@ function getMenuForRole(role, t) {
   return {
     section: t('buyer'),
     items: [
+      { to: '/', label: t('home'), icon: 'bi-house' },
       { to: '/dashboard/buyer', label: t('dashboard'), icon: 'bi-speedometer2' },
       { to: '/marketplace', label: t('marketplace'), icon: 'bi-bag' },
       { to: '/requests', label: t('requests'), icon: 'bi-chat-left-text' },
       { to: '/orders', label: t('orders'), icon: 'bi-receipt' },
       { to: '/game', label: t('games'), icon: 'bi-controller' },
       { to: '/leaderboard', label: t('leaderboard'), icon: 'bi-trophy' },
+      { to: '/about', label: t('aboutUs'), icon: 'bi-people' },
     ],
   };
 }
@@ -111,6 +118,8 @@ export function AppShell({ children }) {
   };
 
   const pageTitle = (() => {
+    if (location.pathname === '/') return t('home');
+    if (location.pathname.startsWith('/about')) return t('aboutUs');
     if (location.pathname.startsWith('/dashboard')) return t('dashboard');
     if (location.pathname.startsWith('/seller/listings')) return t('listings');
     if (location.pathname.startsWith('/marketplace')) return t('marketplace');
@@ -127,8 +136,8 @@ export function AppShell({ children }) {
     <div className={`app-shell${collapsed ? ' collapsed' : ''}`}>
       <aside className="app-sidebar d-flex flex-column">
         <div className="sidebar-brand">
-          <div className="brand-left">
-            <div className="brand-mark" aria-hidden="true" title="RecycleX">
+          <Link to="/" className="brand-left sidebar-brand-link" title={t('home')}>
+            <div className="brand-mark" aria-hidden="true">
               <img
                 src={`${process.env.PUBLIC_URL}/recyclex-logo.png`}
                 alt="RecycleX logo"
@@ -139,7 +148,7 @@ export function AppShell({ children }) {
               <div className="brand-title">RecycleX</div>
               <span className="brand-subtitle">{t('circularMarketplace')}</span>
             </div>
-          </div>
+          </Link>
           <button
             type="button"
             className="collapse-btn"

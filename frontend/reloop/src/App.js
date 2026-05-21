@@ -21,6 +21,7 @@ import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import GamePage from './pages/GamePage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import AboutPage from './pages/AboutPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppShell from './components/AppShell';
 import PublicNav from './components/PublicNav';
@@ -61,6 +62,7 @@ function App() {
             <Route path="/materials/:id" element={<MaterialDetail />} />
             <Route path="/game" element={<GamePage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/about" element={<AboutPage />} />
 
             {/* Auth-only redirect helper */}
             <Route

@@ -307,7 +307,8 @@ export function OrdersPage() {
                       <div className="fw-semibold text-truncate">{it.material_title || 'Material'}</div>
                       <div className="text-secondary">
                         Qty {it.quantity ?? '—'}
-                        {it.line_price != null && ` · $${Number(it.line_price).toLocaleString()} each`}
+                        {it.line_price != null &&
+                          ` · $${Number(it.line_price).toLocaleString()} ${t('priceLotSuffix')}`}
                       </div>
                     </div>
                     <Link to={`/materials/${it.material_id}`} className="btn btn-outline-success btn-sm flex-shrink-0">

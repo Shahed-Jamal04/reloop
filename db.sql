@@ -65,7 +65,7 @@ CREATE TABLE material_status (
     id INT PRIMARY KEY IDENTITY(1,1),
     status NVARCHAR(20) UNIQUE NOT NULL
 );
-INSERT INTO material_status (status) VALUES ('pending'), ('available'), ('sold'), ('removed');
+INSERT INTO material_status (status) VALUES ('pending'), ('available'), ('sold'), ('removed'), ('out_of_stock');
 
 ------------------------------------------------------------
 -- MATERIALS

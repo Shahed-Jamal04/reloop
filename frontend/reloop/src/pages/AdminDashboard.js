@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -22,6 +23,7 @@ function formatCurrency(v) {
 
 export function AdminDashboard() {
   const { token, user } = useAuth();
+  const { t } = useTheme();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,7 +40,7 @@ export function AdminDashboard() {
         if (!cancelled) setData(res.data);
       } catch (err) {
         console.error('Failed to load admin overview:', err);
-        if (!cancelled) setError(err.response?.data?.error || 'Failed to load overview.');
+        if (!cancelled) setError(err.response?.data?.error || t('failedLoadOverview'));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -60,16 +62,16 @@ export function AdminDashboard() {
   return (
     <div className="role-page py-4 px-3">
       <header className="role-page-hero role-page-hero--gradient mb-4">
-        <h1 className="role-page-title">Welcome back, {user?.name || 'Admin'}</h1>
-        <p className="role-page-lead mb-0">
-          Monitor platform activity, approve new listings, moderate testimonials, and manage users.
-        </p>
+        <h1 className="role-page-title">
+          {t('welcomeBack')}, {user?.name || t('admin')}
+        </h1>
+        <p className="role-page-lead mb-0">{t('adminOverviewLead')}</p>
       </header>
 
       {loading && (
         <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
           <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
-          <span>Loading overview…</span>
+          <span>{t('loadingOverview')}</span>
         </div>
       )}
 
@@ -81,33 +83,33 @@ export function AdminDashboard() {
         <>
           <section className="row g-3 mb-4">
             <KpiCard
-              label="Pending listings"
+              label={t('pendingListingsKpi')}
               value={kpis.pending_materials ?? 0}
               icon="bi-clipboard-check"
               color="warning"
               to="/admin/materials"
-              cta="Review now"
+              cta={t('reviewNow')}
               highlight={(kpis.pending_materials ?? 0) > 0}
             />
             <KpiCard
-              label="Pending testimonials"
+              label={t('pendingTestimonialsKpi')}
               value={kpis.pending_testimonials ?? 0}
               icon="bi-chat-quote"
               color="info"
               to="/admin/testimonials"
-              cta="Moderate"
+              cta={t('moderate')}
               highlight={(kpis.pending_testimonials ?? 0) > 0}
             />
             <KpiCard
-              label="Total users"
+              label={t('totalUsersKpi')}
               value={kpis.total_users ?? 0}
               icon="bi-people"
               color="primary"
               to="/admin/users"
-              cta="Manage"
+              cta={t('manage')}
             />
             <KpiCard
-              label="Total revenue"
+              label={t('totalRevenueKpi')}
               value={formatCurrency(kpis.revenue)}
               icon="bi-currency-dollar"
               color="success"
@@ -119,9 +121,9 @@ export function AdminDashboard() {
               <div className="ds-surface ds-surface--pad h-100">
                 <h3 className="h6 fw-bold mb-3">
                   <i className="bi bi-people text-success me-2" aria-hidden="true" />
-                  Users by role
+                  {t('usersByRole')}
                 </h3>
-                <BreakdownList items={usersByRole} />
+                <BreakdownList items={usersByRole} emptyLabel={t('noDataYet')} />
               </div>
             </div>
 
@@ -129,9 +131,9 @@ export function AdminDashboard() {
               <div className="ds-surface ds-surface--pad h-100">
                 <h3 className="h6 fw-bold mb-3">
                   <i className="bi bi-box-seam text-success me-2" aria-hidden="true" />
-                  Listings by status
+                  {t('listingsByStatusTitle')}
                 </h3>
-                <BreakdownList items={listingsByStatus} total={kpis.total_listings} />
+                <BreakdownList items={listingsByStatus} total={kpis.total_listings} emptyLabel={t('noDataYet')} />
               </div>
             </div>
 
@@ -139,9 +141,9 @@ export function AdminDashboard() {
               <div className="ds-surface ds-surface--pad h-100">
                 <h3 className="h6 fw-bold mb-3">
                   <i className="bi bi-receipt text-success me-2" aria-hidden="true" />
-                  Orders by status
+                  {t('ordersByStatusTitle')}
                 </h3>
-                <BreakdownList items={ordersByStatus} total={kpis.total_orders} />
+                <BreakdownList items={ordersByStatus} total={kpis.total_orders} emptyLabel={t('noDataYet')} />
               </div>
             </div>
           </section>
@@ -152,21 +154,23 @@ export function AdminDashboard() {
                 <div className="d-flex align-items-start justify-content-between gap-2 mb-3">
                   <h3 className="h6 fw-bold mb-0">
                     <i className="bi bi-clipboard-check text-warning me-2" aria-hidden="true" />
-                    Pending listings
+                    {t('pendingListingsTitle')}
                   </h3>
                   <Link to="/admin/materials" className="small text-success fw-semibold text-decoration-none">
-                    View all →
+                    {t('viewAllArrow')} →
                   </Link>
                 </div>
                 {recentMaterials.length === 0 ? (
-                  <p className="text-secondary small mb-0">No pending listings 🎉</p>
+                  <p className="text-secondary small mb-0">{t('noPendingListingsCelebration')} 🎉</p>
                 ) : (
                   <ul className="list-unstyled mb-0 d-grid gap-2">
                     {recentMaterials.map((m) => (
                       <li key={m.id} className="d-flex justify-content-between gap-2 border-bottom pb-2">
                         <div className="text-truncate">
                           <div className="fw-semibold text-truncate">{m.title}</div>
-                          <div className="text-secondary small">by {m.seller_name}</div>
+                          <div className="text-secondary small">
+                            {t('listingBySeller')} {m.seller_name}
+                          </div>
                         </div>
                         <span className="text-secondary small flex-shrink-0">{formatDate(m.created_at)}</span>
                       </li>
@@ -181,14 +185,14 @@ export function AdminDashboard() {
                 <div className="d-flex align-items-start justify-content-between gap-2 mb-3">
                   <h3 className="h6 fw-bold mb-0">
                     <i className="bi bi-chat-quote text-info me-2" aria-hidden="true" />
-                    Pending testimonials
+                    {t('pendingTestimonialsTitle')}
                   </h3>
                   <Link to="/admin/testimonials" className="small text-success fw-semibold text-decoration-none">
-                    View all →
+                    {t('viewAllArrow')} →
                   </Link>
                 </div>
                 {recentTestimonials.length === 0 ? (
-                  <p className="text-secondary small mb-0">No pending testimonials.</p>
+                  <p className="text-secondary small mb-0">{t('noPendingTestimonialsAdmin')}</p>
                 ) : (
                   <ul className="list-unstyled mb-0 d-grid gap-2">
                     {recentTestimonials.map((t) => (
@@ -207,22 +211,22 @@ export function AdminDashboard() {
                 <div className="d-flex align-items-start justify-content-between gap-2 mb-3">
                   <h3 className="h6 fw-bold mb-0">
                     <i className="bi bi-person-plus text-success me-2" aria-hidden="true" />
-                    Recent users
+                    {t('recentUsersTitle')}
                   </h3>
                   <Link to="/admin/users" className="small text-success fw-semibold text-decoration-none">
-                    Manage users →
+                    {t('manageUsers')} →
                   </Link>
                 </div>
                 {recentUsers.length === 0 ? (
-                  <p className="text-secondary small mb-0">No users yet.</p>
+                  <p className="text-secondary small mb-0">{t('noUsersYet')}</p>
                 ) : (
                   <div className="table-responsive">
                     <table className="table table-sm align-middle mb-0">
                       <thead className="text-secondary small">
                         <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Role</th>
+                          <th>{t('name')}</th>
+                          <th>{t('email')}</th>
+                          <th>{t('role')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -285,10 +289,10 @@ function KpiCard({ label, value, icon, color = 'success', to, cta, highlight = f
   );
 }
 
-function BreakdownList({ items, total }) {
+function BreakdownList({ items, total, emptyLabel = 'No data yet.' }) {
   const entries = Object.entries(items || {});
   if (entries.length === 0) {
-    return <p className="text-secondary small mb-0">No data yet.</p>;
+    return <p className="text-secondary small mb-0">{emptyLabel}</p>;
   }
   const sum = total ?? entries.reduce((a, [, v]) => a + v, 0) ?? 0;
 
@@ -331,6 +335,7 @@ function statusColor(status) {
     case 'failed':
     case 'removed':
     case 'sold':
+    case 'out_of_stock':
       return 'secondary';
     case 'admin': return 'primary';
     case 'seller': return 'info';

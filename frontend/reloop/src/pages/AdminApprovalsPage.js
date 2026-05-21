@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import { formatListingPrice } from '../utils/materialPricing';
 import './rolePages.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export function AdminApprovalsPage() {
   const { token } = useAuth();
+  const { t } = useTheme();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -22,7 +25,7 @@ export function AdminApprovalsPage() {
       setItems(res.data);
     } catch (err) {
       console.error('Failed to load approvals:', err);
-      setError('Failed to load pending approvals.');
+      setError(t('failedLoadPendingListings'));
     } finally {
       setLoading(false);
     }
@@ -43,7 +46,7 @@ export function AdminApprovalsPage() {
       );
       await load();
     } catch (err) {
-      const msg = err.response?.data?.error || 'Action failed.';
+      const msg = err.response?.data?.error || t('actionFailed');
       setError(msg);
     } finally {
       setSavingId(null);
@@ -53,14 +56,14 @@ export function AdminApprovalsPage() {
   return (
     <div className="role-page py-4 px-3">
       <header className="role-page-hero role-page-hero--gradient mb-4">
-        <h1 className="role-page-title">Approvals</h1>
-        <p className="role-page-lead mb-0">Approve or reject new listings before they appear in the marketplace.</p>
+        <h1 className="role-page-title">{t('listingApprovals')}</h1>
+        <p className="role-page-lead mb-0">{t('listingApprovalsLead')}</p>
       </header>
 
       {loading && (
         <div className="d-flex justify-content-center align-items-center gap-2 py-5 text-secondary">
-          <div className="spinner-border spinner-border-sm" role="status" aria-label="Loading" />
-          <span>Loading pending listings…</span>
+          <div className="spinner-border spinner-border-sm" role="status" aria-label={t('loading')} />
+          <span>{t('loadingPendingListings')}</span>
         </div>
       )}
 
@@ -75,8 +78,8 @@ export function AdminApprovalsPage() {
           <div className="empty-state-icon" aria-hidden="true">
             <i className="bi bi-clipboard-check" />
           </div>
-          <p className="fw-semibold text-secondary mb-1">No pending listings</p>
-          <p className="text-secondary small mb-0">When sellers create new listings, they will appear here for approval.</p>
+          <p className="fw-semibold text-secondary mb-1">{t('noPendingListingsCelebration')}</p>
+          <p className="text-secondary small mb-0">{t('noPendingListingsHelp')}</p>
         </div>
       )}
 
@@ -86,7 +89,7 @@ export function AdminApprovalsPage() {
             <article key={m.id} className="ds-surface ds-surface--pad">
               <div className="d-flex justify-content-between gap-2 flex-wrap align-items-start mb-2">
                 <strong className="fs-6">{m.title}</strong>
-                <span className="badge bg-warning text-dark">{m.status || 'pending'}</span>
+                <span className="badge bg-warning text-dark">{m.status || t('pending')}</span>
               </div>
 
               <div className="request-card-img mb-2">
@@ -101,14 +104,20 @@ export function AdminApprovalsPage() {
               </div>
 
               <div className="text-secondary small">
-                Seller: {m.seller_name} {m.seller_email ? `(${m.seller_email})` : ''}
+                {t('sellerLabel')}: {m.seller_name} {m.seller_email ? `(${m.seller_email})` : ''}
               </div>
               <div className="d-flex gap-2 flex-wrap mt-2">
                 {m.category && <span className="badge text-bg-light border">{m.category}</span>}
                 {m.price != null && (
-                  <span className="badge text-bg-light border">${Number(m.price).toLocaleString()}</span>
+                  <span className="badge text-bg-light border">
+                    {formatListingPrice(m.price, m.quantity, t)}
+                  </span>
                 )}
-                {m.quantity != null && <span className="badge text-bg-light border">Qty: {m.quantity}</span>}
+                {m.quantity != null && (
+                  <span className="badge text-bg-light border">
+                    {t('qty')}: {m.quantity}
+                  </span>
+                )}
               </div>
 
               {m.description && <p className="text-secondary small mt-2 mb-0 line-clamp-2">{m.description}</p>}
@@ -120,7 +129,7 @@ export function AdminApprovalsPage() {
                   disabled={savingId === m.id}
                   onClick={() => act(m.id, 'approve')}
                 >
-                  Approve
+                  {t('approve')}
                 </button>
                 <button
                   type="button"
@@ -128,7 +137,7 @@ export function AdminApprovalsPage() {
                   disabled={savingId === m.id}
                   onClick={() => act(m.id, 'reject')}
                 >
-                  Reject
+                  {t('reject')}
                 </button>
               </div>
             </article>
@@ -140,4 +149,3 @@ export function AdminApprovalsPage() {
 }
 
 export default AdminApprovalsPage;
-

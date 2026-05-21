@@ -11,19 +11,19 @@
 
 .game-header h1 {
   font-size: 2.5rem;
-  color: #111827;
+  color: var(--reloop-text);
   margin-bottom: 0.5rem;
   font-weight: 900;
 }
 
 .game-header p {
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-size: 1.1rem;
 }
 
 /* Menu State */
 .game-menu {
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
@@ -33,7 +33,7 @@
 .game-info {
   margin-bottom: 2rem;
   text-align: left;
-  background: #f9fafb;
+  background: var(--reloop-gray-100);
   padding: 1.5rem;
   border-radius: 0.75rem;
   border-left: 4px solid #16a34a;
@@ -41,7 +41,7 @@
 
 .game-info h2 {
   margin-top: 0;
-  color: #111827;
+  color: var(--reloop-text);
   font-size: 1.5rem;
 }
 
@@ -53,7 +53,7 @@
 
 .game-info li {
   margin-bottom: 0.75rem;
-  color: #4b5563;
+  color: var(--reloop-muted);
   font-size: 1.05rem;
   padding-left: 0;
 }
@@ -65,7 +65,7 @@
 
 /* Game Board */
 .game-board {
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
@@ -90,7 +90,7 @@
 .stat-label {
   display: block;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-weight: 600;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
@@ -149,7 +149,7 @@
 }
 
 .game-column h3 {
-  color: #111827;
+  color: var(--reloop-text);
   font-size: 1.25rem;
   margin-bottom: 1rem;
   font-weight: 700;
@@ -165,13 +165,13 @@
 .material-card,
 .industry-card {
   padding: 0.85rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--reloop-border);
   border-radius: 0.6rem;
-  background: white;
+  background: var(--reloop-surface);
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--reloop-text);
   transition: all 0.35s ease;
   text-align: left;
 }
@@ -239,13 +239,13 @@
 
 .bin-card {
   padding: 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--reloop-border);
   border-radius: 0.85rem;
-  background: white;
+  background: var(--reloop-surface);
   cursor: pointer;
   font-size: 1rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--reloop-text);
   transition: all 0.25s ease;
   display: flex;
   flex-direction: column;
@@ -267,7 +267,7 @@
 }
 
 .game-column h3 {
-  color: #111827;
+  color: var(--reloop-text);
   font-size: 1.25rem;
   margin-bottom: 1rem;
   font-weight: 700;
@@ -293,13 +293,13 @@
 .question-card,
 .pollution-card {
   padding: 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--reloop-border);
   border-radius: 1rem;
-  background: white;
+  background: var(--reloop-surface);
   cursor: pointer;
   font-size: 1rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--reloop-text);
   transition: all 0.25s ease;
   text-align: center;
   min-height: 72px;
@@ -384,7 +384,7 @@
   padding: 1rem;
   border: 2px solid #d1d5db;
   border-radius: 1rem;
-  background: #ffffff;
+  background: var(--reloop-surface);
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -435,7 +435,7 @@
 
 .trash-card {
   padding: 1rem;
-  background: white;
+  background: var(--reloop-surface);
   border: 2px solid #93c5fd;
   border-radius: 1rem;
   min-height: 120px;
@@ -468,7 +468,7 @@
 }
 
 .finish-card {
-  background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%);
+  background: linear-gradient(180deg, var(--reloop-surface) 0%, rgba(22, 163, 74, 0.08) 100%);
   padding: 2rem;
   border-radius: 1.5rem;
   border: 1px solid rgba(22, 163, 74, 0.16);
@@ -515,7 +515,7 @@
 }
 
 .finish-card {
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 1rem;
   padding: 3rem 2rem;
   text-align: center;
@@ -525,7 +525,7 @@
 
 .finish-card h2 {
   font-size: 2rem;
-  color: #111827;
+  color: var(--reloop-text);
   margin-bottom: 1.5rem;
 }
 
@@ -544,14 +544,14 @@
 .score-label {
   display: block;
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--reloop-muted);
   margin-top: 0.5rem;
   font-weight: 600;
 }
 
 .finish-message {
   font-size: 1.15rem;
-  color: #4b5563;
+  color: var(--reloop-muted);
   margin-bottom: 2rem;
   line-height: 1.6;
 }
@@ -563,7 +563,7 @@
 }
 
 .text-muted {
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-style: italic;
   margin: 1rem 0;
 }

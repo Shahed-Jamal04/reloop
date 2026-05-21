@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import './SiteFooter.css';
 
 const CATEGORY_LINKS = [
@@ -11,6 +12,8 @@ const CATEGORY_LINKS = [
 ];
 
 export function SiteFooter() {
+  const { t } = useTheme();
+
   return (
     <footer className="site-footer">
       <div className="container py-5">
@@ -51,12 +54,17 @@ export function SiteFooter() {
             <ul className="list-unstyled footer-link-list mb-0">
               <li>
                 <Link className="footer-link" to="/">
-                  Home
+                  {t('home')}
                 </Link>
               </li>
               <li>
                 <Link className="footer-link" to="/marketplace">
-                  Browse Materials
+                  {t('browseMaterials')}
+                </Link>
+              </li>
+              <li>
+                <Link className="footer-link" to="/about">
+                  {t('aboutUs')}
                 </Link>
               </li>
               <li>

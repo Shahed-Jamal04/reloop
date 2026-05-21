@@ -30,6 +30,7 @@
 
 /* Dark mode variables */
 [data-theme="dark"] {
+  color-scheme: dark;
   --reloop-bg: #111827;
   --reloop-gray-50: #111827;
   --reloop-gray-100: #1f2937;
@@ -44,6 +45,22 @@
   --reloop-border: rgba(255, 255, 255, 0.10);
   --reloop-shadow: 0 10px 30px rgba(0, 0, 0, 0.30);
   --reloop-footer: #1f2937;
+  /* Bootstrap 5 — keep utility text readable on dark surfaces */
+  --bs-body-color: var(--reloop-text);
+  --bs-body-bg: var(--reloop-bg);
+  --bs-emphasis-color: var(--reloop-text);
+  --bs-secondary-color: var(--reloop-muted);
+  --bs-secondary-color-rgb: 156, 163, 175;
+  --bs-tertiary-color: var(--reloop-muted);
+  --bs-tertiary-color-rgb: 156, 163, 175;
+  --bs-heading-color: var(--reloop-text);
+  --bs-link-color: #4ade80;
+  --bs-link-hover-color: #86efac;
+  --bs-border-color: #374151;
+  --bs-border-color-translucent: rgba(255, 255, 255, 0.12);
+  --bs-card-bg: var(--reloop-surface);
+  --bs-card-color: var(--reloop-text);
+  --bs-card-border-color: var(--reloop-border);
 }
 
 html {
@@ -117,12 +134,21 @@ html[data-theme="dark"] .public-shell {
 /* Navbar / sidebar */
 html[data-theme="dark"] .navbar,
 html[data-theme="dark"] .sidebar,
-html[data-theme="dark"] .app-topbar,
 html[data-theme="dark"] .public-nav,
 html[data-theme="dark"] .public-header,
 html[data-theme="dark"] .public-shell,
 html[data-theme="dark"] .public-main {
   background-color: #111827 !important;
+}
+
+html[data-theme="dark"] .app-topbar {
+  background: color-mix(in srgb, var(--reloop-surface) 92%, transparent) !important;
+  border-bottom-color: var(--reloop-border) !important;
+}
+
+html[data-theme="dark"] .app-content {
+  background-color: var(--reloop-bg) !important;
+  color: var(--reloop-text);
 }
 
 /* Cards / surfaces */
@@ -131,6 +157,13 @@ html[data-theme="dark"] .surface,
 html[data-theme="dark"] .auth-card,
 html[data-theme="dark"] .auth-card-panel,
 html[data-theme="dark"] .dashboard-card,
+html[data-theme="dark"] .cat-tile,
+html[data-theme="dark"] .feat-card,
+html[data-theme="dark"] .start-card,
+html[data-theme="dark"] .find-panel,
+html[data-theme="dark"] .how-card,
+html[data-theme="dark"] .testimonial-card-home,
+html[data-theme="dark"] .dev-card,
 html[data-theme="dark"] .market-card,
 html[data-theme="dark"] .detail-card,
 html[data-theme="dark"] .testimonial-card-home,
@@ -167,4 +200,409 @@ html[data-theme="dark"] .form-control {
   background-color: #1f2937;
   color: var(--reloop-text);
   border: 1px solid #374151;
+}
+
+html[data-theme="dark"] .quick-stat {
+  background-color: var(--reloop-surface);
+  border-color: var(--reloop-border);
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .role-page-hero:not(.role-page-hero--gradient) {
+  background-color: var(--reloop-surface);
+  border-color: var(--reloop-border);
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .role-page-hero:not(.role-page-hero--gradient) .role-page-title {
+  color: var(--reloop-gray-900);
+}
+
+html[data-theme="dark"] .text-dark {
+  color: var(--reloop-text) !important;
+}
+
+html[data-theme="dark"] .bg-white {
+  background-color: var(--reloop-surface) !important;
+}
+
+html[data-theme="dark"] .border-bottom,
+html[data-theme="dark"] .border-light-subtle {
+  border-color: var(--reloop-border) !important;
+}
+
+html[data-theme="dark"] .btn-outline-secondary {
+  --bs-btn-color: var(--reloop-gray-600);
+  --bs-btn-border-color: #4b5563;
+  --bs-btn-hover-color: var(--reloop-text);
+  --bs-btn-hover-bg: #374151;
+  --bs-btn-hover-border-color: #6b7280;
+  --bs-btn-active-bg: #374151;
+  --bs-btn-active-border-color: #6b7280;
+}
+
+html[data-theme="dark"] .table {
+  --bs-table-color: var(--reloop-text);
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #374151;
+}
+
+html[data-theme="dark"] .table thead {
+  color: var(--reloop-muted);
+}
+
+html[data-theme="dark"] .badge.bg-light {
+  background-color: #374151 !important;
+  color: var(--reloop-text) !important;
+}
+
+html[data-theme="dark"] .input-group-text {
+  background-color: #1f2937;
+  color: var(--reloop-text);
+  border-color: #374151;
+}
+
+html[data-theme="dark"] .dashboard-container .text-secondary,
+html[data-theme="dark"] .role-page .text-secondary {
+  color: var(--reloop-muted) !important;
+}
+
+html[data-theme="dark"] .section-gray {
+  background-color: var(--reloop-bg) !important;
+}
+
+html[data-theme="dark"] .section-white {
+  background-color: var(--reloop-gray-100) !important;
+}
+
+html[data-theme="dark"] .home .section-muted {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+html[data-theme="dark"] .cat-tile-ico {
+  background: rgba(22, 163, 74, 0.2);
+}
+
+html[data-theme="dark"] .avatar-btn,
+html[data-theme="dark"] .avatar-menu {
+  background-color: var(--reloop-surface);
+  border-color: var(--reloop-border);
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .topbar-title {
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .topbar-hint {
+  color: var(--reloop-muted);
+}
+
+html[data-theme="dark"] .dashboard-card .btn-outline-secondary {
+  --bs-btn-color: var(--reloop-gray-600);
+  --bs-btn-border-color: #4b5563;
+  --bs-btn-hover-bg: #374151;
+  --bs-btn-hover-color: var(--reloop-text);
+}
+
+/* ─── Global typography & Bootstrap utilities (dark) ─── */
+html[data-theme="dark"] .text-secondary,
+html[data-theme="dark"] .text-muted,
+html[data-theme="dark"] small.text-secondary {
+  color: var(--reloop-muted) !important;
+}
+
+html[data-theme="dark"] .text-body,
+html[data-theme="dark"] label,
+html[data-theme="dark"] .form-label {
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .form-text {
+  color: var(--reloop-muted);
+}
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6,
+html[data-theme="dark"] .h1,
+html[data-theme="dark"] .h2,
+html[data-theme="dark"] .h3,
+html[data-theme="dark"] .h4,
+html[data-theme="dark"] .h5,
+html[data-theme="dark"] .h6 {
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .fw-semibold:not(.badge):not(.btn),
+html[data-theme="dark"] .fw-bold:not(.badge):not(.btn) {
+  color: inherit;
+}
+
+html[data-theme="dark"] .public-brand-text,
+html[data-theme="dark"] .public-header .text-dark,
+html[data-theme="dark"] a.text-dark {
+  color: var(--reloop-text) !important;
+}
+
+html[data-theme="dark"] .btn-outline-dark {
+  --bs-btn-color: var(--reloop-text);
+  --bs-btn-border-color: #4b5563;
+  --bs-btn-hover-bg: #374151;
+  --bs-btn-hover-border-color: #6b7280;
+  --bs-btn-hover-color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .alert {
+  --bs-alert-bg: var(--reloop-surface);
+  --bs-alert-color: var(--reloop-text);
+  border-color: var(--reloop-border);
+}
+
+html[data-theme="dark"] .modal-content {
+  background-color: var(--reloop-surface);
+  color: var(--reloop-text);
+  border-color: var(--reloop-border);
+}
+
+/* ─── Pages & panels still using light backgrounds ─── */
+html[data-theme="dark"] .browse-page,
+html[data-theme="dark"] .browse-top,
+html[data-theme="dark"] .browse-filters,
+html[data-theme="dark"] .browse-filters-head,
+html[data-theme="dark"] .market-card,
+html[data-theme="dark"] .detail-media,
+html[data-theme="dark"] .input,
+html[data-theme="dark"] .link-btn,
+html[data-theme="dark"] .find-input-control,
+html[data-theme="dark"] .how-step-ring,
+html[data-theme="dark"] .auth-container,
+html[data-theme="dark"] .role-picker-card,
+html[data-theme="dark"] .game-page,
+html[data-theme="dark"] .game-select,
+html[data-theme="dark"] .game-container,
+html[data-theme="dark"] .game-menu,
+html[data-theme="dark"] .game-info,
+html[data-theme="dark"] .game-board,
+html[data-theme="dark"] .game-stats,
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .material-card,
+html[data-theme="dark"] .industry-card,
+html[data-theme="dark"] .leaderboard-container,
+html[data-theme="dark"] .leaderboard-filters,
+html[data-theme="dark"] .filter-btn,
+html[data-theme="dark"] .podium-place,
+html[data-theme="dark"] .ranking-table,
+html[data-theme="dark"] .table-header,
+html[data-theme="dark"] .table-row,
+html[data-theme="dark"] .chat-panel,
+html[data-theme="dark"] .chat-header,
+html[data-theme="dark"] .chat-body,
+html[data-theme="dark"] .chat-composer,
+html[data-theme="dark"] .chat-msg.theirs .chat-bubble,
+html[data-theme="dark"] .empty-state-icon {
+  background-color: var(--reloop-surface);
+  color: var(--reloop-text);
+  border-color: var(--reloop-border);
+}
+
+html[data-theme="dark"] .auth-container {
+  background: linear-gradient(to bottom right, #052e16, #0f172a);
+}
+
+html[data-theme="dark"] .role-picker-card:hover:not(:disabled) {
+  background: var(--reloop-gray-100);
+}
+
+html[data-theme="dark"] .role-picker-card.is-active {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: var(--reloop-green-600);
+}
+
+html[data-theme="dark"] .browse-top-title,
+html[data-theme="dark"] .browse-filters-head,
+html[data-theme="dark"] .game-header h1,
+html[data-theme="dark"] .game-select-label,
+html[data-theme="dark"] .leaderboard-header h1,
+html[data-theme="dark"] .game-info h2,
+html[data-theme="dark"] .game-column h3,
+html[data-theme="dark"] .podium-name,
+html[data-theme="dark"] .table-row .player-name {
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .browse-top-desc,
+html[data-theme="dark"] .game-header p,
+html[data-theme="dark"] .leaderboard-header p,
+html[data-theme="dark"] .game-info li,
+html[data-theme="dark"] .stat-label,
+html[data-theme="dark"] .chat-empty,
+html[data-theme="dark"] .chat-msg-sender,
+html[data-theme="dark"] .podium-score,
+html[data-theme="dark"] .podium-rank {
+  color: var(--reloop-muted);
+}
+
+html[data-theme="dark"] .filter-btn {
+  color: var(--reloop-muted);
+}
+
+html[data-theme="dark"] .filter-btn.active {
+  background: var(--reloop-green-600);
+  color: #fff;
+}
+
+html[data-theme="dark"] .chat-header {
+  background: var(--reloop-surface);
+}
+
+html[data-theme="dark"] .chat-body {
+  background: var(--reloop-bg);
+}
+
+html[data-theme="dark"] .chat-msg.theirs .chat-bubble {
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .public-mobile-link {
+  background: var(--reloop-gray-100);
+  border-color: var(--reloop-border);
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .browse-input,
+html[data-theme="dark"] .browse-select {
+  background-color: var(--reloop-surface);
+  color: var(--reloop-text);
+  border-color: #374151;
+}
+
+html[data-theme="dark"] .pill-badge {
+  background: rgba(22, 163, 74, 0.2);
+  color: #86efac;
+  border-color: rgba(22, 163, 74, 0.35);
+}
+
+html[data-theme="dark"] .how-title,
+html[data-theme="dark"] .how-text {
+  color: var(--reloop-text);
+}
+
+html[data-theme="dark"] .how-text {
+  color: var(--reloop-muted);
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] textarea.form-control {
+  background-color: var(--reloop-surface);
+  color: var(--reloop-text);
+  border-color: #374151;
+}
+
+html[data-theme="dark"] .form-control::placeholder {
+  color: var(--reloop-muted);
+  opacity: 0.85;
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus {
+  background-color: var(--reloop-surface);
+  color: var(--reloop-text);
+  border-color: rgba(74, 222, 128, 0.5);
+}
+
+html[data-theme="dark"] .badge.text-bg-light,
+html[data-theme="dark"] .badge.bg-light {
+  background-color: #374151 !important;
+  color: var(--reloop-text) !important;
+  border-color: var(--reloop-border) !important;
+}
+
+html[data-theme="dark"] .auth-card .auth-footer.bg-light {
+  background: var(--reloop-gray-100) !important;
+}
+
+html[data-theme="dark"] .section-how {
+  background: linear-gradient(to bottom right, rgba(22, 163, 74, 0.12), rgba(37, 99, 235, 0.1));
+}
+
+html[data-theme="dark"] .podium-1 {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(254, 243, 199, 0.08) 100%);
+}
+
+html[data-theme="dark"] .podium-2 {
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.12) 0%, rgba(238, 238, 238, 0.06) 100%);
+}
+
+html[data-theme="dark"] .podium-3 {
+  background: var(--reloop-surface);
+}
+
+html[data-theme="dark"] .game-info {
+  background: var(--reloop-gray-100);
+}
+
+html[data-theme="dark"] .stat {
+  background: rgba(22, 163, 74, 0.12);
+}
+
+html[data-theme="dark"] .material-card:hover:not(:disabled),
+html[data-theme="dark"] .industry-card:hover:not(:disabled) {
+  background: rgba(22, 163, 74, 0.15);
+}
+
+html[data-theme="dark"] .material-card.matched,
+html[data-theme="dark"] .industry-card.matched {
+  background: rgba(16, 185, 129, 0.15);
+  color: #86efac;
+}
+
+html[data-theme="dark"] .game-message {
+  background: rgba(254, 243, 199, 0.12);
+  border-color: rgba(252, 211, 77, 0.35);
+  color: #fcd34d;
+}
+
+html[data-theme="dark"] .theme-toggle-btn {
+  border-color: var(--reloop-border);
+  background: var(--reloop-surface);
+}
+
+html[data-theme="dark"] .table-row:hover {
+  background: rgba(22, 163, 74, 0.1);
+}
+
+html[data-theme="dark"] .table-row.silver {
+  background: var(--reloop-gray-100);
+}
+
+html[data-theme="dark"] .table-row.bronze {
+  background: rgba(205, 127, 50, 0.12);
+}
+
+html[data-theme="dark"] .leaderboard-cta {
+  background: rgba(22, 163, 74, 0.12);
+}
+
+html[data-theme="dark"] .beach-board {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.15) 0%, rgba(14, 165, 233, 0.1) 100%);
+}
+
+html[data-theme="dark"] .beach-hint,
+html[data-theme="dark"] .trash-card {
+  color: #93c5fd;
+}
+
+html[data-theme="dark"] .finish-card,
+html[data-theme="dark"] .item-card {
+  color: #86efac;
+}
+
+html[data-theme="dark"] .player-game {
+  color: var(--reloop-muted);
 }

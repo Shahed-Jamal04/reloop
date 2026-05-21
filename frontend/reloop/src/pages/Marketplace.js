@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import './Marketplace.css';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import { formatListingPrice } from '../utils/materialPricing';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -118,7 +119,7 @@ export function Marketplace() {
 
   return (
     <div className="browse-page">
-      <div className="browse-top border-bottom bg-white">
+      <div className="browse-top border-bottom">
         <div className="container py-4 py-md-5">
           <h1 className="browse-top-title">{t('browseMaterials')}</h1>
           <p className="browse-top-desc mb-0">
@@ -206,7 +207,7 @@ export function Marketplace() {
         )}
 
         <p className="browse-results-count text-secondary mb-4">
-          {t('showingMaterials')} <span className="fw-semibold text-dark">{filtered.length}</span> {t('materials')}
+          {t('showingMaterials')} <span className="fw-semibold">{filtered.length}</span> {t('materials')}
         </p>
 
         {filtered.length > 0 ? (
@@ -235,7 +236,9 @@ export function Marketplace() {
                       <i className="bi bi-box-seam me-1" aria-hidden="true" />
                       {t('qty')} {item.quantity ?? '—'}
                     </span>
-                    {item.price != null && <span className="price">${Number(item.price).toLocaleString()}</span>}
+                    {item.price != null && (
+                      <span className="price">{formatListingPrice(item.price, item.quantity, t)}</span>
+                    )}
                   </div>
                   {item.seller_name && (
                     <p className="seller mb-0">

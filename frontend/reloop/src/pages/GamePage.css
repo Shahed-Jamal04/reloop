@@ -15,16 +15,16 @@
 
 .game-select-label {
   font-weight: 700;
-  color: #111827;
+  color: var(--reloop-text);
 }
 
 .game-select {
   min-width: 220px;
   padding: 0.85rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--reloop-border);
   border-radius: 999px;
-  background: white;
-  color: #111827;
+  background: var(--reloop-surface);
+  color: var(--reloop-text);
   font-weight: 700;
 }
 

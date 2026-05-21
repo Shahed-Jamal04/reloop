@@ -222,10 +222,11 @@ router.patch('/:id/status', authenticate, async (req, res) => {
           return res.status(500).json({ error: 'Material not found for order' });
         }
 
-        const unitPrice = mat.recordset[0].price != null ? Number(mat.recordset[0].price) : 0;
+        // material.price is the total for the listed quantity (lot), not per unit
+        const lotPrice = mat.recordset[0].price != null ? Number(mat.recordset[0].price) : 0;
         const stockQty = mat.recordset[0].quantity != null ? Number(mat.recordset[0].quantity) : null;
-        const lineQty = stockQty != null && stockQty > 0 ? Math.min(1, stockQty) : 1;
-        const totalPrice = unitPrice * lineQty;
+        const lineQty = stockQty != null && stockQty > 0 ? stockQty : 1;
+        const totalPrice = lotPrice;
 
         const orderPending = await new sql.Request(transaction).query(
           `SELECT id FROM order_status WHERE status = 'pending'`
@@ -253,7 +254,7 @@ router.patch('/:id/status', authenticate, async (req, res) => {
           .input('order_id', orderId)
           .input('material_id', materialId)
           .input('quantity', lineQty)
-          .input('price', unitPrice)
+          .input('price', lotPrice)
           .query(`
             INSERT INTO order_items (order_id, material_id, quantity, price, is_deleted)
             VALUES (@order_id, @material_id, @quantity, @price, 0)

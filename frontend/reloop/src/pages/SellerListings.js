@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import './Marketplace.css';
 import './rolePages.css';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
+import { formatListingPrice } from '../utils/materialPricing';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -25,6 +26,7 @@ export function SellerListings() {
   });
   const [imageFile, setImageFile] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [stockUpdatingId, setStockUpdatingId] = useState(null);
 
   const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -111,12 +113,42 @@ export function SellerListings() {
     }
   };
 
+  const listingStatusLabel = (status) => {
+    const s = (status || '').toLowerCase();
+    if (s === 'out_of_stock') return t('outOfStockStatus');
+    if (s === 'available') return t('availableStatus');
+    if (s === 'pending') return t('pendingStatus');
+    if (s === 'sold') return t('soldStatus');
+    if (s === 'removed') return t('removedStatus');
+    return status || '—';
+  };
+
   const statusBadgeClass = (status) => {
     const s = (status || '').toLowerCase();
     if (s === 'available') return 'bg-success';
     if (s === 'pending') return 'bg-warning text-dark';
+    if (s === 'out_of_stock') return 'bg-secondary';
     if (s === 'removed' || s === 'rejected') return 'bg-danger';
+    if (s === 'sold') return 'bg-dark';
     return 'bg-secondary';
+  };
+
+  const setListingStock = async (materialId, nextStatus) => {
+    setStockUpdatingId(materialId);
+    setError('');
+    try {
+      await axios.patch(
+        `${API_BASE_URL}/materials/${materialId}/stock`,
+        { status: nextStatus },
+        { headers: authHeaders }
+      );
+      await loadListings();
+    } catch (err) {
+      const msg = err.response?.data?.error || t('failedUpdateListingStock');
+      setError(msg);
+    } finally {
+      setStockUpdatingId(null);
+    }
   };
 
   if (loading) {
@@ -191,7 +223,7 @@ export function SellerListings() {
                   />
                 </div>
                 <div className="col-12 col-sm-6">
-                  <label className="form-label fw-semibold">{t('price')}</label>
+                  <label className="form-label fw-semibold">{t('priceTotal')}</label>
                   <input
                     type="number"
                     step="0.01"
@@ -201,7 +233,11 @@ export function SellerListings() {
                     value={form.price}
                     onChange={handleChange}
                     min="0"
+                    aria-describedby="listing-price-hint"
                   />
+                  <div id="listing-price-hint" className="form-text">
+                    {t('priceTotalHint')}
+                  </div>
                 </div>
               </div>
 
@@ -308,7 +344,9 @@ export function SellerListings() {
                       <div className="card-body">
                         <div className="d-flex align-items-start justify-content-between gap-2">
                           <div className="fw-bold line-clamp-2">{item.title}</div>
-                          <span className={`badge flex-shrink-0 ${statusBadgeClass(item.status)}`}>{item.status || '—'}</span>
+                          <span className={`badge flex-shrink-0 ${statusBadgeClass(item.status)}`}>
+                            {listingStatusLabel(item.status)}
+                          </span>
                         </div>
 
                         <div className="d-flex gap-2 flex-wrap mt-2">
@@ -316,7 +354,7 @@ export function SellerListings() {
                           <span className="badge text-bg-light border">{t('qty')}: {item.quantity ?? '—'}</span>
                           {item.price != null && (
                             <span className="badge text-bg-light border">
-                              ${Number(item.price).toLocaleString()}
+                              {formatListingPrice(item.price, item.quantity, t)}
                             </span>
                           )}
                         </div>
@@ -324,6 +362,27 @@ export function SellerListings() {
                         <p className="text-secondary small mt-2 mb-0 line-clamp-2">
                           {item.description || t('noDescription')}
                         </p>
+
+                        {(item.status || '').toLowerCase() === 'available' && (
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary btn-sm fw-semibold mt-3 w-100"
+                            disabled={stockUpdatingId === item.id}
+                            onClick={() => setListingStock(item.id, 'out_of_stock')}
+                          >
+                            {stockUpdatingId === item.id ? t('updating') : t('markOutOfStock')}
+                          </button>
+                        )}
+                        {(item.status || '').toLowerCase() === 'out_of_stock' && (
+                          <button
+                            type="button"
+                            className="btn btn-success btn-sm fw-semibold mt-3 w-100"
+                            disabled={stockUpdatingId === item.id}
+                            onClick={() => setListingStock(item.id, 'available')}
+                          >
+                            {stockUpdatingId === item.id ? t('updating') : t('markAvailableAgain')}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

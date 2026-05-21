@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import './Marketplace.css';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { formatListingPrice } from '../utils/materialPricing';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -10,6 +12,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api
 export function MaterialDetail() {
   const { id } = useParams();
   const { isAuthenticated, token, user } = useAuth();
+  const { t } = useTheme();
   const [material, setMaterial] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,7 +28,7 @@ export function MaterialDetail() {
         setMaterial(response.data);
       } catch (err) {
         console.error('Failed to load material:', err);
-        setError('Failed to load item. It may have been removed.');
+        setError(t('failedLoadItem'));
       } finally {
         setLoading(false);
       }
@@ -38,7 +41,7 @@ export function MaterialDetail() {
     return (
       <div className="page-shell">
         <div className="container">
-          <p>Loading item...</p>
+          <p>{t('loadingItem')}</p>
         </div>
       </div>
     );
@@ -48,10 +51,11 @@ export function MaterialDetail() {
     return (
       <div className="page-shell">
         <div className="container">
-          <p style={{ color: 'red' }}>{error || 'Item not found.'}</p>
-          <Link to="/marketplace" style={{ marginTop: '1rem', display: 'inline-block' }}>
-            ← Back to marketplace
-          </Link>
+          <p className="text-danger">{error || t('itemNotFound')}</p>
+          <div className="d-flex flex-wrap gap-3 mt-3">
+            <Link to="/">{t('home')}</Link>
+            <Link to="/marketplace">{t('backToMarketplace')}</Link>
+          </div>
         </div>
       </div>
     );
@@ -69,9 +73,9 @@ export function MaterialDetail() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setRequestMessage('');
-      setRequestSuccess('Request sent to seller.');
+      setRequestSuccess(t('requestSentSuccess'));
     } catch (err) {
-      const msg = err.response?.data?.error || 'Failed to send request.';
+      const msg = err.response?.data?.error || t('failedSendRequest');
       setError(msg);
     } finally {
       setRequestLoading(false);
@@ -84,11 +88,14 @@ export function MaterialDetail() {
         <div className="page-header">
           <div>
             <h1 className="page-title">{material.title}</h1>
-            <p className="page-subtitle">{material.description || 'No description provided.'}</p>
+            <p className="page-subtitle">{material.description || t('noDescription')}</p>
           </div>
-          <div className="header-actions">
+          <div className="header-actions d-flex flex-wrap gap-2">
+            <Link to="/" className="link-btn">
+              ← {t('home')}
+            </Link>
             <Link to="/marketplace" className="link-btn">
-              ← Back
+              {t('browseMaterials')}
             </Link>
           </div>
         </div>
@@ -113,19 +120,19 @@ export function MaterialDetail() {
 
             <div className="detail-kv">
               <div className="kv">
-                <p className="kv-label">Quantity</p>
+                <p className="kv-label">{t('quantity')}</p>
                 <p className="kv-value">{material.quantity ?? '—'}</p>
               </div>
               <div className="kv">
-                <p className="kv-label">Price</p>
-                <p className="kv-value">{material.price != null ? `$${Number(material.price).toLocaleString()}` : '—'}</p>
+                <p className="kv-label">{t('priceTotal')}</p>
+                <p className="kv-value">{formatListingPrice(material.price, material.quantity, t)}</p>
               </div>
               <div className="kv">
-                <p className="kv-label">Seller</p>
+                <p className="kv-label">{t('seller')}</p>
                 <p className="kv-value">{material.seller_name || '—'}</p>
               </div>
               <div className="kv">
-                <p className="kv-label">Contact</p>
+                <p className="kv-label">{t('contactLabel')}</p>
                 <p className="kv-value">{material.seller_email || '—'}</p>
               </div>
             </div>
@@ -137,23 +144,17 @@ export function MaterialDetail() {
                     value={requestMessage}
                     onChange={(e) => setRequestMessage(e.target.value)}
                     rows={3}
-                    placeholder="Message to seller (optional)"
-                    style={{
-                      width: '100%',
-                      borderRadius: 12,
-                      border: '1px solid rgba(44,62,80,0.18)',
-                      padding: 12,
-                      fontFamily: 'inherit',
-                    }}
+                    className="form-control"
+                    placeholder={t('messageToSellerPlaceholder')}
                   />
                   <button className="primary-btn" disabled={requestLoading} onClick={submitRequest}>
-                    {requestLoading ? 'Sending...' : 'Send request'}
+                    {requestLoading ? t('sending') : t('sendRequest')}
                   </button>
-                  {requestSuccess && <div style={{ color: '#1f7f49', fontWeight: 800 }}>{requestSuccess}</div>}
+                  {requestSuccess && <div className="text-success fw-bold">{requestSuccess}</div>}
                 </div>
               ) : (
                 <button className="primary-btn" disabled>
-                  Login as buyer to request
+                  {t('loginAsBuyerToRequest')}
                 </button>
               )}
             </div>
