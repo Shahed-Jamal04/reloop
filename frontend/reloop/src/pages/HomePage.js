@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import './HomePage.css';
 import { FALLBACK_IMAGE, resolveAssetUrl } from '../utils/assets';
 import { categoryIconClass } from '../utils/categoryIcon';
+import { formatListingPrice } from '../utils/materialPricing';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -182,7 +183,8 @@ export function HomePage() {
             preload="metadata"
             poster="https://via.placeholder.com/1920x900?text=RecycleX"
           >
-            <source src="https://www.31-agency.com/31New/Requirements/Videos/Banner.mp4" type="video/mp4" />
+            {/* <source src="https://www.31-agency.com/31New/Requirements/Videos/Banner.mp4" type="video/mp4" /> */}
+            <source src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/world-environment-day-design-template-59b020917f59b3d59bd4df9b5517945d_4f42ca1beb87488728dc00ed0fddd338_screen.mp4" type="video/mp4" />
           </video>
           <div className="hero-video-dim" />
         </div>
@@ -319,7 +321,7 @@ export function HomePage() {
 
           <div className="home-cat-grid">
             {(categories || []).slice(0, 8).map((c, index) => (
-              <motion.div key={c.id} {...m.scaleIn(index * 0.05)}>
+              <motion.div key={c.id} className="home-cat-cell" {...m.scaleIn(index * 0.05)}>
                 <button
                   type="button"
                   className="cat-tile"
@@ -381,7 +383,7 @@ export function HomePage() {
                       </div>
                       <div className="feat-meta">
                         <span className="feat-price">
-                          {material.price != null ? `$${Number(material.price).toLocaleString()}` : '—'}
+                          {formatListingPrice(material.price, material.quantity, t)}
                         </span>
                         <span className="text-secondary small">{t('qty')} {material.quantity ?? '—'}</span>
                       </div>

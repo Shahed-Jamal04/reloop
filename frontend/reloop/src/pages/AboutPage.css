@@ -1,0 +1,135 @@
+.about-page {
+  background: var(--reloop-bg);
+  color: var(--reloop-text);
+}
+
+.about-hero {
+  background: linear-gradient(135deg, var(--reloop-green-600) 0%, #22c55e 100%);
+  color: #fff;
+}
+
+.about-hero-inner {
+  max-width: 42rem;
+}
+
+.about-eyebrow {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 0.75rem;
+}
+
+.about-title {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
+  line-height: 1.15;
+}
+
+.about-lead {
+  margin: 0;
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+.about-section {
+  background: var(--reloop-bg);
+}
+
+.about-section-title {
+  font-size: clamp(1.375rem, 3.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: var(--reloop-text);
+}
+
+.about-section-subtitle {
+  margin: 0.5rem auto 0;
+  max-width: 36rem;
+  color: var(--reloop-muted);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.dev-card {
+  background: var(--reloop-surface);
+  border: 1px solid var(--reloop-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: var(--reloop-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+}
+
+.dev-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme='dark'] .dev-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.dev-card-photo {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--reloop-gray-100);
+}
+
+.dev-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dev-card-body {
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+.dev-card-name {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--reloop-text);
+}
+
+.dev-card-role {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--reloop-green-600);
+}
+
+.dev-card-bio {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--reloop-muted);
+}
+
+.about-mission {
+  background: var(--reloop-gray-50);
+  border-top: 1px solid var(--reloop-border);
+}
+
+.about-mission-panel {
+  max-width: 40rem;
+}
+
+.about-mission-text {
+  margin: 0;
+  color: var(--reloop-muted);
+  line-height: 1.65;
+  font-size: 1.0625rem;
+}
+
+html[data-theme='dark'] .about-mission {
+  background: var(--reloop-gray-100);
+}

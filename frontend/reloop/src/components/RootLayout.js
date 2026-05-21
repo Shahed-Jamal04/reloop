@@ -14,7 +14,7 @@ export function RootLayout() {
     return <Outlet />;
   }
 
-  const publicPaths = ['/', '/login', '/register', '/marketplace'];
+  const publicPaths = ['/', '/login', '/register', '/marketplace', '/about', '/game', '/leaderboard'];
   const isMaterialDetail = location.pathname.startsWith('/materials/');
 
 

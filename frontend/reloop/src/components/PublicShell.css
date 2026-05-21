@@ -9,7 +9,13 @@
   position: sticky;
   top: 0;
   z-index: 1030;
-  border-color: #e5e7eb !important;
+  background: var(--reloop-surface);
+  border-color: var(--reloop-border) !important;
+  color: var(--reloop-text);
+}
+
+.public-brand-link {
+  color: var(--reloop-text);
 }
 
 .public-header .container {

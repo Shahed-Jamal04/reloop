@@ -11,13 +11,13 @@
 
 .leaderboard-header h1 {
   font-size: 2.5rem;
-  color: #111827;
+  color: var(--reloop-text);
   margin-bottom: 0.5rem;
   font-weight: 900;
 }
 
 .leaderboard-header p {
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-size: 1.1rem;
 }
 
@@ -39,9 +39,9 @@
 
 .filter-btn {
   padding: 0.65rem 1.5rem;
-  border: 2px solid #e5e7eb;
-  background: white;
-  color: #6b7280;
+  border: 2px solid var(--reloop-border);
+  background: var(--reloop-surface);
+  color: var(--reloop-muted);
   border-radius: 0.6rem;
   font-weight: 600;
   cursor: pointer;
@@ -71,7 +71,7 @@
   text-align: center;
   padding: 1.5rem;
   border-radius: 1rem;
-  background: white;
+  background: var(--reloop-surface);
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
   border-top: 4px solid;
   transition: transform 0.2s ease;
@@ -111,7 +111,7 @@
 .podium-name {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--reloop-text);
   margin-bottom: 0.5rem;
 }
 
@@ -124,13 +124,13 @@
 
 .podium-rank {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-weight: 600;
 }
 
 /* Table */
 .ranking-table {
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
@@ -141,10 +141,10 @@
   grid-template-columns: 60px 1fr 120px 120px;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
+  background: var(--reloop-gray-100);
+  border-bottom: 2px solid var(--reloop-border);
   font-weight: 700;
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-size: 0.875rem;
   text-transform: uppercase;
 }
@@ -154,27 +154,27 @@
   grid-template-columns: 60px 1fr 120px 120px;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--reloop-border);
   align-items: center;
   transition: background 0.2s ease;
 }
 
 .table-row:hover {
-  background: #f0fdf4;
+  background: rgba(22, 163, 74, 0.08);
 }
 
 .table-row.gold {
-  background: #fffbeb;
+  background: rgba(251, 191, 36, 0.12);
   border-left: 4px solid #fbbf24;
 }
 
 .table-row.silver {
-  background: #f5f5f5;
+  background: var(--reloop-gray-100);
   border-left: 4px solid #c0c0c0;
 }
 
 .table-row.bronze {
-  background: #fef3f2;
+  background: rgba(254, 243, 242, 0.5);
   border-left: 4px solid #cd7f32;
 }
 
@@ -195,7 +195,7 @@
 
 .player-name {
   font-weight: 700;
-  color: #111827;
+  color: var(--reloop-text);
   font-size: 1rem;
 }
 
@@ -221,7 +221,7 @@
 
 .col-date {
   text-align: center;
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-size: 0.875rem;
 }
 
@@ -229,7 +229,7 @@
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-size: 1.1rem;
 }
 
@@ -247,9 +247,9 @@
 .empty-state {
   text-align: center;
   padding: 3rem;
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 1rem;
-  color: #6b7280;
+  color: var(--reloop-muted);
   font-size: 1.1rem;
 }
 
@@ -265,7 +265,7 @@
 
 .leaderboard-cta p {
   margin: 0 0 1rem;
-  color: #111827;
+  color: var(--reloop-text);
   font-weight: 600;
   font-size: 1.1rem;
 }

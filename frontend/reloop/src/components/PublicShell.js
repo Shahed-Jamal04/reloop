@@ -38,6 +38,7 @@ export function PublicShell({ children }) {
       { to: '/marketplace', label: t('browseMaterials'), end: false },
       { to: '/game', label: `🎮 ${t('games')}`, end: false },
       { to: '/leaderboard', label: `🏆 ${t('leaderboard')}`, end: false },
+      { to: '/about', label: t('aboutUs'), end: false },
       { to: addMaterialPath(role, isAuthenticated), label: t('addMaterials'), end: false },
     ],
     [role, isAuthenticated, t]
@@ -45,10 +46,10 @@ export function PublicShell({ children }) {
 
   return (
     <div className="public-shell">
-      <header className="public-header border-bottom bg-white">
+      <header className="public-header border-bottom">
         <div className="container py-3">
           <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-            <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none text-dark flex-shrink-0">
+            <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none public-brand-link flex-shrink-0">
               <span className="brand-pill">
                 <img
                   src={`${process.env.PUBLIC_URL}/recyclex-logo.png`}

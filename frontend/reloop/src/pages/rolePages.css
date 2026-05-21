@@ -7,12 +7,13 @@
 }
 
 .role-page-hero {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--reloop-surface);
+  border: 1px solid var(--reloop-border);
   border-radius: 0.75rem;
   padding: clamp(1.25rem, 4vw, 1.75rem) clamp(1rem, 3vw, 1.5rem);
   margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--reloop-shadow);
+  color: var(--reloop-text);
 }
 
 .role-page-hero--gradient {
@@ -37,8 +38,8 @@
 }
 
 .role-page-hero--gradient .form-check-input:checked {
-  background-color: #fff;
-  border-color: #fff;
+  background-color: var(--reloop-surface);
+  border-color: var(--reloop-border);
 }
 
 .role-page-title {
@@ -59,10 +60,11 @@
 }
 
 .ds-surface {
-  background: #fff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--reloop-surface);
+  border: 1px solid var(--reloop-border);
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--reloop-shadow);
+  color: var(--reloop-text);
 }
 
 .ds-surface--pad {
@@ -88,8 +90,9 @@
   text-align: center;
   padding: clamp(2rem, 6vw, 3rem) 1rem;
   border-radius: 0.75rem;
-  background: #fff;
-  border: 1px dashed rgba(15, 23, 42, 0.12);
+  background: var(--reloop-surface);
+  border: 1px dashed var(--reloop-border);
+  color: var(--reloop-text);
 }
 
 .empty-state-icon {

@@ -45,6 +45,19 @@
   min-width: 0;
 }
 
+.sidebar-brand-link {
+  flex: 1;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.sidebar-brand-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .brand-mark {
   width: 38px;
   height: 38px;
@@ -337,13 +350,13 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  border: 1px solid rgba(44, 62, 80, 0.14);
-  background: white;
+  border: 1px solid var(--reloop-border);
+  background: var(--reloop-surface);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  color: #1a2332;
+  color: var(--reloop-text);
 }
 
 .avatar-menu {
@@ -351,10 +364,10 @@
   right: 0;
   top: 46px;
   min-width: 200px;
-  background: white;
-  border: 1px solid rgba(44, 62, 80, 0.12);
+  background: var(--reloop-surface);
+  border: 1px solid var(--reloop-border);
   border-radius: 14px;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--reloop-shadow);
   overflow: hidden;
   z-index: 100;
 }
@@ -370,19 +383,19 @@
   background: transparent;
   cursor: pointer;
   text-decoration: none;
-  color: #1a2332;
+  color: var(--reloop-text);
   font-weight: 800;
   font-size: clamp(0.8125rem, 2.2vw, 0.875rem);
 }
 
 .avatar-menu a:hover,
 .avatar-menu button:hover {
-  background: rgba(44, 62, 80, 0.06);
+  background: var(--reloop-gray-100);
 }
 
 .avatar-menu .divider {
   height: 1px;
-  background: rgba(44, 62, 80, 0.08);
+  background: var(--reloop-border);
 }
 
 .logout-btn {
@@ -422,7 +435,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 0 clamp(0.75rem, 3vw, 1.125rem);
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--reloop-surface) 92%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--reloop-border);
 }
@@ -462,21 +475,22 @@
 .topbar-title {
   font-weight: 900;
   letter-spacing: -0.4px;
-  color: #1a2332;
+  color: var(--reloop-text);
   font-size: clamp(1rem, 2.8vw, 1.25rem);
   line-height: 1.2;
 }
 
 .topbar-hint {
-  color: #6b7788;
+  color: var(--reloop-muted);
   font-size: clamp(0.75rem, 2vw, 0.8125rem);
   font-weight: 700;
 }
 
 .app-content {
   padding: clamp(0.875rem, 3vw, 1.125rem);
-  background: var(--reloop-gray-50, #f9fafb);
-  min-height: 0;
+  background: var(--reloop-bg);
+  color: var(--reloop-text);
+  min-height: calc(100vh - 62px);
 }
 
 @media (max-width: 900px) {

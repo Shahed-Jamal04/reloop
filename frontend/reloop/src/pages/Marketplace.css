@@ -1,30 +1,32 @@
 /* Browse Materials page — layout aligned with reference BrowseMaterials.tsx */
 .browse-page {
   min-height: 100vh;
-  background: var(--reloop-gray-50, #f9fafb);
+  background: var(--reloop-bg);
+  color: var(--reloop-text);
 }
 
 .browse-top {
-  border-color: #e5e7eb !important;
+  border-color: var(--reloop-border) !important;
+  background: var(--reloop-bg);
 }
 
 .browse-top-title {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
   font-weight: 700;
-  color: var(--reloop-gray-900, #111827);
+  color: var(--reloop-text);
   margin: 0 0 0.5rem;
   letter-spacing: -0.03em;
 }
 
 .browse-top-desc {
   font-size: clamp(1rem, 2.5vw, 1.125rem);
-  color: var(--reloop-gray-600, #4b5563);
+  color: var(--reloop-muted);
   max-width: 40rem;
 }
 
 .browse-filters {
-  background: #fff;
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: var(--reloop-surface);
+  border: 1px solid var(--reloop-border);
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
@@ -38,7 +40,7 @@
   margin-bottom: 1rem;
   font-weight: 600;
   font-size: 1.0625rem;
-  color: var(--reloop-gray-900, #111827);
+  color: var(--reloop-text);
 }
 
 .browse-filters-head i {
@@ -63,13 +65,17 @@
 .browse-input {
   padding-left: 2.5rem;
   border-radius: 0.375rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--reloop-border);
   font-size: max(1rem, 0.9375rem);
+  background: var(--reloop-surface);
+  color: var(--reloop-text);
 }
 
 .browse-select {
   border-radius: 0.375rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--reloop-border);
+  background: var(--reloop-surface);
+  color: var(--reloop-text);
   font-size: max(1rem, 0.9375rem);
 }
 
@@ -155,7 +161,8 @@
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid var(--reloop-border);
-  background: white;
+  background: var(--reloop-surface);
+  color: var(--reloop-text);
   outline: none;
   font-size: max(1rem, clamp(0.875rem, 2.3vw, 1rem));
 }
@@ -172,7 +179,7 @@
   padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid var(--reloop-border);
-  background: white;
+  background: var(--reloop-surface);
   color: var(--reloop-text);
   text-decoration: none;
   font-weight: 600;
@@ -196,9 +203,9 @@
 .market-card {
   display: flex;
   flex-direction: column;
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 0.75rem;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--reloop-border);
   overflow: hidden;
   text-decoration: none;
   color: inherit;
@@ -321,9 +328,9 @@
 }
 
 .detail-media {
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 14px;
-  border: 1px solid rgba(44, 62, 80, 0.12);
+  border: 1px solid var(--reloop-border);
   overflow: hidden;
   min-height: 320px;
 }
@@ -336,10 +343,11 @@
 }
 
 .detail-card {
-  background: white;
+  background: var(--reloop-surface);
   border-radius: 14px;
-  border: 1px solid rgba(44, 62, 80, 0.12);
+  border: 1px solid var(--reloop-border);
   padding: 18px;
+  color: var(--reloop-text);
 }
 
 .detail-kv {
@@ -352,20 +360,20 @@
 .kv {
   padding: 12px;
   border-radius: 12px;
-  background: #f7f9fc;
-  border: 1px solid rgba(44, 62, 80, 0.08);
+  background: var(--reloop-gray-100);
+  border: 1px solid var(--reloop-border);
 }
 
 .kv-label {
   font-size: clamp(0.6875rem, 1.9vw, 0.75rem);
-  color: #6b7788;
+  color: var(--reloop-muted);
   font-weight: 700;
   margin: 0 0 6px 0;
 }
 
 .kv-value {
   font-size: clamp(0.8125rem, 2.2vw, 0.875rem);
-  color: #1a2332;
+  color: var(--reloop-text);
   font-weight: 800;
   margin: 0;
 }
